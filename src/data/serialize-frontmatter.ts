@@ -44,7 +44,12 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 		if (!(file instanceof TFile)) throw new Error("Expected TFile");
 
 		for (const column of columns) {
-			const { type, frontmatterKey, tags, includeTime } = column;
+			const {
+				type,
+				frontmatterKey,
+				tags: columnTags,
+				includeTime,
+			} = column;
 			//Skip source and source file columns because they don't have any content that is serialized
 			if (type === CellType.SOURCE) continue;
 			if (type === CellType.SOURCE_FILE) continue;
@@ -77,13 +82,15 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 			} else if (type === CellType.TAG) {
 				const { tagId } = cell as TagCell;
 				if (tagId) {
-					const tag = tags.find((t) => t.id === tagId);
+					const tag = columnTags.find((tag) => tag.id === tagId);
 					if (!tag) throw new TagNotFoundError(tagId);
 					saveValue = tag.content;
 				}
 			} else if (type === CellType.MULTI_TAG) {
 				const { tagIds } = cell as MultiTagCell;
-				const cellTags = tags.filter((tag) => tagIds.includes(tag.id));
+				const cellTags = columnTags.filter((tag) =>
+					tagIds.includes(tag.id)
+				);
 				const cellTagContent = cellTags.map((tag) => tag.content);
 				saveValue = cellTagContent;
 			} else if (type === CellType.DATE) {
@@ -95,6 +102,8 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 					);
 				}
 			}
+
+			console.log(saveValue);
 
 			await app.fileManager.processFrontMatter(file, (frontmatter) => {
 				if (!frontmatter[frontmatterKey]) {

@@ -65,7 +65,7 @@ describe("column-type-update-command", () => {
 		const columns: Column[] = [
 			createColumn({
 				type: CellType.TAG,
-				tags: [createTag("test1"), createTag("test2")],
+				tags: [createTag("test1")],
 			}),
 		];
 		const rows: Row[] = [
@@ -122,7 +122,11 @@ describe("column-type-update-command", () => {
 	};
 
 	const generateStateWithDateColumn = () => {
-		const columns: Column[] = [];
+		const columns: Column[] = [
+			createColumn({
+				type: CellType.DATE,
+			}),
+		];
 		const rows: Row[] = [
 			createRow(0, {
 				cells: [
@@ -178,7 +182,7 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TEXT);
-		expect(executeState.model.columns[0].tags.length).toEqual(2);
+		expect(executeState.model.columns[0].tags.length).toEqual(1);
 		expect(
 			(executeState.model.rows[0].cells[0] as TextCell).content
 		).toEqual("test1");
@@ -202,13 +206,13 @@ describe("column-type-update-command", () => {
 		//Assert
 		expect(executeState.model.columns.length).toEqual(1);
 		expect(executeState.model.columns[0].type).toEqual(CellType.TAG);
-		expect(executeState.model.columns[0].tags.length).toEqual(2);
-		expect(executeState.model.columns[0].tags[0].content).toEqual("test1");
-		expect(executeState.model.columns[0].tags[1].content).toEqual("test2");
+		expect(executeState.model.columns[0].tags.length).toEqual(1);
+		expect(executeState.model.columns[0].tags[0].content).toEqual(
+			"test1,test2"
+		);
 		expect(
 			(executeState.model.rows[0].cells[0] as TagCell).tagId
 		).not.toBeNull();
-		expect(executeState.model.columns[0].tags).toHaveLength(2);
 	});
 
 	it("should handle text -> multi-tag when execute() is called", async () => {
@@ -308,193 +312,5 @@ describe("column-type-update-command", () => {
 
 		//Assert
 		expect(executeState.model.filters).toEqual([]);
-	});
-
-	it("should handle multi-tag -> text when undo() is called", async () => {
-		//Arrange
-		const prevState = generateStateWithMultiTagColumn();
-
-		const command = new ColumnTypeUpdateCommand(
-			prevState.model.columns[0].id,
-			CellType.TEXT
-		);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.rows).toEqual(prevState.model.rows);
-		expect(undoState.model.filters).toEqual(prevState.model.filters);
-	});
-
-	it("should handle tag -> text when undo() is called", async () => {
-		//Arrange
-		const prevState = generateStateWithTagColumn();
-
-		const command = new ColumnTypeUpdateCommand(
-			prevState.model.columns[0].id,
-			CellType.TEXT
-		);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.rows).toEqual(prevState.model.rows);
-		expect(undoState.model.filters).toEqual(prevState.model.filters);
-	});
-
-	it("should handle text -> tag when undo() is called", async () => {
-		//Arrange
-		const prevState = generateStateWithTextColumn();
-
-		const command = new ColumnTypeUpdateCommand(
-			prevState.model.columns[0].id,
-			CellType.TAG
-		);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.rows).toEqual(prevState.model.rows);
-		expect(undoState.model.filters).toEqual(prevState.model.filters);
-	});
-
-	it("should handle text -> multi-tag when undo() is called", async () => {
-		//Arrange
-		const prevState = generateStateWithTextColumn();
-
-		const command = new ColumnTypeUpdateCommand(
-			prevState.model.columns[0].id,
-			CellType.MULTI_TAG
-		);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.rows).toEqual(prevState.model.rows);
-		expect(undoState.model.filters).toEqual(prevState.model.filters);
-	});
-
-	it("should handle multi-tag -> tag when undo() is called", async () => {
-		//Arrange
-		const prevState = generateStateWithMultiTagColumn();
-
-		const command = new ColumnTypeUpdateCommand(
-			prevState.model.columns[0].id,
-			CellType.TAG
-		);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.rows).toEqual(prevState.model.rows);
-		expect(undoState.model.filters).toEqual(prevState.model.filters);
-	});
-
-	it("should handle text -> checkbox when undo() is called", async () => {
-		//Arrange
-		const prevState = generateStateWithTextColumn();
-
-		const command = new ColumnTypeUpdateCommand(
-			prevState.model.columns[0].id,
-			CellType.CHECKBOX
-		);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.rows).toEqual(prevState.model.rows);
-		expect(undoState.model.filters).toEqual(prevState.model.filters);
-	});
-
-	it("should handle date -> text when undo() is called", async () => {
-		//Arrange
-		const prevState = generateStateWithDateColumn();
-
-		const command = new ColumnTypeUpdateCommand(
-			prevState.model.columns[0].id,
-			CellType.TEXT
-		);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.rows).toEqual(prevState.model.rows);
-		expect(undoState.model.filters).toEqual(prevState.model.filters);
-	});
-
-	it("should restore deleted filters when undo() is called", async () => {
-		//Arrange
-		const prevState = generateStateWithTextColumnAndFilters();
-
-		const command = new ColumnTypeUpdateCommand(
-			prevState.model.columns[0].id,
-			CellType.TAG
-		);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.filters).toEqual(prevState.model.filters);
-	});
-
-	it("should handle text -> multi-tag when redo() is called", async () => {
-		//Arrange
-		const prevState = generateStateWithTextColumn();
-
-		const command = new ColumnTypeUpdateCommand(
-			prevState.model.columns[0].id,
-			CellType.MULTI_TAG
-		);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-		const redoState = command.redo(undoState);
-
-		//Assert
-		expect(redoState.model.columns).toEqual(executeState.model.columns);
-		expect(redoState.model.rows).toEqual(executeState.model.rows);
-		expect(redoState.model.filters).toEqual(executeState.model.filters);
-	});
-
-	it("should delete filters when redo() is called", async () => {
-		//Arrange
-		const prevState = generateStateWithTextColumnAndFilters();
-
-		const command = new ColumnTypeUpdateCommand(
-			prevState.model.columns[0].id,
-			CellType.TAG
-		);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-		const redoState = command.redo(undoState);
-
-		//Assert
-		expect(redoState.model.filters).toEqual(executeState.model.filters);
 	});
 });

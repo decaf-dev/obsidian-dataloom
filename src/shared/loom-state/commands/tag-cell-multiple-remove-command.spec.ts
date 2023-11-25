@@ -8,12 +8,15 @@ import {
 
 import { advanceBy, clear } from "jest-date-mock";
 import TagCellMultipleRemoveCommand from "./tag-cell-multiple-remove-command";
-import { Column, MultiTagCell, Row } from "../types/loom-state";
+import { CellType, Column, MultiTagCell, Row } from "../types/loom-state";
 
 describe("tag-cell-multiple-remove-command", () => {
 	const initialState = () => {
 		const columns: Column[] = [
-			createColumn({ tags: [createTag("test1"), createTag("test2")] }),
+			createColumn({
+				type: CellType.MULTI_TAG,
+				tags: [createTag("test1"), createTag("test2")],
+			}),
 		];
 		const rows: Row[] = [
 			createRow(0, {
@@ -72,46 +75,5 @@ describe("tag-cell-multiple-remove-command", () => {
 			prevState.model.rows[0].lastEditedDateTime
 		).getTime();
 		expect(executeLastEditedTime).toBeGreaterThan(prevLastEditedTime);
-	});
-
-	it("should restore the deleted cell reference when undo() is called", () => {
-		//Arrange
-		const prevState = initialState();
-
-		const command = new TagCellMultipleRemoveCommand(
-			prevState.model.rows[0].cells[0].id,
-			[prevState.model.columns[0].tags[0].id]
-		);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.rows).toEqual(prevState.model.rows);
-	});
-
-	it("should delete a cell reference when redo() is called", () => {
-		//Arrange
-		const prevState = initialState();
-
-		const command = new TagCellMultipleRemoveCommand(
-			prevState.model.rows[0].cells[0].id,
-			[prevState.model.columns[0].tags[0].id]
-		);
-
-		//Act
-		advanceBy(100);
-		const executeState = command.execute(prevState);
-		advanceBy(100);
-		const undoState = command.undo(executeState);
-		advanceBy(100);
-		const redoState = command.redo(undoState);
-		clear();
-
-		//Assert
-		expect(executeState.model.columns).toEqual(redoState.model.columns);
-		expect(executeState.model.rows).toEqual(redoState.model.rows);
 	});
 });

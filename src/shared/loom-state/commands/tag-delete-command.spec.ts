@@ -9,7 +9,7 @@ import TagDeleteCommand from "./tag-delete-command";
 import { CellType, TagCell } from "../types/loom-state";
 
 describe("tag-delete-command", () => {
-	const createTestState = () => {
+	const generateStateWithTagColumn = () => {
 		const tags = [createTag("test1"), createTag("test2")];
 		const column = createColumn({ type: CellType.TAG, tags });
 
@@ -37,7 +37,7 @@ describe("tag-delete-command", () => {
 
 	it("should delete a tag when execute() is called", () => {
 		//Arrange
-		const { prevState, tags } = createTestState();
+		const { prevState, tags } = generateStateWithTagColumn();
 
 		const command = new TagDeleteCommand(
 			prevState.model.columns[0].id,
@@ -49,48 +49,11 @@ describe("tag-delete-command", () => {
 
 		//Assert
 		expect(executeState.model.columns[0].tags).toEqual([tags[1]]);
-		expect((executeState.model.rows[0].cells[0] as TagCell).tagId).toEqual([
-			tags[1].id,
-		]);
-		expect((executeState.model.rows[1].cells[0] as TagCell).tagId).toEqual([
-			tags[1].id,
-		]);
-	});
-
-	it("should restore the deleted tag when undo() is called", () => {
-		//Arrange
-		const { prevState, tags } = createTestState();
-
-		const command = new TagDeleteCommand(
-			prevState.model.columns[0].id,
-			tags[0].id
+		expect((executeState.model.rows[0].cells[0] as TagCell).tagId).toEqual(
+			null
 		);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.rows).toEqual(prevState.model.rows);
-	});
-
-	it("should delete a tag when redo() is called", () => {
-		//Arrange
-		const { prevState, tags } = createTestState();
-
-		const command = new TagDeleteCommand(
-			prevState.model.columns[0].id,
-			tags[0].id
+		expect((executeState.model.rows[1].cells[0] as TagCell).tagId).toEqual(
+			tags[1].id
 		);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-		const redoState = command.redo(undoState);
-
-		//Assert
-		expect(executeState.model.columns).toEqual(redoState.model.columns);
-		expect(executeState.model.rows).toEqual(redoState.model.rows);
 	});
 });

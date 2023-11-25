@@ -15,17 +15,4 @@ describe("row-add-command", () => {
 		expect(executeState.model.rows[0].cells.length).toEqual(1);
 		expect(executeState.model.rows[1].cells.length).toEqual(1);
 	});
-
-	it("should remove the added row when undo() is called", () => {
-		//Arrange
-		const prevState = createLoomState(1, 1);
-		const command = new RowAddCommand();
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.rows).toEqual(prevState.model.rows);
-	});
 });

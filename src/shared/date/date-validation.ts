@@ -9,6 +9,19 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 
 dayjs.extend(customParseFormat);
 
+/**
+ * Trys to parse a string into a Date object
+ * @param value - The value to check
+ * @returns
+ */
+export const parseDateTime = (value: string) => {
+	const date = new Date(value);
+	if (date instanceof Date && !isNaN(date.getTime())) {
+		return null;
+	}
+	return date.toISOString();
+};
+
 export const isValidDateString = (
 	value: string,
 	format: DateFormat,

@@ -35,7 +35,7 @@ export default function Bubble({
 				</Stack>
 				{canRemove && (
 					<Button
-						isSmall
+						size="sm"
 						invertFocusColor
 						icon={
 							<Icon lucideId="x" color="var(--text-on-accent)" />

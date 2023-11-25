@@ -130,43 +130,76 @@ export default function DateCellEdit({
 	React.useEffect(() => {
 		if (closeRequest === null) return;
 
-		//If the user has not entered a value, we don't need to validate the date format
-		if (dateString !== "") {
-			if (
-				!isValidDateString(dateString, dateFormat, dateFormatSeparator)
-			) {
-				if (closeRequest.type === "close-on-save") {
-					setDateInputInvalid(true);
-					onCloseRequestClear();
-					return;
-				}
+		function validateDateInput(closeRequest: LoomMenuCloseRequest) {
+			if (dateString == "") return true;
+
+			if (isValidDateString(dateString, dateFormat, dateFormatSeparator))
+				return true;
+
+			const { type } = closeRequest;
+			if (type !== "close-on-save") {
+				return false;
 			}
+
+			setDateInputInvalid(true);
+			onCloseRequestClear();
+			return false;
 		}
 
-		//If the user has not entered a value, we don't need to validate the date format
-		if (dateString !== "" || timeString !== "") {
-			if (!isValidTimeString(timeString, hour12)) {
-				if (closeRequest.type === "close-on-save") {
-					setTimeInputInvalid(true);
-					onCloseRequestClear();
-					return;
-				}
+		function validateTimeInput(closeRequest: LoomMenuCloseRequest) {
+			if (!includeTime) return true;
+			if (timeString === "") return true;
+			if (isValidTimeString(timeString, hour12)) return true;
+
+			const { type } = closeRequest;
+			if (type !== "close-on-save") {
+				return false;
 			}
+
+			setTimeInputInvalid(true);
+			onCloseRequestClear();
+			return false;
 		}
 
-		let newValue: string | null = value;
-		if (dateString !== "" && timeString !== "") {
-			//Convert local value to unix time
-			newValue = dateStringToDateTime(
-				dateString,
-				dateFormat,
-				dateFormatSeparator,
-				{
-					timeString,
-					hour12,
+		function getCurrentDateTime() {
+			if (includeTime) {
+				if (dateString !== "" && timeString !== "") {
+					return dateStringToDateTime(
+						dateString,
+						dateFormat,
+						dateFormatSeparator,
+						{
+							timeString,
+							hour12,
+						}
+					);
 				}
-			);
+			}
+			if (dateString !== "") {
+				return dateStringToDateTime(
+					dateString,
+					dateFormat,
+					dateFormatSeparator
+				);
+			}
+			return null;
 		}
+
+		if (!validateDateInput(closeRequest)) {
+			if (closeRequest.type !== "close-on-save") {
+				onClose();
+			}
+			return;
+		}
+
+		if (!validateTimeInput(closeRequest)) {
+			if (closeRequest.type !== "close-on-save") {
+				onClose();
+			}
+			return;
+		}
+
+		const newValue = getCurrentDateTime();
 
 		if (newValue !== value) {
 			setDateInputInvalid(false);
@@ -177,6 +210,7 @@ export default function DateCellEdit({
 	}, [
 		value,
 		dateString,
+		includeTime,
 		hour12,
 		timeString,
 		closeRequest,
@@ -202,6 +236,11 @@ export default function DateCellEdit({
 		timeFormatMenu.onClose();
 	}
 
+	function handleTodayClick() {
+		onDateTimeChange(getCurrentDateTime());
+		onClose();
+	}
+
 	function handleClearClick() {
 		onDateTimeChange(null);
 		onClose();
@@ -225,20 +264,22 @@ export default function DateCellEdit({
 								value={dateString}
 								onChange={setDateString}
 							/>
-							<Input
-								ref={timeInputRef}
-								showBorder
-								autoFocus={false}
-								placeholder={dateTimeToTimeString(
-									getCurrentDateTime(),
-									{
-										hour12,
-									}
-								)}
-								hasError={isTimeInputInvalid}
-								value={timeString}
-								onChange={setTimeString}
-							/>
+							{includeTime && (
+								<Input
+									ref={timeInputRef}
+									showBorder
+									autoFocus={false}
+									placeholder={dateTimeToTimeString(
+										getCurrentDateTime(),
+										{
+											hour12,
+										}
+									)}
+									hasError={isTimeInputInvalid}
+									value={timeString}
+									onChange={setTimeString}
+								/>
+							)}
 						</Stack>
 					</Padding>
 					<MenuTrigger
@@ -303,6 +344,7 @@ export default function DateCellEdit({
 							/>
 						</MenuTrigger>
 					)}
+					<MenuItem name="Today" onClick={handleTodayClick} />
 					<MenuItem name="Clear" onClick={handleClearClick} />
 				</Stack>
 			</div>

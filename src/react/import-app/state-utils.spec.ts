@@ -339,7 +339,10 @@ describe("addImportData", () => {
 		).toEqual([prevState.model.columns[0].tags[0].id]);
 		expect(
 			(nextState.model.rows[1].cells[0] as MultiTagCell).tagIds
-		).toEqual([prevState.model.columns[0].tags[0].id]);
+		).toEqual([
+			prevState.model.columns[0].tags[0].id,
+			prevState.model.columns[0].tags[1].id,
+		]);
 	});
 
 	it("uses existing column tags", () => {
@@ -450,6 +453,7 @@ describe("addImportData", () => {
 			null
 		);
 		expect(nextState.model.rows.length).toEqual(2);
+		expect(nextState.model.columns[0].tags.length).toEqual(4);
 		expect(nextState.model.rows[0].cells.length).toEqual(1);
 		expect(nextState.model.rows[1].cells.length).toEqual(1);
 		expect(
@@ -459,12 +463,11 @@ describe("addImportData", () => {
 			prevState.model.columns[0].tags[1].id,
 		]);
 		expect(
-			nextState.model.rows[1].cells[0] as MultiTagCell
-		).tagIds.not.toEqual([
+			(nextState.model.rows[1].cells[0] as MultiTagCell).tagIds
+		).not.toEqual([
 			prevState.model.columns[0].tags[0].id,
 			prevState.model.columns[0].tags[1].id,
 		]);
-		expect(nextState.model.columns[0].tags.length).toEqual(4);
 	});
 });
 

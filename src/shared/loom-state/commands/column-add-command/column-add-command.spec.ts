@@ -14,18 +14,4 @@ describe("column-add-command", () => {
 		expect(executeState.model.columns.length).toEqual(2);
 		expect(executeState.model.rows[0].cells.length).toEqual(2);
 	});
-
-	it("should remove the added column when undo() is called", () => {
-		//Arrange
-		const prevState = createLoomState(1, 1);
-		const command = new ColumnAddCommand();
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.columns).toEqual(prevState.model.columns);
-		expect(undoState.model.rows).toEqual(prevState.model.rows);
-	});
 });

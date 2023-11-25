@@ -2,17 +2,17 @@ import React from "react";
 
 import { useLogger } from "src/shared/logger";
 import Stack from "../stack";
-import { ButtonVariant } from "./types";
+import { ButtonSize, ButtonVariant } from "./types";
 
 import "./styles.css";
 
 interface ButtonProps {
 	isDisabled?: boolean;
 	variant?: ButtonVariant;
+	size?: ButtonSize;
 	isFullWidth?: boolean;
 	isFocusable?: boolean;
 	invertFocusColor?: boolean;
-	isSmall?: boolean;
 	ariaLabel?: string;
 	icon?: React.ReactNode;
 	children?: React.ReactNode;
@@ -25,7 +25,7 @@ export default function Button({
 	variant = "text",
 	isFullWidth,
 	isFocusable = true,
-	isSmall,
+	size = "md",
 	invertFocusColor,
 	children,
 	ariaLabel = "",
@@ -60,7 +60,11 @@ export default function Button({
 
 	if (variant == "link") className += " dataloom-button--link";
 	else if (variant == "text") className += " dataloom-button--text";
-	if (isSmall) className += " dataloom-button--small";
+
+	if (size == "sm") className += " dataloom-button--sm";
+	else if (size == "md") className += " dataloom-button--md";
+	else if (size == "lg") className += " dataloom-button--lg";
+
 	if (isFullWidth) className += " dataloom-button--full-width";
 
 	return (

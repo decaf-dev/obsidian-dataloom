@@ -105,7 +105,7 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 			}
 
 			if (!topMenu) return;
-			onRequestClose(topMenu.id, "close-on-save");
+			onRequestClose(topMenu.id, "save-and-close");
 		}
 
 		let className = "dataloom-menu-trigger dataloom-focusable";

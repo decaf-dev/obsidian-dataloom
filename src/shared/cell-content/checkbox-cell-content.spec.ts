@@ -7,7 +7,7 @@ describe("getCheckboxCellContent", () => {
 	});
 
 	it("should return false if markdown not checked", () => {
-		const result = getCheckboxCellContent(true, true);
+		const result = getCheckboxCellContent(false, true);
 		expect(result).toEqual("false");
 	});
 

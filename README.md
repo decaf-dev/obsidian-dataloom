@@ -10,7 +10,7 @@ Join the [Discord](https://discord.gg/QaFbepMdN4) community
 
 Support development
 
-<a href="https://www.buymeacoffee.com/treywallis" target="_blank" rel="noopener"><img width="180" src="https://img.buymeacoffee.com/button-api/?text=Buy me a herbal tea&emoji=%F0%9F%8D%B5&slug=treywallis&button_colour=9478F0&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00&refresh_id=2" /></a>
+<a href="https://www.buymeacoffee.com/treywallis" target="_blank" rel="noopener"><img width="175" src="https://github.com/trey-wallis/obsidian-dataloom/assets/40307803/dee919ac-1065-4595-8511-7e7e7a962356" /></a>
 
 ## About
 
