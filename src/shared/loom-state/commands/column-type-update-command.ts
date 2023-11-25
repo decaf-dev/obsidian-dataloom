@@ -31,7 +31,6 @@ import { dateTimeToDateString } from "src/shared/date/date-time-conversion";
 import { isNumber } from "src/shared/match";
 import { parseDateTime } from "src/shared/date/date-validation";
 import { cloneDeep } from "lodash";
-import { filterUniqueStrings } from "src/react/loom-app/text-cell-edit/utils";
 
 export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 	private targetColumnId: string;

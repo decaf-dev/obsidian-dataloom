@@ -1,6 +1,6 @@
 import {
 	createColumn,
-	createDateCell,
+	// createDateCell,
 	createFolderSource,
 	createGenericLoomState,
 	createMultiTagCell,
@@ -98,50 +98,50 @@ describe("serializeFrontmatter", () => {
 		return state;
 	};
 
-	/**
-	 * Returns a 3x2 state with a source column, source file column, and date column
-	 * - date cell 0 - "2020-12-31T22:00:00Z"
-	 * - date cell 1 - "2020-12-31T23:00:00Z"
-	 * @param frontmatterKey - The frontmatter key to use in the date column
-	 */
-	const generateStateWithDateColumn = (frontmatterKey: string | null) => {
-		//Arrange
-		const columns: Column[] = [
-			createColumn({ type: CellType.SOURCE }),
-			createColumn({ type: CellType.SOURCE_FILE }),
-			createColumn({
-				type: CellType.DATE,
-				includeTime: true,
-				frontmatterKey,
-			}),
-		];
-		const sources: Source[] = [createFolderSource("test", false)];
+	// /**
+	//  * Returns a 3x2 state with a source column, source file column, and date column
+	//  * - date cell 0 - "2020-12-31T22:00:00Z"
+	//  * - date cell 1 - "2020-12-31T23:00:00Z"
+	//  * @param frontmatterKey - The frontmatter key to use in the date column
+	//  */
+	// const generateStateWithDateColumn = (frontmatterKey: string | null) => {
+	// 	//Arrange
+	// 	const columns: Column[] = [
+	// 		createColumn({ type: CellType.SOURCE }),
+	// 		createColumn({ type: CellType.SOURCE_FILE }),
+	// 		createColumn({
+	// 			type: CellType.DATE,
+	// 			includeTime: true,
+	// 			frontmatterKey,
+	// 		}),
+	// 	];
+	// 	const sources: Source[] = [createFolderSource("test", false)];
 
-		const rows: Row[] = [
-			createRow(0, {
-				sourceId: sources[0].id,
-				cells: [
-					createSourceCell(columns[0].id),
-					createSourceFileCell(columns[1].id),
-					createDateCell(columns[2].id, {
-						dateTime: "2020-12-31T22:00:00Z",
-					}),
-				],
-			}),
-			createRow(1, {
-				sourceId: sources[0].id,
-				cells: [
-					createSourceCell(columns[0].id),
-					createSourceFileCell(columns[1].id),
-					createDateCell(columns[2].id, {
-						dateTime: "2020-12-31T23:00:00Z",
-					}),
-				],
-			}),
-		];
-		const state = createGenericLoomState({ columns, rows, sources });
-		return state;
-	};
+	// 	const rows: Row[] = [
+	// 		createRow(0, {
+	// 			sourceId: sources[0].id,
+	// 			cells: [
+	// 				createSourceCell(columns[0].id),
+	// 				createSourceFileCell(columns[1].id),
+	// 				createDateCell(columns[2].id, {
+	// 					dateTime: "2020-12-31T22:00:00Z",
+	// 				}),
+	// 			],
+	// 		}),
+	// 		createRow(1, {
+	// 			sourceId: sources[0].id,
+	// 			cells: [
+	// 				createSourceCell(columns[0].id),
+	// 				createSourceFileCell(columns[1].id),
+	// 				createDateCell(columns[2].id, {
+	// 					dateTime: "2020-12-31T23:00:00Z",
+	// 				}),
+	// 			],
+	// 		}),
+	// 	];
+	// 	const state = createGenericLoomState({ columns, rows, sources });
+	// 	return state;
+	// };
 
 	/**
 	 * Returns a 3x2 state with a source column, source file column, and tag column
