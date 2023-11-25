@@ -4,13 +4,13 @@
 
 Find detailed documentation at [dataloom.xyz](https://dataloom.xyz)
 
-DataLoom is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile. DataLoom allows you to weave together data from diverse sources into a cohesive table view.
+DataLoom is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile. It is a database tool similar to [Notion.so](https://notion.so) and [DB folder](https://github.com/RafaelGB/obsidian-db-folder). It allows you to weave together data from diverse sources, including Obsidian elements like folders or frontmatter, and display them in multiple views. This plugin is ideal for you if you seek a straightforward yet powerful tool to create and manage databases and enhance the organization and accessibility of your Obsidian vault.
 
 Join the [Discord](https://discord.gg/QaFbepMdN4) community
 
-Support development
+Premium features
 
-<a href="https://www.buymeacoffee.com/treywallis" target="_blank" rel="noopener"><img width="175" src="https://github.com/trey-wallis/obsidian-dataloom/assets/40307803/dee919ac-1065-4595-8511-7e7e7a962356" /></a>
+https://dataloom.xyz/premium/
 
 ## About
 
@@ -30,6 +30,12 @@ Support development
 ![](/readme/app.png)
 
 ## Features
+
+-   View types
+
+    -   [x] Table
+    -   [ ] List
+    -   [ ] Gallery
 
 -   Cell types
 
@@ -77,6 +83,7 @@ Support development
 
     -   [x] CSV
     -   [x] Markdown
+    -   [ ] PDF
 
 -   Color scheme
 
@@ -86,62 +93,13 @@ Support development
 -   Sources
 
     -   [x] Folder
-    -   [ ] Tag
-    -   [ ] YouTube API
-    -   [ ] Instagram API
-    -   [ ] Twitter API
+    -   [ ] Frontmatter
 
 -   [x] Undo/redo
 
--   General Obsidian integration
-
-    -   [x] Embed notes
+-   [x] Embed loom files into an Obsidian note
 
 -   [x] Mobile support
-
-## FAQ
-
-### What is the purpose of this plugin?
-
-DataLoom offers an interactive WYSIWYG user interface for managing tabular data. It allows you to quickly create a table, edit data, and filter data based on specific criteria.
-
-### Why is this plugin called DataLoom?
-
-I wanted a name that would convey the functionality of rendering data from different sources.
-
-Development planned for this plugin includes rendering data from both Obsidian sources such as folders or tags, and external sources such as the YouTube or Instagram API.
-
-### What is the difference between DataLoom and Projects?
-
-[Projects](https://github.com/marcusolsson/obsidian-projects) allows you to create projects from folders and Dataview queries. It offers a table, board, calendar, and gallery view for your data.
-
-While Projects focuses on offering views for managing projects, DataLoom focuses on integrating different data sources.
-
-Projects populates table rows based on existing markdown notes. DataLoom populates table rows based on the data that is entered by the user. All data for a table is stored within a `.loom` file. No markdown notes are required to get started with DataLoom.
-
-### What is the difference between DataLoom and DB Folder?
-
-[DB Folder](https://github.com/RafaelGB/obsidian-db-folder) allows you to create a Notion-like database based on folders, links, tags, or dataview queries.
-
-DB Folder is very similar to what DataLoom intends to accomplish.
-
-One major difference between DB Folder and DataLoom is that DataLoom doesn't require a folder. You only need to create a loom file and enter text data to get started.
-
-Another difference is that DataLoom does not depend on [Dataview](https://github.com/blacksmithgu/obsidian-dataview). It can be installed as a standalone plugin.
-
-DataLoom also employs its own menu system rendered in React. This allows for a more complicated user interface.
-
-### What is the difference between DataLoom and Make.MD?
-
-[Make.MD](https://github.com/Make-md/makemd) contains rich features that enhance the native Obsidian UI to be more like Notion.so. While helpful for some users, not every user will want all of these features.
-
-DataLoom intends to be a more simple application. It does not change the native UI of Obsidian. It is a simple React app that runs in its own view. DataLoom also stores data in JSON format in its own `.loom` file.
-
-### Why should I use this plugin?
-
-You should use this plugin if you want an easier experience managing tabular data. You should also use this plugin if you wish to create databases similar to Notion.so.
-
-I recommend you try out the plugin and see if it can help you in organizing your second brain.
 
 ## Roadmap
 
