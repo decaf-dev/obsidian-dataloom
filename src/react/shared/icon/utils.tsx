@@ -5,7 +5,7 @@ export const getIconIdForSourceType = (type: SourceType) => {
 		case SourceType.FOLDER:
 			return "folder";
 		case SourceType.FRONTMATTER:
-			return "tag";
+			return "file-key-2";
 		default:
 			return "";
 	}
