@@ -8,6 +8,10 @@ DataLoom is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile
 
 Join the [Discord](https://discord.gg/QaFbepMdN4) community
 
+Particpate in our survey
+
+https://forms.gle/aeomAB9YDrEv1GgbA
+
 ## About
 
 -   [Screenshots](#screenshots)
