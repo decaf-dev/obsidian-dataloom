@@ -32,7 +32,7 @@ export default class WelcomeModal extends Modal {
 			cardContainerEl,
 			"Quick start",
 			"Learn the basics of creating a loom",
-			"https://dataloom.xyz/getting-started/quick-start",
+			"https://dataloom.xyz/basics/quick-start",
 			"table"
 		);
 
@@ -40,7 +40,7 @@ export default class WelcomeModal extends Modal {
 			cardContainerEl,
 			"Import markdown tables and CSV data",
 			"Learn how to import data from markdown tables and CSV files",
-			"https://dataloom.xyz/getting-started/importing",
+			"https://dataloom.xyz/basics/import",
 			"import"
 		);
 
@@ -48,7 +48,7 @@ export default class WelcomeModal extends Modal {
 			cardContainerEl,
 			"Embedded looms",
 			"Learn how to embed a loom into a markdown note",
-			"https://dataloom.xyz/getting-started/embedding-looms",
+			"https://dataloom.xyz/basics/embed-loom",
 			"sticky-note"
 		);
 
@@ -56,7 +56,7 @@ export default class WelcomeModal extends Modal {
 			cardContainerEl,
 			"Keyboard navigation",
 			"Learn how to navigate looms with your keyboard",
-			"https://dataloom.xyz/getting-started/keyboard-navigation",
+			"https://dataloom.xyz/basics/keyboard-navigation",
 			"list-plus"
 		);
 	}
