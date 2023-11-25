@@ -184,7 +184,7 @@ export default function DateCellEdit({
 		if (!validateDateInput(closeRequest)) return;
 		if (!validateTimeInput(closeRequest)) return;
 
-		let newValue = getCurrentDateTime();
+		const newValue = getCurrentDateTime();
 
 		if (newValue !== value) {
 			setDateInputInvalid(false);
@@ -195,6 +195,7 @@ export default function DateCellEdit({
 	}, [
 		value,
 		dateString,
+		includeTime,
 		hour12,
 		timeString,
 		closeRequest,
