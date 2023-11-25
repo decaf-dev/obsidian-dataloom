@@ -137,7 +137,9 @@ export default function DateCellEdit({
 				return true;
 
 			const { type } = closeRequest;
-			if (type !== "close-on-save") return true;
+			if (type !== "close-on-save") {
+				return false;
+			}
 
 			setDateInputInvalid(true);
 			onCloseRequestClear();
@@ -150,7 +152,9 @@ export default function DateCellEdit({
 			if (isValidTimeString(timeString, hour12)) return true;
 
 			const { type } = closeRequest;
-			if (type !== "close-on-save") return true;
+			if (type !== "close-on-save") {
+				return false;
+			}
 
 			setTimeInputInvalid(true);
 			onCloseRequestClear();
@@ -181,8 +185,19 @@ export default function DateCellEdit({
 			return null;
 		}
 
-		if (!validateDateInput(closeRequest)) return;
-		if (!validateTimeInput(closeRequest)) return;
+		if (!validateDateInput(closeRequest)) {
+			if (closeRequest.type !== "close-on-save") {
+				onClose();
+			}
+			return;
+		}
+
+		if (!validateTimeInput(closeRequest)) {
+			if (closeRequest.type !== "close-on-save") {
+				onClose();
+			}
+			return;
+		}
 
 		const newValue = getCurrentDateTime();
 
