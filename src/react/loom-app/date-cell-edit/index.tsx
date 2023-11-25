@@ -221,6 +221,11 @@ export default function DateCellEdit({
 		timeFormatMenu.onClose();
 	}
 
+	function handleTodayClick() {
+		onDateTimeChange(getCurrentDateTime());
+		onClose();
+	}
+
 	function handleClearClick() {
 		onDateTimeChange(null);
 		onClose();
@@ -324,6 +329,7 @@ export default function DateCellEdit({
 							/>
 						</MenuTrigger>
 					)}
+					<MenuItem name="Today" onClick={handleTodayClick} />
 					<MenuItem name="Clear" onClick={handleClearClick} />
 				</Stack>
 			</div>
