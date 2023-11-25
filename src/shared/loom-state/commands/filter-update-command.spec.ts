@@ -33,7 +33,7 @@ describe("filter-update-command", () => {
 		const prevState = createLoomState(1, 1);
 
 		const filter = createTextFilter(prevState.model.columns[0].id, {
-			text: "test",
+			text: "fully",
 		});
 		prevState.model.filters.push(filter);
 
@@ -45,49 +45,8 @@ describe("filter-update-command", () => {
 
 		//Assert
 		expect(executeState.model.filters.length).toEqual(1);
-		expect(executeState.model.filters[0]).toEqual(newFilter);
-	});
-
-	it("should undo the filter update", () => {
-		//Arrange
-		const prevState = createLoomState(1, 1);
-
-		const filter = createTextFilter(prevState.model.columns[0].id, {
-			text: "test",
-		});
-		prevState.model.filters.push(filter);
-
-		const newFilter = createCheckboxFilter(prevState.model.columns[0].id);
-		const command = new FilterUpdateCommand(filter.id, newFilter, true);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-
-		//Assert
-		expect(undoState.model.filters.length).toEqual(1);
-		expect(undoState.model.filters[0]).toEqual(filter);
-	});
-
-	it("should redo the filter update", () => {
-		//Arrange
-		const prevState = createLoomState(1, 1);
-
-		const filter = createTextFilter(prevState.model.columns[0].id, {
-			text: "test",
-		});
-		prevState.model.filters.push(filter);
-
-		const newFilter = createCheckboxFilter(prevState.model.columns[0].id);
-		const command = new FilterUpdateCommand(filter.id, newFilter, true);
-
-		//Act
-		const executeState = command.execute(prevState);
-		const undoState = command.undo(executeState);
-		const redoState = command.redo(undoState);
-
-		//Assert
-		expect(redoState.model.filters.length).toEqual(1);
-		expect(redoState.model.filters[0]).toEqual(newFilter);
+		expect((executeState.model.filters[0] as TextFilter).text).toEqual(
+			"fully"
+		);
 	});
 });

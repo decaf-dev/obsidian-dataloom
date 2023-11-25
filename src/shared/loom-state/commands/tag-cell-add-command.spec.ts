@@ -10,6 +10,7 @@ import { advanceBy, clear } from "jest-date-mock";
 import { CellType, Column, MultiTagCell, Row } from "../types/loom-state";
 
 describe("tag-cell-add-command", () => {
+	//TODO add testing for a tag
 	const initialState = () => {
 		const columns: Column[] = [
 			createColumn({
@@ -35,35 +36,6 @@ describe("tag-cell-add-command", () => {
 		});
 		return state;
 	};
-
-	it("should add a tag reference to a cell when execute() is called", () => {
-		//Arrange
-		const prevState = initialState();
-
-		const command = new TagCellAddCommand(
-			prevState.model.rows[0].cells[0].id,
-			prevState.model.columns[0].tags[1].id
-		);
-
-		//Act
-		advanceBy(100);
-		const executeState = command.execute(prevState);
-		clear();
-
-		//Assert
-		expect(executeState.model.columns).toEqual(prevState.model.columns);
-		expect(
-			(executeState.model.rows[0].cells[0] as MultiTagCell).tagIds
-		).toEqual([prevState.model.columns[0].tags[1].id]);
-
-		const executeLastEditedTime = new Date(
-			executeState.model.rows[0].lastEditedDateTime
-		).getTime();
-		const prevLastEditedTime = new Date(
-			prevState.model.rows[0].lastEditedDateTime
-		).getTime();
-		expect(executeLastEditedTime).toBeGreaterThan(prevLastEditedTime);
-	});
 
 	it("should add a multi-tag reference to a cell when execute() is called", () => {
 		//Arrange

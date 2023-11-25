@@ -30,6 +30,8 @@ import {
 import { dateTimeToDateString } from "src/shared/date/date-time-conversion";
 import { isNumber } from "src/shared/match";
 import { parseDateTime } from "src/shared/date/date-validation";
+import { cloneDeep } from "lodash";
+import { filterUniqueStrings } from "src/react/loom-app/text-cell-edit/utils";
 
 export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 	private targetColumnId: string;
@@ -43,7 +45,9 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 
 	execute(prevState: LoomState): LoomState {
 		const { columns, rows, filters } = prevState.model;
-		const column = columns.find(
+
+		const columnsCopy = cloneDeep(columns);
+		const column = columnsCopy.find(
 			(column) => column.id === this.targetColumnId
 		);
 		if (!column) throw new ColumnNotFoundError({ id: this.targetColumnId });
@@ -131,7 +135,7 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 			};
 		});
 
-		const nextColumns = columns.map((column) => {
+		const nextColumns = columnsCopy.map((column) => {
 			if (column.id === this.targetColumnId) {
 				return {
 					...column,
@@ -308,23 +312,32 @@ export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 	private fromTextToMultiTag(column: Column, cell: TextCell): MultiTagCell {
 		const { columnId, content } = cell;
 
-		let tagIds: string[] = [];
+		const newTags: Tag[] = [];
+
 		if (content !== "") {
 			const { tags: columnTags } = column;
-			tagIds = content.split(",").map((tagContent) => {
-				let tagId =
-					columnTags.find((tag) => tag.content === tagContent)?.id ??
+
+			content.split(",").forEach((tagContent) => {
+				let tag =
+					columnTags.find((tag) => tag.content === tagContent) ??
 					null;
-				if (!tagId) {
-					const newTag = createTag(tagContent);
-					tagId = newTag.id;
-					column.tags = [...columnTags, newTag];
-				}
-				return tagId;
+
+				if (!tag) tag = createTag(tagContent);
+				newTags.push(tag);
 			});
 		}
+
+		const allTags = [...column.tags, ...newTags];
+		const uniqueTags = allTags.reduce((acc, current) => {
+			if (!acc.find((tag) => tag.id === current.id)) {
+				acc.push(current);
+			}
+			return acc;
+		}, [] as Tag[]);
+		column.tags = uniqueTags;
+
 		const newCell = createMultiTagCell(columnId, {
-			tagIds,
+			tagIds: uniqueTags.map((tag) => tag.id),
 		});
 		return newCell;
 	}

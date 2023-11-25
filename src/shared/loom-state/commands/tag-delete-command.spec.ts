@@ -52,8 +52,8 @@ describe("tag-delete-command", () => {
 		expect((executeState.model.rows[0].cells[0] as TagCell).tagId).toEqual(
 			null
 		);
-		expect((executeState.model.rows[1].cells[0] as TagCell).tagId).toEqual([
-			tags[1].id,
-		]);
+		expect((executeState.model.rows[1].cells[0] as TagCell).tagId).toEqual(
+			tags[1].id
+		);
 	});
 });
