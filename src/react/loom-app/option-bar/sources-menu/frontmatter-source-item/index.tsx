@@ -8,8 +8,11 @@ import SourceItem from "../source-item";
 
 import { getIconIdForSourceType } from "src/react/shared/icon/utils";
 import {
+	DateFilterCondition,
 	FilterCondition,
+	NumberFilterCondition,
 	SourceType,
+	TextFilterCondition,
 } from "src/shared/loom-state/types/loom-state";
 import { getDisplayNameForFilterCondition } from "src/shared/loom-state/type-display-names";
 import { ObsidianPropertyType } from "src/shared/frontmatter/types";
@@ -40,6 +43,13 @@ export default function FrontmatterSourceItem({
 	onFilterConditionChange,
 	onFilterTextChange,
 }: Props) {
+	const showFilterInput =
+		selectedFilterCondition !== TextFilterCondition.IS_EMPTY &&
+		selectedFilterCondition !== TextFilterCondition.IS_NOT_EMPTY &&
+		selectedFilterCondition !== DateFilterCondition.IS_EMPTY &&
+		selectedFilterCondition !== DateFilterCondition.IS_NOT_EMPTY &&
+		selectedFilterCondition !== NumberFilterCondition.IS_NOT_EMPTY &&
+		selectedFilterCondition !== NumberFilterCondition.IS_EMPTY;
 	return (
 		<SourceItem>
 			<Wrap>
@@ -67,13 +77,15 @@ export default function FrontmatterSourceItem({
 						);
 					})}
 				</Select>
-				<FilterInput
-					selectedPropertyType={selectedPropertyType}
-					filterText={filterText}
-					onFilterTextChange={(value) =>
-						onFilterTextChange(id, value)
-					}
-				/>
+				{showFilterInput && (
+					<FilterInput
+						selectedPropertyType={selectedPropertyType}
+						filterText={filterText}
+						onFilterTextChange={(value) =>
+							onFilterTextChange(id, value)
+						}
+					/>
+				)}
 				<Button
 					icon={<Icon lucideId="trash" />}
 					ariaLabel="Delete source"
