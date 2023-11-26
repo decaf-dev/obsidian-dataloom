@@ -50,12 +50,19 @@ export default function FrontmatterSourceItem({
 		selectedFilterCondition !== DateFilterCondition.IS_NOT_EMPTY &&
 		selectedFilterCondition !== NumberFilterCondition.IS_NOT_EMPTY &&
 		selectedFilterCondition !== NumberFilterCondition.IS_EMPTY;
+
 	return (
 		<SourceItem>
 			<div className="dataloom-frontmatter-source-item">
 				<Wrap>
 					<Bubble
-						icon={<Icon lucideId={getIconIdForSourceType(type)} />}
+						icon={
+							<Icon
+								lucideId={getIconIdForSourceType(type, {
+									propertyType: selectedPropertyType,
+								})}
+							/>
+						}
 						variant="no-fill"
 						value={title}
 					/>

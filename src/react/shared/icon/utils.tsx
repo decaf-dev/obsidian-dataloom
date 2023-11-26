@@ -1,14 +1,39 @@
+import { ObsidianPropertyType } from "src/shared/frontmatter/types";
 import { CellType, SourceType } from "src/shared/loom-state/types/loom-state";
 
-export const getIconIdForSourceType = (type: SourceType) => {
-	switch (type) {
-		case SourceType.FOLDER:
-			return "folder";
-		case SourceType.FRONTMATTER:
-			return "file-key-2";
-		default:
-			return "";
+export const getIconIdForSourceType = (
+	type: SourceType,
+	options?: {
+		propertyType?: ObsidianPropertyType;
 	}
+) => {
+	const { propertyType } = options ?? {};
+
+	if (type === SourceType.FOLDER) {
+		return "folder";
+	} else if (type === SourceType.FRONTMATTER) {
+		switch (propertyType) {
+			case ObsidianPropertyType.TEXT:
+				return "text";
+			case ObsidianPropertyType.ALIASES:
+				return "corner-up-right";
+			case ObsidianPropertyType.TAGS:
+				return "tags";
+			case ObsidianPropertyType.MULTITEXT:
+				return "list";
+			case ObsidianPropertyType.DATE:
+				return "calendar";
+			case ObsidianPropertyType.DATETIME:
+				return "clock";
+			case ObsidianPropertyType.CHECKBOX:
+				return "check-square";
+			case ObsidianPropertyType.NUMBER:
+				return "hash";
+			default:
+				throw new Error("Property type not handled");
+		}
+	}
+	return "";
 };
 
 export const getIconIdForCellType = (type: CellType) => {
