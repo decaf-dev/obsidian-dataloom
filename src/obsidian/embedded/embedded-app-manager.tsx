@@ -46,8 +46,12 @@ export const loadPreviewModeApps = (
 	for (let i = 0; i < markdownLeaves.length; i++) {
 		const leaf = markdownLeaves[i];
 
-		const view = leaf.view as MarkdownView;
-		const mode = view.getMode();
+		const view = leaf.view;
+
+		let mode = "";
+		if (view instanceof MarkdownView) {
+			mode = view.getMode();
+		}
 
 		if (mode === "preview")
 			loadEmbeddedLoomApps(app, pluginVersion, leaf, "preview");

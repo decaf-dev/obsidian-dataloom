@@ -57,7 +57,7 @@ export const doesBooleanMatchFilter = (
 		case TextFilterCondition.IS:
 			return value === filterValue;
 		case TextFilterCondition.IS_NOT:
-			return value === filterValue;
+			return value !== filterValue;
 		default:
 			throw new Error("Filter condition not yet supported");
 	}

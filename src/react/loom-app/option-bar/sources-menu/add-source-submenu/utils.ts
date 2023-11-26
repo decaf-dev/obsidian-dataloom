@@ -5,7 +5,7 @@ import {
 	TextFilterCondition,
 } from "src/shared/loom-state/types/loom-state";
 
-export const getFilterConditionsFromPropertyType = (
+export const getFilterConditionsForPropertyType = (
 	type: ObsidianPropertyType
 ) => {
 	switch (type) {

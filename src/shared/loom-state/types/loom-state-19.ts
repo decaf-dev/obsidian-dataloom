@@ -1,11 +1,11 @@
-/******* Type definitions for v8.15.1 *******/
+/******* Type definitions for v8.15.0 *******/
 
 import { ObsidianPropertyType } from "src/shared/frontmatter/types";
 
 /**
- * v8.15.1
+ * v8.15.0
  */
-export interface LoomState {
+export interface LoomState19 {
 	pluginVersion: string;
 	model: TableModel;
 }
@@ -471,7 +471,8 @@ export interface ObsidianFrontmatterSource extends BaseSource {
 	filterCondition:
 		| TextFilterCondition
 		| NumberFilterCondition
-		| DateFilterCondition;
+		| DateFilterCondition
+		| null;
 	filterText: string;
 }
 
