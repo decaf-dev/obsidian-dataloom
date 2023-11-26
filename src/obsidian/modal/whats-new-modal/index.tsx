@@ -24,7 +24,7 @@ export default class WhatsNewModal extends Modal {
 
 	async renderDescription(containerEl: HTMLElement) {
 		containerEl.createDiv({
-			text: "Latest release notes",
+			text: "Thank you for using DataLoom! Here are the latest updates:",
 		});
 
 		// containerEl.createDiv({
