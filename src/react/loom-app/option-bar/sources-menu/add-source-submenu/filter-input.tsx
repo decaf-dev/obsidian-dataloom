@@ -17,6 +17,13 @@ export default function FilterInput({
 	filterText,
 	onFilterTextChange,
 }: Props) {
+	const showListInput =
+		selectedPropertyType === ObsidianPropertyType.ALIASES ||
+		selectedPropertyType === ObsidianPropertyType.TAGS ||
+		selectedPropertyType === ObsidianPropertyType.MULTITEXT;
+	const showDateInput =
+		selectedPropertyType === ObsidianPropertyType.DATE ||
+		selectedPropertyType === ObsidianPropertyType.DATETIME;
 	return (
 		<>
 			{selectedPropertyType === ObsidianPropertyType.TEXT && (
@@ -36,32 +43,26 @@ export default function FilterInput({
 					onChange={(value) => onFilterTextChange(value)}
 				/>
 			)}
-			{selectedPropertyType === ObsidianPropertyType.DATE ||
-				(selectedPropertyType === ObsidianPropertyType.DATETIME && (
-					<DateFilterSelect
-						value={filterText as DateFilterOption}
-						onChange={(value) =>
-							onFilterTextChange(value as string)
-						}
-					/>
-				))}
+			{showDateInput && (
+				<DateFilterSelect
+					value={filterText as DateFilterOption}
+					onChange={(value) => onFilterTextChange(value as string)}
+				/>
+			)}
 			{selectedPropertyType === ObsidianPropertyType.CHECKBOX && (
 				<CheckboxFilterSelect
 					value={filterText === "true"}
 					onChange={(value) => onFilterTextChange(value.toString())}
 				/>
 			)}
-			{selectedPropertyType === ObsidianPropertyType.ALIASES ||
-				selectedPropertyType === ObsidianPropertyType.TAGS ||
-				(selectedPropertyType === ObsidianPropertyType.MULTITEXT && (
-					<Input
-						id={filterTextId}
-						placeholder="Enter a comma-separated list of values"
-						autoFocus={false}
-						value={filterText}
-						onChange={(value) => onFilterTextChange(value)}
-					/>
-				))}
+			{showListInput && (
+				<Input
+					id={filterTextId}
+					autoFocus={false}
+					value={filterText}
+					onChange={(value) => onFilterTextChange(value)}
+				/>
+			)}
 		</>
 	);
 }
