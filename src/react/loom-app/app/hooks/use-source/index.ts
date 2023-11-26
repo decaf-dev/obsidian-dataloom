@@ -66,7 +66,7 @@ export const useSource = () => {
 
 	React.useEffect(() => {
 		updateRowsFromSources(false);
-	}, [sources.length, frontmatterKeyHash, updateRowsFromSources]);
+	}, [sources, frontmatterKeyHash, updateRowsFromSources]);
 
 	React.useEffect(() => {
 		EventManager.getInstance().on("file-create", updateRowsFromSources);
