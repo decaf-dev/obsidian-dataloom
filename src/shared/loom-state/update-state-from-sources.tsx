@@ -8,16 +8,26 @@ import {
 	Cell,
 	CellType,
 	Column,
+	DateFilterOption,
+	FilterCondition,
 	ObsidianFolderSource,
 	ObsidianFrontmatterSource,
 	Row,
 	Source,
 	SourceType,
+	TextFilterCondition,
 } from "./types/loom-state";
 
 import { deserializeFrontmatterForCell } from "../frontmatter";
 import { cloneDeep } from "lodash";
 import { getDateTimeFromUnixTime } from "../date/utils";
+import { ObsidianPropertyType } from "../frontmatter/types";
+import {
+	doesBooleanMatchFilter,
+	doesDateMatchFilter,
+	doesNumberMatchFilter,
+	doesTextMatchFilter,
+} from "../filter/filter-match";
 
 export default function updateStateFromSources(
 	app: App,
@@ -128,7 +138,7 @@ const findRowsFromFrontmatterSource = (
 	app: App,
 	source: ObsidianFrontmatterSource
 ): TFile[] => {
-	const { propertyKey } = source;
+	const { propertyKey, propertyType, filterCondition, filterText } = source;
 
 	const files = app.vault.getMarkdownFiles().filter((file) => {
 		const { path } = file;
@@ -138,7 +148,110 @@ const findRowsFromFrontmatterSource = (
 		const frontmatter = fileMetadata.frontmatter;
 		if (!frontmatter) return false;
 
-		if (frontmatter[propertyKey]) return true;
+		const propertyValue = frontmatter[propertyKey];
+		// //TODO should empty be considered undefined or ""?
+		// if (propertyValue === undefined) return false;
+		if (
+			!doesMatchFilterCondition(
+				propertyType,
+				propertyValue,
+				filterCondition,
+				filterText
+			)
+		)
+			return false;
+		return true;
 	});
 	return files;
+};
+
+const doesMatchFilterCondition = (
+	propertyType: ObsidianPropertyType,
+	propertyValue: string | boolean | number | string[],
+	filterCondition: FilterCondition,
+	filterText: string
+): boolean => {
+	switch (propertyType) {
+		case ObsidianPropertyType.TEXT: {
+			//handle undefined
+			let value: string | null;
+			if (typeof propertyValue === "string") {
+				value = propertyValue;
+			} else {
+				value = "";
+			}
+			return doesTextMatchFilter(value, filterCondition, filterText);
+		}
+
+		case ObsidianPropertyType.CHECKBOX: {
+			let value: boolean | null;
+			//handle undefined
+			if (typeof propertyValue === "boolean") {
+				value = propertyValue;
+			} else {
+				value = false;
+			}
+			return doesBooleanMatchFilter(
+				value,
+				filterCondition,
+				filterText === "true" ? true : false
+			);
+		}
+
+		case ObsidianPropertyType.NUMBER: {
+			//handle undefined
+			let value: number | null;
+			if (typeof propertyValue === "number") {
+				value = propertyValue;
+			} else {
+				value = null;
+			}
+			return doesNumberMatchFilter(value, filterCondition, filterText);
+		}
+		case ObsidianPropertyType.DATE:
+		case ObsidianPropertyType.DATETIME: {
+			//handle undefined
+			let value: string | null;
+			if (typeof propertyValue === "string") {
+				value = new Date(propertyValue).toISOString();
+			} else {
+				value = "";
+			}
+			return doesDateMatchFilter(
+				value,
+				filterCondition,
+				filterText as DateFilterOption,
+				null
+			);
+		}
+		case ObsidianPropertyType.ALIASES:
+		case ObsidianPropertyType.TAGS:
+		case ObsidianPropertyType.MULTITEXT: {
+			//handle undefined
+			const value = (propertyValue ?? []) as string[];
+			return doesListMatchFilter(value, filterCondition, filterText);
+		}
+		default:
+			return false;
+	}
+};
+
+const doesListMatchFilter = (
+	values: string[],
+	condition: FilterCondition,
+	filterText: string
+): boolean => {
+	const filterTextValues = filterText.split(",").map((text) => text.trim());
+	switch (condition) {
+		case TextFilterCondition.CONTAINS:
+			return filterTextValues.every((v) => values.includes(v));
+		case TextFilterCondition.DOES_NOT_CONTAIN:
+			return filterTextValues.every((v) => !values.includes(v));
+		case TextFilterCondition.IS_EMPTY:
+			return values.length === 0;
+		case TextFilterCondition.IS_NOT_EMPTY:
+			return values.length !== 0;
+		default:
+			return false;
+	}
 };
