@@ -1,7 +1,6 @@
 import React from "react";
 
 import { usePlaceCursorAtEnd } from "src/shared/hooks";
-import { isNumberInput } from "src/shared/match";
 
 import Input from "src/react/shared/input";
 import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
