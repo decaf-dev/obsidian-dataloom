@@ -1,6 +1,7 @@
 import React from "react";
 
 import "./styles.css";
+import { isNumberInput } from "src/shared/match";
 
 interface Props {
 	id?: string;
@@ -37,6 +38,14 @@ const Input = React.forwardRef<HTMLInputElement, Props>(
 		},
 		ref
 	) => {
+		function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+			const inputValue = e.target.value;
+			if (isNumeric) {
+				if (!isNumberInput(inputValue)) return;
+			}
+			onChange(inputValue);
+		}
+
 		let className = "dataloom-input dataloom-focusable";
 		if (isTransparent) {
 			className += " dataloom-input--transparent";
@@ -52,6 +61,7 @@ const Input = React.forwardRef<HTMLInputElement, Props>(
 		}
 
 		if (hasError) className += " dataloom-input--error";
+
 		return (
 			<input
 				id={id}
@@ -63,7 +73,7 @@ const Input = React.forwardRef<HTMLInputElement, Props>(
 				inputMode={isNumeric ? "numeric" : undefined}
 				autoFocus={autoFocus}
 				value={value}
-				onChange={(e) => onChange(e.target.value)}
+				onChange={handleChange}
 				onKeyDown={onKeyDown}
 				onBlur={onBlur}
 			/>

@@ -35,8 +35,6 @@ export default function NumberCellEdit({
 	}, [initialValue, localValue, closeRequest, onClose, onChange]);
 
 	function handleChange(inputValue: string) {
-		if (!isNumberInput(inputValue)) return;
-
 		setLocalValue(inputValue);
 	}
 
