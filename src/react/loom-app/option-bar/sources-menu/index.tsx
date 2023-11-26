@@ -52,7 +52,7 @@ export default function SourcesMenu({
 			id={id}
 			openDirection="bottom-left"
 			isOpen={isOpen}
-			width={225}
+			width={250}
 			position={position}
 		>
 			<Padding px="lg" py="md">

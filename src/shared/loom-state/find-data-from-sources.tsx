@@ -54,7 +54,7 @@ export default function updateStateFromSources(
 	});
 
 	const newRows: Row[] = [];
-	let nextColumns: Column[] = cloneDeep(columns);
+	const nextColumns: Column[] = cloneDeep(columns);
 
 	const uniqueMap: Map<TFile, string> = new Map();
 	const seenValues: Set<string> = new Set();
@@ -138,7 +138,7 @@ const findRowsFromFrontmatterSource = (
 		const frontmatter = fileMetadata.frontmatter;
 		if (!frontmatter) return false;
 
-		if (frontmatter.hasOwnProperty(propertyKey)) return true;
+		if (frontmatter[propertyKey]) return true;
 	});
 	return files;
 };

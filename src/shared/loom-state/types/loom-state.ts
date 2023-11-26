@@ -468,7 +468,10 @@ export interface ObsidianFrontmatterSource extends BaseSource {
 	type: SourceType.FRONTMATTER;
 	propertyType: ObsidianPropertyType;
 	propertyKey: string;
-	filterCondition: TextFilterCondition | MultiTagCondition;
+	filterCondition:
+		| TextFilterCondition
+		| NumberFilterCondition
+		| DateFilterCondition;
 	filterText: string;
 }
 
