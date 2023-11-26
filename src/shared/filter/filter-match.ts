@@ -104,7 +104,8 @@ export const doesDateMatchFilter = (
 	valueDateTime: string | null,
 	condition: FilterCondition,
 	option: DateFilterOption,
-	filterDateTime: string | null
+	filterDateTime: string | null,
+	shouldMatchIfNull: boolean
 ) => {
 	let cellDate: Date | null = null;
 	if (valueDateTime !== null) {
@@ -120,7 +121,7 @@ export const doesDateMatchFilter = (
 
 	switch (condition) {
 		case DateFilterCondition.IS: {
-			if (compareDate === null) return true;
+			if (compareDate === null) return shouldMatchIfNull;
 			if (cellDate === null) return false;
 
 			const compareDateMidnight = getDateAtMidnight(compareDate);
@@ -133,14 +134,14 @@ export const doesDateMatchFilter = (
 			);
 		}
 		case DateFilterCondition.IS_AFTER: {
-			if (compareDate === null) return true;
+			if (compareDate === null) return shouldMatchIfNull;
 			if (cellDate === null) return false;
 			const compareDateBeforeMidnight =
 				getDateJustBeforeMidnight(compareDate);
 			return cellDate.getTime() > compareDateBeforeMidnight.getTime();
 		}
 		case DateFilterCondition.IS_BEFORE: {
-			if (compareDate === null) return true;
+			if (compareDate === null) return shouldMatchIfNull;
 			if (cellDate === null) return false;
 
 			const compareDateMidnight = getDateAtMidnight(compareDate);

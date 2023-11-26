@@ -177,7 +177,8 @@ const doesCellMatchFilter = (
 				cellDateTime,
 				condition,
 				option,
-				filterDateTime
+				filterDateTime,
+				true
 			);
 		}
 		case CellType.CREATION_TIME: {
@@ -187,7 +188,8 @@ const doesCellMatchFilter = (
 				creationDateTime,
 				condition,
 				option,
-				dateTime
+				dateTime,
+				true
 			);
 		}
 		case CellType.LAST_EDITED_TIME: {
@@ -197,7 +199,8 @@ const doesCellMatchFilter = (
 				lastEditedDateTime,
 				condition,
 				option,
-				dateTime
+				dateTime,
+				true
 			);
 		}
 
