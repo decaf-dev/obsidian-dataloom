@@ -30,7 +30,7 @@ export const getIconIdForSourceType = (
 			case ObsidianPropertyType.NUMBER:
 				return "hash";
 			default:
-				throw new Error("Property type not handled");
+				throw new Error(`Property type not handled: ${propertyType}`);
 		}
 	}
 	return "";

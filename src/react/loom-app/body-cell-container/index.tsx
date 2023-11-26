@@ -639,9 +639,15 @@ export default function BodyCellContainer(props: Props) {
 				copyTextToClipboard(content);
 			};
 
+			let propertyType = undefined;
+			if (source?.type === SourceType.FRONTMATTER) {
+				propertyType = source?.propertyType;
+			}
+
 			contentNode = (
 				<SourceCell
-					type={source?.type as SourceType}
+					sourceType={source?.type as SourceType}
+					propertyType={propertyType}
 					content={content}
 				/>
 			);
