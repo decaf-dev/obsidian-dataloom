@@ -14,6 +14,7 @@ import {
 	Column,
 	Filter,
 	Source,
+	FilterCondition,
 } from "src/shared/loom-state/types/loom-state";
 import { isSmallScreenSize } from "src/shared/render/utils";
 import { ColumnChangeHandler } from "../app/hooks/use-column/types";
@@ -39,6 +40,7 @@ interface Props {
 	onSourceAdd: SourceAddHandler;
 	onSourceDelete: (id: string) => void;
 	onColumnChange: ColumnChangeHandler;
+	onSourceUpdate: (id: string, data: Partial<Source>) => void;
 }
 export default function OptionBar({
 	columns,
@@ -52,6 +54,7 @@ export default function OptionBar({
 	onSourceAdd,
 	onSourceDelete,
 	onColumnChange,
+	onSourceUpdate,
 }: Props) {
 	const COMPONENT_ID = "option-bar";
 	const SOURCE_MENU_ID = "sources-menu";
@@ -88,6 +91,17 @@ export default function OptionBar({
 
 	function handleColumnToggle(columnId: string, isVisible: boolean) {
 		onColumnChange(columnId, { isVisible });
+	}
+
+	function handleSourceFilterConditionChange(
+		sourceId: string,
+		value: FilterCondition
+	) {
+		onSourceUpdate(sourceId, { filterCondition: value });
+	}
+
+	function handleSourceFilterTextChange(sourceId: string, value: string) {
+		onSourceUpdate(sourceId, { filterText: value });
 	}
 
 	function handleSourceMenuOpen() {
@@ -187,6 +201,10 @@ export default function OptionBar({
 				columns={columns}
 				onSourceAdd={onSourceAdd}
 				onSourceDelete={onSourceDelete}
+				onSourceFilterConditionChange={
+					handleSourceFilterConditionChange
+				}
+				onSourceFilterTextChange={handleSourceFilterTextChange}
 				onClose={sourcesMenu.onClose}
 			/>
 			<MoreMenu

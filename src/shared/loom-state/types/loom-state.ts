@@ -1,7 +1,9 @@
-/******* Type definitions for v8.13.0 *******/
+/******* Type definitions for v8.15.0 *******/
+
+import { ObsidianPropertyType } from "src/shared/frontmatter/types";
 
 /**
- * v8.13.0
+ * v8.15.0
  */
 export interface LoomState {
 	pluginVersion: string;
@@ -141,29 +143,6 @@ export interface Tag {
 	id: string;
 	content: string;
 	color: Color;
-}
-
-interface BaseSource {
-	id: string;
-	type: SourceType;
-}
-
-export interface ObsidianFolderSource extends BaseSource {
-	type: SourceType.FOLDER;
-	path: string;
-	includeSubfolders: boolean;
-}
-
-export interface ObsidianTagSource extends BaseSource {
-	type: SourceType.TAG;
-	name: string;
-}
-
-export type Source = ObsidianFolderSource | ObsidianTagSource;
-
-export enum SourceType {
-	FOLDER = "folder",
-	TAG = "tag",
 }
 
 export enum Color {
@@ -473,3 +452,33 @@ export type Filter =
 	| CreationTimeFilter
 	| LastEditedTimeFilter
 	| SourceFileFilter;
+
+interface BaseSource {
+	id: string;
+	type: SourceType;
+}
+
+export interface ObsidianFolderSource extends BaseSource {
+	type: SourceType.FOLDER;
+	path: string;
+	includeSubfolders: boolean;
+}
+
+export interface ObsidianFrontmatterSource extends BaseSource {
+	type: SourceType.FRONTMATTER;
+	propertyType: ObsidianPropertyType;
+	propertyKey: string;
+	filterCondition:
+		| TextFilterCondition
+		| NumberFilterCondition
+		| DateFilterCondition
+		| null;
+	filterText: string;
+}
+
+export type Source = ObsidianFolderSource | ObsidianFrontmatterSource;
+
+export enum SourceType {
+	FOLDER = "folder",
+	FRONTMATTER = "frontmatter",
+}

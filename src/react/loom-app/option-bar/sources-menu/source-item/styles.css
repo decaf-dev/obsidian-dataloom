@@ -1,0 +1,12 @@
+.dataloom-source-item {
+    width: 100%;
+    height: 2.2em;
+}
+
+.dataloom-source-item input {
+     width: 150px;
+}
+
+.dataloom-source-item select {
+   max-width: 150px;
+ }

@@ -50,7 +50,7 @@ export default function App() {
 	useMenuEvents();
 	const { onClick } = useAppEvents();
 
-	const { onSourceAdd, onSourceDelete } = useSource();
+	const { onSourceAdd, onSourceDelete, onSourceUpdate } = useSource();
 
 	const { onFocusKeyDown } = useFocus();
 	const { onFrozenColumnsChange, onCalculationRowToggle } =
@@ -145,6 +145,7 @@ export default function App() {
 				onCalculationRowToggle={onCalculationRowToggle}
 				onSourceAdd={onSourceAdd}
 				onSourceDelete={onSourceDelete}
+				onSourceUpdate={onSourceUpdate}
 			/>
 			<Table
 				ref={tableRef}

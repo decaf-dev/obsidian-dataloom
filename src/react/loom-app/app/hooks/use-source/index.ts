@@ -5,9 +5,10 @@ import { useLogger } from "src/shared/logger";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import SourceAddCommand from "src/shared/loom-state/commands/source-add-command";
 import SourceDeleteCommand from "src/shared/loom-state/commands/source-delete-command";
-import findDataFromSources from "src/shared/loom-state/find-data-from-sources";
+import updateStateFromSources from "src/shared/loom-state/update-state-from-sources";
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
 import EventManager from "src/shared/event/event-manager";
+import SourceUpdateCommand from "src/shared/loom-state/commands/source-update-command";
 
 export const useSource = () => {
 	const logger = useLogger();
@@ -33,7 +34,7 @@ export const useSource = () => {
 					}
 				}
 				const { sources, columns, rows } = prevState.state.model;
-				const result = findDataFromSources(
+				const result = updateStateFromSources(
 					app,
 					sources,
 					columns,
@@ -65,7 +66,7 @@ export const useSource = () => {
 
 	React.useEffect(() => {
 		updateRowsFromSources(false);
-	}, [sources.length, frontmatterKeyHash, updateRowsFromSources]);
+	}, [sources, frontmatterKeyHash, updateRowsFromSources]);
 
 	React.useEffect(() => {
 		EventManager.getInstance().on("file-create", updateRowsFromSources);
@@ -124,8 +125,17 @@ export const useSource = () => {
 		doCommand(new SourceDeleteCommand(id));
 	}
 
+	function handleSourceUpdate(id: string, data: Partial<Source>) {
+		logger("handleSourceUpdate", {
+			id,
+			data,
+		});
+		doCommand(new SourceUpdateCommand(id, data));
+	}
+
 	return {
 		onSourceAdd: handleSourceAdd,
 		onSourceDelete: handleSourceDelete,
+		onSourceUpdate: handleSourceUpdate,
 	};
 };

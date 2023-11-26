@@ -34,6 +34,21 @@ video {
   height: auto;
 }
 
+button.survey {
+	margin-top: 8px;
+	margin-left: 8px;
+	padding: 8px 16px;
+	font-size: 1.1em;
+	border-radius: 6px;
+	background-color: transparent;
+	border: 1px solid black;
+	cursor: pointer;
+}
+button.survey:hover {
+	background-color: #eee;
+	
+}
+
 @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/fontawesome.min.css);
 @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/brands.min.css);
 /* @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/solid.min.js); */

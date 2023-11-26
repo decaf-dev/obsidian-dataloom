@@ -1,6 +1,6 @@
 import MigrateState from "./migrate-state";
 import { LoomState17 } from "../types/loom-state-17";
-import { LoomState } from "../types";
+import { LoomState18 } from "../types/loom-state-18";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import {
 	CellType,
@@ -25,7 +25,7 @@ import { extractWikiLinkComponents } from "src/shared/link-and-path/markdown-lin
  * Migrates to 8.13.0
  */
 export default class MigrateState18 implements MigrateState {
-	public migrate(prevState: LoomState17): LoomState {
+	public migrate(prevState: LoomState17): LoomState18 {
 		const { rows, columns, filters } = prevState.model;
 		const nextRows = rows.map((row) => {
 			const { cells } = row;

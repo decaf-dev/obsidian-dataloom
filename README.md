@@ -4,9 +4,9 @@
 
 Find detailed documentation at [dataloom.xyz](https://dataloom.xyz)
 
-DataLoom is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile. It is a database tool similar to [Notion.so](https://notion.so) and [DB folder](https://github.com/RafaelGB/obsidian-db-folder).
+DataLoom is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile. It allows you to create databases similar to [Notion.so](https://notion.so).
 
-With DataLoom, you can weave together data from diverse sources, including Obsidian elements like folders or frontmatter, and display them in multiple views. This plugin is ideal for you if you seek a straightforward yet powerful tool to create and manage databases and enhance the organization and accessibility of your Obsidian vault.
+With DataLoom, you can weave together data from diverse sources and display them in different views. Use this plugin if you want a straightforward way to create and manage databases and enhance the organization of your Obsidian vault.
 
 Join the [Discord](https://discord.gg/QaFbepMdN4) community
 
@@ -14,9 +14,6 @@ Join the [Discord](https://discord.gg/QaFbepMdN4) community
 
 -   [Screenshots](#screenshots)
 -   [Features](#features)
--   [FAQ](#faq)
--   [Installation](#installation)
--   [Create a new loom](#create-a-new-loom)
 -   [Issues](#issues)
 -   [Contributing](#contributing)
 -   [Network Usage](#network-usage)
@@ -32,8 +29,6 @@ Join the [Discord](https://discord.gg/QaFbepMdN4) community
 -   View types
 
     -   [x] Table
-    -   [ ] List
-    -   [ ] Gallery
 
 -   Cell types
 
@@ -50,9 +45,6 @@ Join the [Discord](https://discord.gg/QaFbepMdN4) community
     -   [x] Creation time
     -   [x] Source
     -   [x] Source file
-    -   [ ] Status
-    -   [ ] Location
-    -   [ ] Counter
 
 -   Columns
 
@@ -91,7 +83,7 @@ Join the [Discord](https://discord.gg/QaFbepMdN4) community
 -   Sources
 
     -   [x] Folder
-    -   [ ] Frontmatter
+    -   [x] Frontmatter
 
 -   [x] Undo/redo
 
@@ -125,7 +117,7 @@ DataLoom will make one `GET` request to `https://api.github.com/repos/trey-walli
 
 ## License
 
-DataLoom is distributed under the [GNU General Public License v3.0](https://github.com/trey-wallis/obsidian-dataloom/blob/master/LICENSE)
+DataLoom is distributed under the [Mozilla Public License 2.0](https://github.com/trey-wallis/obsidian-dataloom/blob/master/LICENSE)
 
 ## Disclaimer
 

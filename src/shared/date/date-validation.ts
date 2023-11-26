@@ -17,9 +17,9 @@ dayjs.extend(customParseFormat);
 export const parseDateTime = (value: string) => {
 	const date = new Date(value);
 	if (date instanceof Date && !isNaN(date.getTime())) {
-		return null;
+		return date.toISOString();
 	}
-	return date.toISOString();
+	return null;
 };
 
 export const isValidDateString = (

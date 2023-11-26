@@ -14,11 +14,8 @@ import {
 	EmbedFilter,
 	DateFilter,
 	NumberFilter,
-	NumberFilterCondition,
 	CreationTimeFilter,
 	LastEditedTimeFilter,
-	DateFilterCondition,
-	DateFilterOption,
 	Column,
 	SourceFileFilter,
 	TextCell,
@@ -30,16 +27,18 @@ import {
 	DateCell,
 	SourceFileCell,
 	EmbedCell,
+	CheckboxFilter,
 } from "src/shared/loom-state/types/loom-state";
 import { Expression, evaluateWithPrecedence } from "./evaluate-with-precedence";
-import {
-	getDateAtMidnight,
-	getDateFromDateFilterOption,
-	getDateJustBeforeMidnight,
-} from "./utils";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import { getFileName } from "src/shared/link-and-path/file-path-utils";
 import { isRelativePath } from "src/shared/link-and-path/link-predicates";
+import {
+	doesBooleanMatchFilter,
+	doesDateMatchFilter,
+	doesNumberMatchFilter,
+	doesTextMatchFilter,
+} from "src/shared/filter/filter-match";
 
 /**
  * Filters body rows by the filters array
@@ -124,16 +123,17 @@ const doesCellMatchFilter = (
 		case CellType.TEXT: {
 			const { content } = cell as TextCell;
 			const { text } = filter as TextFilter;
-			return doesTextMatch(content, text, condition);
+			return doesTextMatchFilter(content, condition, text, true);
 		}
 		case CellType.FILE: {
 			const { alias, path } = cell as FileCell;
 			const { text } = filter as FileFilter;
-			return doesTextMatch(alias ?? path, text, condition);
+			return doesTextMatchFilter(alias ?? path, condition, text, true);
 		}
 		case CellType.CHECKBOX: {
 			const { value } = cell as CheckboxCell;
-			return doesBooleanMatch(value, condition);
+			const { value: filterValue } = filter as CheckboxFilter;
+			return doesBooleanMatchFilter(value, condition, filterValue);
 		}
 		case CellType.TAG: {
 			const { tagId: cellTagId } = cell as TagCell;
@@ -158,7 +158,7 @@ const doesCellMatchFilter = (
 		case CellType.NUMBER: {
 			const { value } = cell as NumberCell;
 			const { text } = filter as NumberFilter;
-			return doesNumberMatch(value, text, condition);
+			return doesNumberMatchFilter(value, condition, text, true);
 		}
 		case CellType.EMBED: {
 			const { pathOrUrl } = cell as EmbedCell;
@@ -168,31 +168,39 @@ const doesCellMatchFilter = (
 			if (isRelativePath(pathOrUrl)) {
 				compareValue = getFileName(pathOrUrl);
 			}
-			return doesTextMatch(compareValue, text, condition);
+			return doesTextMatchFilter(compareValue, condition, text, true);
 		}
 		case CellType.DATE: {
 			const { dateTime: cellDateTime } = cell as DateCell;
 			const { dateTime: filterDateTime, option } = filter as DateFilter;
-			return doesDateMatch(
+			return doesDateMatchFilter(
 				cellDateTime,
-				filterDateTime,
+				condition,
 				option,
-				condition
+				filterDateTime,
+				true
 			);
 		}
 		case CellType.CREATION_TIME: {
 			const { creationDateTime } = row;
 			const { dateTime, option } = filter as CreationTimeFilter;
-			return doesDateMatch(creationDateTime, dateTime, option, condition);
+			return doesDateMatchFilter(
+				creationDateTime,
+				condition,
+				option,
+				dateTime,
+				true
+			);
 		}
 		case CellType.LAST_EDITED_TIME: {
 			const { lastEditedDateTime } = row;
 			const { dateTime, option } = filter as LastEditedTimeFilter;
-			return doesDateMatch(
+			return doesDateMatchFilter(
 				lastEditedDateTime,
-				dateTime,
+				condition,
 				option,
-				condition
+				dateTime,
+				true
 			);
 		}
 
@@ -200,111 +208,11 @@ const doesCellMatchFilter = (
 			const { text } = filter as SourceFileFilter;
 			const { path } = cell as SourceFileCell;
 			const fileName = getFileName(path);
-			return doesTextMatch(fileName ?? "", text, condition);
+			return doesTextMatchFilter(fileName ?? "", condition, text, true);
 		}
 
 		default:
 			throw new Error("Unhandled cell type");
-	}
-};
-
-const doesBooleanMatch = (value: boolean, condition: FilterCondition) => {
-	switch (condition) {
-		case TextFilterCondition.IS:
-			return value === true;
-		case TextFilterCondition.IS_NOT:
-			return value === false;
-		default:
-			throw new Error("Filter condition not yet supported");
-	}
-};
-
-const doesNumberMatch = (
-	cellValue: number | null,
-	filterText: string,
-	condition: FilterCondition
-) => {
-	const filterNumber = Number(filterText);
-	switch (condition) {
-		case NumberFilterCondition.IS_EQUAL:
-			if (cellValue === null) return true;
-			return cellValue === filterNumber;
-		case NumberFilterCondition.IS_GREATER:
-			if (cellValue === null) return true;
-			return cellValue > filterNumber;
-		case NumberFilterCondition.IS_GREATER_OR_EQUAL:
-			if (cellValue === null) return true;
-			return cellValue >= filterNumber;
-		case NumberFilterCondition.IS_LESS:
-			if (cellValue === null) return true;
-			return cellValue < filterNumber;
-		case NumberFilterCondition.IS_LESS_OR_EQUAL:
-			if (cellValue === null) return true;
-			return cellValue <= filterNumber;
-		case NumberFilterCondition.IS_NOT_EQUAL:
-			if (cellValue === null) return true;
-			return cellValue !== filterNumber;
-		case NumberFilterCondition.IS_EMPTY:
-			return cellValue === null;
-		case NumberFilterCondition.IS_NOT_EMPTY:
-			return cellValue !== null;
-		default:
-			throw new Error("Filter condition not yet supported");
-	}
-};
-
-const doesDateMatch = (
-	cellDateTime: string | null,
-	filterDateTime: string | null,
-	option: DateFilterOption,
-	condition: FilterCondition
-) => {
-	let cellDate: Date | null = null;
-	if (cellDateTime !== null) {
-		cellDate = new Date(cellDateTime);
-	}
-
-	let compareDate = getDateFromDateFilterOption(option);
-	if (compareDate === null) {
-		if (filterDateTime !== null) {
-			compareDate = new Date(filterDateTime);
-		}
-	}
-
-	switch (condition) {
-		case DateFilterCondition.IS: {
-			if (compareDate === null) return true;
-			if (cellDate === null) return false;
-
-			const compareDateMidnight = getDateAtMidnight(compareDate);
-			const compareDateJustBeforeMidnight =
-				getDateJustBeforeMidnight(compareDate);
-
-			return (
-				cellDate.getTime() >= compareDateMidnight.getTime() &&
-				cellDate.getTime() <= compareDateJustBeforeMidnight.getTime()
-			);
-		}
-		case DateFilterCondition.IS_AFTER: {
-			if (compareDate === null) return true;
-			if (cellDate === null) return false;
-			const compareDateBeforeMidnight =
-				getDateJustBeforeMidnight(compareDate);
-			return cellDate.getTime() > compareDateBeforeMidnight.getTime();
-		}
-		case DateFilterCondition.IS_BEFORE: {
-			if (compareDate === null) return true;
-			if (cellDate === null) return false;
-
-			const compareDateMidnight = getDateAtMidnight(compareDate);
-			return cellDate.getTime() < compareDateMidnight.getTime();
-		}
-		case DateFilterCondition.IS_EMPTY:
-			return cellDate === null;
-		case DateFilterCondition.IS_NOT_EMPTY:
-			return cellDate !== null;
-		default:
-			throw new Error("Filter condition not yet supported");
 	}
 };
 
@@ -362,45 +270,6 @@ const doTagsMatch = (
 			return cellTags.length === 0;
 		case TextFilterCondition.IS_NOT_EMPTY:
 			return cellTags.length !== 0;
-		default:
-			throw new Error("Filter condition not yet supported");
-	}
-};
-
-/**
- * Checks if the cell content matches the filter text based on the condition
- * @param cellContent - The content of the cell to be filtered
- * @param filterText - The text to filter by
- * @param condition - The condition by which to compare the cell content and filter text
- */
-const doesTextMatch = (
-	cellContent: string,
-	filterText: string,
-	condition: FilterCondition
-): boolean => {
-	cellContent = cellContent.toLowerCase().trim();
-	filterText = filterText.toLowerCase().trim();
-
-	switch (condition) {
-		case TextFilterCondition.IS:
-			if (filterText === "") return true;
-			return cellContent === filterText;
-		case TextFilterCondition.IS_NOT:
-			if (filterText === "") return true;
-			return cellContent !== filterText;
-		case TextFilterCondition.CONTAINS:
-			return cellContent.includes(filterText);
-		case TextFilterCondition.DOES_NOT_CONTAIN:
-			if (filterText === "") return true;
-			return !cellContent.includes(filterText);
-		case TextFilterCondition.STARTS_WITH:
-			return cellContent.startsWith(filterText);
-		case TextFilterCondition.ENDS_WITH:
-			return cellContent.endsWith(filterText);
-		case TextFilterCondition.IS_EMPTY:
-			return cellContent === "";
-		case TextFilterCondition.IS_NOT_EMPTY:
-			return cellContent !== "";
 		default:
 			throw new Error("Filter condition not yet supported");
 	}
