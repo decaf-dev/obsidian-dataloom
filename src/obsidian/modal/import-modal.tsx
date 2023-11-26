@@ -1,4 +1,4 @@
-import { App, Modal, TFile } from "obsidian";
+import { App, Modal, Notice, TFile } from "obsidian";
 
 import { Root, createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
@@ -11,6 +11,7 @@ import { renderDivider, setModalTitle } from "../shared";
 import { LoomState } from "src/shared/loom-state/types/loom-state";
 import MenuProvider from "src/react/shared/menu-provider";
 import ModalMountProvider from "src/react/shared/modal-mount-provider";
+import EventManager from "src/shared/event/event-manager";
 
 export default class ImportModal extends Modal {
 	root: Root;
@@ -57,12 +58,13 @@ export default class ImportModal extends Modal {
 		await this.app.vault.modify(this.loomFile, serialized);
 
 		//Trigger an event to refresh the other open views of this file
-		this.app.workspace.trigger(
+		EventManager.getInstance().emit(
 			"app-refresh",
 			this.loomFile.path,
 			"", //No app id. Target all views of this file
 			state
 		);
+		new Notice("Success! DataLoom import completed.");
 		this.close();
 	};
 
