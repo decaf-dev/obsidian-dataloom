@@ -1,11 +1,7 @@
 import { App, Component, MarkdownRenderer, Modal } from "obsidian";
 
 import { getLastestGithubRelease } from "src/data/network";
-import {
-	renderBuyMeACoffeeBadge,
-	renderDivider,
-	setModalTitle,
-} from "src/obsidian/shared";
+import { renderDivider, setModalTitle } from "src/obsidian/shared";
 
 import "./styles.css";
 
@@ -28,7 +24,7 @@ export default class WhatsNewModal extends Modal {
 
 	async renderDescription(containerEl: HTMLElement) {
 		containerEl.createDiv({
-			text: "Latest release notes",
+			text: "Thank you for using DataLoom! Here are the latest updates:",
 		});
 
 		// containerEl.createDiv({
