@@ -7,11 +7,7 @@ import Stack from "src/react/shared/stack";
 import Submenu from "src/react/shared/submenu";
 import Text from "src/react/shared/text";
 import { getDisplayNameForSource } from "src/shared/loom-state/type-display-names";
-import {
-	Source,
-	SourceType,
-	TextFilterCondition,
-} from "src/shared/loom-state/types/loom-state";
+import { Source, SourceType } from "src/shared/loom-state/types/loom-state";
 import { SourceAddHandler } from "../../../app/hooks/use-source/types";
 import {
 	createFolderSource,
@@ -43,17 +39,12 @@ export default function AddSourceSubmenu({
 	const [propertyType, setPropertyType] =
 		React.useState<ObsidianPropertyType | null>(null);
 	const [propertyKey, setPropertyKey] = React.useState<string | null>(null);
-	const [filterCondition, setFilterCondition] =
-		React.useState<TextFilterCondition | null>(null);
-	const [filterText, setFilterText] = React.useState("");
 
 	const typeSelectId = React.useId();
 	const pathInputId = React.useId();
 	const includeSubfoldersInputId = React.useId();
 	const propertyKeySelectId = React.useId();
 	const propertyTypeSelectId = React.useId();
-	const filterConditionId = React.useId();
-	const filterTextId = React.useId();
 
 	function handleAddClick() {
 		//Make sure that the path doesn't have a trailing slash
@@ -144,71 +135,58 @@ export default function AddSourceSubmenu({
 			showBackButton={sources.length > 0}
 			onBackClick={onBackClick}
 		>
-			<div style={{ maxHeight: "260px", overflowY: "auto" }}>
-				<Padding py="md">
-					<Stack spacing="lg">
-						<Stack spacing="sm">
-							<label htmlFor="type">Type</label>
-							<Select
-								id="type"
-								value={type ?? ""}
-								hasError={error?.inputId === typeSelectId}
-								onChange={(value) =>
-									setType((value as SourceType) || null)
-								}
-							>
-								<option value="">Select an option</option>
-								{Object.values(SourceType).map((type) => {
-									return (
-										<option key={type} value={type}>
-											{getDisplayNameForSource(type)}
-										</option>
-									);
-								})}
-							</Select>
-						</Stack>
-						{type === SourceType.FOLDER && (
-							<FolderSourceOptions
-								pathInputId={pathInputId}
-								includeSubfoldersInputId={
-									includeSubfoldersInputId
-								}
-								error={error}
-								includeSubfolders={includeSubfolders}
-								path={path}
-								onIncludeSubfoldersToggle={setIncludeSubfolders}
-								onPathChange={(value) => setPath(value)}
-							/>
-						)}
-						{type === SourceType.FRONTMATTER && (
-							<FrontmatterSourceOptions
-								filterTextId={filterTextId}
-								filterConditionId={filterConditionId}
-								selectedFilterCondition={filterCondition}
-								propertyKeySelectId={propertyKeySelectId}
-								propertyTypeSelectId={propertyTypeSelectId}
-								error={error}
-								filterText={filterText}
-								selectedPropertyType={propertyType}
-								selectedPropertyKey={propertyKey}
-								onPropertyKeyChange={setPropertyKey}
-								onPropertyTypeChange={setPropertyType}
-								onFilterConditionChange={setFilterCondition}
-								onFilterTextChange={setFilterText}
-							/>
-						)}
-						{error?.message && (
-							<Text value={error.message} variant="error" />
-						)}
-						<Button
-							variant="default"
-							onClick={() => handleAddClick()}
+			<Padding py="md">
+				<Stack spacing="lg">
+					<Stack spacing="sm">
+						<label htmlFor="type">Type</label>
+						<Select
+							id="type"
+							value={type ?? ""}
+							hasError={error?.inputId === typeSelectId}
+							onChange={(value) =>
+								setType((value as SourceType) || null)
+							}
 						>
-							Add
-						</Button>
+							<option value="">Select an option</option>
+							{Object.values(SourceType).map((type) => {
+								return (
+									<option key={type} value={type}>
+										{getDisplayNameForSource(type)}
+									</option>
+								);
+							})}
+						</Select>
 					</Stack>
-				</Padding>
-			</div>
+					{type === SourceType.FOLDER && (
+						<FolderSourceOptions
+							pathInputId={pathInputId}
+							includeSubfoldersInputId={includeSubfoldersInputId}
+							error={error}
+							includeSubfolders={includeSubfolders}
+							path={path}
+							onIncludeSubfoldersToggle={setIncludeSubfolders}
+							onPathChange={(value) => setPath(value)}
+						/>
+					)}
+					{type === SourceType.FRONTMATTER && (
+						<FrontmatterSourceOptions
+							propertyKeySelectId={propertyKeySelectId}
+							propertyTypeSelectId={propertyTypeSelectId}
+							error={error}
+							selectedPropertyType={propertyType}
+							selectedPropertyKey={propertyKey}
+							onPropertyKeyChange={setPropertyKey}
+							onPropertyTypeChange={setPropertyType}
+						/>
+					)}
+					{error?.message && (
+						<Text value={error.message} variant="error" />
+					)}
+					<Button variant="default" onClick={() => handleAddClick()}>
+						Add
+					</Button>
+				</Stack>
+			</Padding>
 		</Submenu>
 	);
 }

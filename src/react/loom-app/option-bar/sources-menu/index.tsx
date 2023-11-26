@@ -7,7 +7,11 @@ import BaseContent from "./base-content";
 
 import { LoomMenuPosition } from "src/react/shared/menu/types";
 import { SourcesMenuSubmenu } from "./constants";
-import { Column, Source } from "src/shared/loom-state/types/loom-state";
+import {
+	Column,
+	FilterCondition,
+	Source,
+} from "src/shared/loom-state/types/loom-state";
 import { SourceAddHandler } from "../../app/hooks/use-source/types";
 
 interface Props {
@@ -18,6 +22,8 @@ interface Props {
 	columns: Column[];
 	onSourceAdd: SourceAddHandler;
 	onSourceDelete: (id: string) => void;
+	onSourceFilterConditionChange: (id: string, value: FilterCondition) => void;
+	onSourceFilterTextChange: (id: string, value: string) => void;
 	onClose: () => void;
 }
 
@@ -28,7 +34,8 @@ export default function SourcesMenu({
 	sources,
 	onSourceAdd,
 	onSourceDelete,
-	onClose,
+	onSourceFilterConditionChange,
+	onSourceFilterTextChange,
 }: Props) {
 	const [submenu, setSubmenu] = React.useState<SourcesMenuSubmenu | null>(
 		sources.length === 0 ? SourcesMenuSubmenu.ADD : null
@@ -44,7 +51,6 @@ export default function SourcesMenu({
 	function handleAddSourceClick(source: Source) {
 		onSourceAdd(source);
 		setSubmenu(null);
-		onClose();
 	}
 
 	return (
@@ -52,15 +58,18 @@ export default function SourcesMenu({
 			id={id}
 			openDirection="bottom-left"
 			isOpen={isOpen}
-			width={250}
 			position={position}
 		>
 			<Padding px="lg" py="md">
 				{submenu === null && (
 					<BaseContent
 						sources={sources}
-						onAddClick={() => setSubmenu(SourcesMenuSubmenu.ADD)}
-						onDeleteClick={onSourceDelete}
+						onSourceAdd={() => setSubmenu(SourcesMenuSubmenu.ADD)}
+						onSourceDelete={onSourceDelete}
+						onSourceFilterConditionChange={
+							onSourceFilterConditionChange
+						}
+						onSourceFilterTextChange={onSourceFilterTextChange}
 					/>
 				)}
 				{submenu === SourcesMenuSubmenu.ADD && (

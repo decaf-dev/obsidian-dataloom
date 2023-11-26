@@ -84,8 +84,7 @@ export const createFrontmatterSource = (
 		filterText?: string;
 	}
 ): Source => {
-	const { filterCondition = TextFilterCondition.IS, filterText = "" } =
-		options || {};
+	const { filterCondition = null, filterText = "" } = options || {};
 	return {
 		id: generateUuid(),
 		type: SourceType.FRONTMATTER,

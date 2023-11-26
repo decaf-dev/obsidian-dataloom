@@ -1,52 +1,85 @@
-import React from "react";
-import SourcesHeader from "../sources-header";
-import { Source, SourceType } from "src/shared/loom-state/types/loom-state";
-import SourceItem from "../dataloom-source";
+import {
+	FilterCondition,
+	Source,
+	SourceType,
+} from "src/shared/loom-state/types/loom-state";
 import Stack from "src/react/shared/stack";
 
 import "./styles.css";
+import Button from "src/react/shared/button";
+import Icon from "src/react/shared/icon";
+import { getFilterConditionsFromPropertyType } from "../add-source-submenu/utils";
+import FolderSourceItem from "../folder-source-item";
+import FrontmatterSourceItem from "../frontmatter-source-item";
 
 interface Props {
 	sources: Source[];
-	onAddClick: () => void;
-	onDeleteClick: (id: string) => void;
+	onSourceAdd: () => void;
+	onSourceDelete: (id: string) => void;
+	onSourceFilterConditionChange: (id: string, value: FilterCondition) => void;
+	onSourceFilterTextChange: (id: string, value: string) => void;
 }
 
 export default function BaseContent({
 	sources,
-	onAddClick,
-	onDeleteClick,
+	onSourceAdd,
+	onSourceDelete,
+	onSourceFilterConditionChange,
+	onSourceFilterTextChange,
 }: Props) {
-	const [isEditing, setIsEditing] = React.useState(false);
 	return (
 		<Stack spacing="md">
-			<SourcesHeader
-				showEditButton={sources.length > 0}
-				onAddClick={onAddClick}
-				onEditClick={() => setIsEditing((prevState) => !prevState)}
-			/>
 			<div className="dataloom-source-container">
 				{sources.map((source) => {
 					const { id, type } = source;
 
-					let content = "";
 					if (type === SourceType.FOLDER) {
-						content = source.path;
+						const { path } = source;
+						return (
+							<FolderSourceItem
+								key={id}
+								id={id}
+								content={path}
+								type={type}
+								onDelete={onSourceDelete}
+							/>
+						);
 					} else if (type === SourceType.FRONTMATTER) {
-						content = source.propertyKey;
+						const {
+							filterCondition,
+							filterText,
+							propertyType,
+							propertyKey,
+						} = source;
+						const filterConditions =
+							getFilterConditionsFromPropertyType(propertyType);
+						return (
+							<FrontmatterSourceItem
+								key={id}
+								id={id}
+								title={propertyKey}
+								type={type}
+								onDelete={onSourceDelete}
+								selectedFilterCondition={filterCondition}
+								filterConditions={filterConditions}
+								filterText={filterText}
+								selectedPropertyType={propertyType}
+								onFilterConditionChange={
+									onSourceFilterConditionChange
+								}
+								onFilterTextChange={onSourceFilterTextChange}
+							/>
+						);
+					} else {
+						throw new Error("Unhandled source type");
 					}
-					return (
-						<SourceItem
-							key={id}
-							id={id}
-							content={content}
-							type={type}
-							isEditing={isEditing}
-							onDelete={onDeleteClick}
-						/>
-					);
 				})}
 			</div>
+			<Button
+				icon={<Icon lucideId="plus"></Icon>}
+				onClick={() => onSourceAdd()}
+				ariaLabel="Add source"
+			/>
 		</Stack>
 	);
 }

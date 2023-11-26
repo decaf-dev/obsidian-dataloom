@@ -446,7 +446,12 @@ const ObsidianFrontmatterSource = BaseSource.extend({
 	type: Literal(SourceType.FRONTMATTER),
 	propertyType: ObsidianPropertyTypeUnion,
 	propertyKey: String,
-	filterCondition: Union(TextFilterConditionUnion, MultiTagConditionUnion),
+	filterCondition: Union(
+		TextFilterConditionUnion,
+		NumberFilterConditionUnion,
+		DateFilterConditionUnion,
+		Literal(null)
+	),
 	filterText: String,
 });
 

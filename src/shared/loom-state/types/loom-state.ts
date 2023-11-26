@@ -471,7 +471,8 @@ export interface ObsidianFrontmatterSource extends BaseSource {
 	filterCondition:
 		| TextFilterCondition
 		| NumberFilterCondition
-		| DateFilterCondition;
+		| DateFilterCondition
+		| null;
 	filterText: string;
 }
 

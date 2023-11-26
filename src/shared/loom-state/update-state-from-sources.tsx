@@ -151,6 +151,8 @@ const findRowsFromFrontmatterSource = (
 		const propertyValue = frontmatter[propertyKey];
 		// //TODO should empty be considered undefined or ""?
 		// if (propertyValue === undefined) return false;
+
+		if (filterCondition === null) return false;
 		if (
 			!doesMatchFilterCondition(
 				propertyType,
