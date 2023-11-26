@@ -149,8 +149,8 @@ const findRowsFromFrontmatterSource = (
 		if (!frontmatter) return false;
 
 		const propertyValue = frontmatter[propertyKey];
-		// //TODO should empty be considered undefined or ""?
-		// if (propertyValue === undefined) return false;
+		//TODO should empty be considered undefined or ""?
+		if (propertyValue === undefined) return false;
 
 		if (filterCondition === null) return false;
 		if (
@@ -175,24 +175,26 @@ const doesMatchFilterCondition = (
 ): boolean => {
 	switch (propertyType) {
 		case ObsidianPropertyType.TEXT: {
-			//handle undefined
-			let value: string | null;
-			if (typeof propertyValue === "string") {
-				value = propertyValue;
-			} else {
-				value = "";
-			}
+			// //handle undefined
+			// let value: string | null;
+			// if (typeof propertyValue === "string") {
+			// 	value = propertyValue;
+			// } else {
+			// 	value = "";
+			// }
+			const value = propertyValue as string;
 			return doesTextMatchFilter(value, filterCondition, filterText);
 		}
 
 		case ObsidianPropertyType.CHECKBOX: {
-			let value: boolean | null;
-			//handle undefined
-			if (typeof propertyValue === "boolean") {
-				value = propertyValue;
-			} else {
-				value = false;
-			}
+			//let value: boolean | null;
+			// //handle undefined
+			// if (typeof propertyValue === "boolean") {
+			// 	value = propertyValue;
+			// } else {
+			// 	value = false;
+			// }
+			const value = propertyValue as boolean;
 			return doesBooleanMatchFilter(
 				value,
 				filterCondition,
@@ -201,13 +203,14 @@ const doesMatchFilterCondition = (
 		}
 
 		case ObsidianPropertyType.NUMBER: {
-			//handle undefined
-			let value: number | null;
-			if (typeof propertyValue === "number") {
-				value = propertyValue;
-			} else {
-				value = null;
-			}
+			// //handle undefined
+			// let value: number | null;
+			// if (typeof propertyValue === "number") {
+			// 	value = propertyValue;
+			// } else {
+			// 	value = null;
+			// }
+			const value = propertyValue as number;
 			return doesNumberMatchFilter(
 				value,
 				filterCondition,
@@ -217,25 +220,28 @@ const doesMatchFilterCondition = (
 		}
 		case ObsidianPropertyType.DATE:
 		case ObsidianPropertyType.DATETIME: {
-			//handle undefined
-			let value: string | null;
-			if (typeof propertyValue === "string") {
-				value = new Date(propertyValue).toISOString();
-			} else {
-				value = "";
-			}
+			// //handle undefined
+			// let value: string | null;
+			// if (typeof propertyValue === "string") {
+			// 	value = new Date(propertyValue).toISOString();
+			// } else {
+			// 	value = null;
+			// }
+			const value = propertyValue as string;
 			return doesDateMatchFilter(
 				value,
 				filterCondition,
 				filterText as DateFilterOption,
-				null
+				null,
+				false
 			);
 		}
 		case ObsidianPropertyType.ALIASES:
 		case ObsidianPropertyType.TAGS:
 		case ObsidianPropertyType.MULTITEXT: {
-			//handle undefined
-			const value = (propertyValue ?? []) as string[];
+			// //handle undefined
+			// const value = (propertyValue ?? []) as string[];
+			const value = propertyValue as string[];
 			return doesListMatchFilter(value, filterCondition, filterText);
 		}
 		default:
