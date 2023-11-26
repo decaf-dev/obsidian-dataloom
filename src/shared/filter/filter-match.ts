@@ -17,6 +17,8 @@ export const doesNumberMatchFilter = (
 	filterText: string,
 	shouldMatchIfNull: boolean
 ) => {
+	if (filterText === "") return shouldMatchIfNull;
+
 	const filterNumber = Number(filterText);
 	switch (condition) {
 		case NumberFilterCondition.IS_EQUAL:
@@ -70,26 +72,30 @@ export const doesBooleanMatchFilter = (
 export const doesTextMatchFilter = (
 	value: string,
 	condition: FilterCondition,
-	filterText: string
+	filterText: string,
+	shouldMatchIfNull: boolean
 ): boolean => {
 	value = value.toLowerCase().trim();
 	filterText = filterText.toLowerCase().trim();
 
 	switch (condition) {
 		case TextFilterCondition.IS:
-			if (filterText === "") return true;
+			if (filterText === "") return shouldMatchIfNull;
 			return value === filterText;
 		case TextFilterCondition.IS_NOT:
-			if (filterText === "") return true;
+			if (filterText === "") return shouldMatchIfNull;
 			return value !== filterText;
 		case TextFilterCondition.CONTAINS:
+			if (filterText === "") return shouldMatchIfNull;
 			return value.includes(filterText);
 		case TextFilterCondition.DOES_NOT_CONTAIN:
-			if (filterText === "") return true;
+			if (filterText === "") return shouldMatchIfNull;
 			return !value.includes(filterText);
 		case TextFilterCondition.STARTS_WITH:
+			if (filterText === "") return shouldMatchIfNull;
 			return value.startsWith(filterText);
 		case TextFilterCondition.ENDS_WITH:
+			if (filterText === "") return shouldMatchIfNull;
 			return value.endsWith(filterText);
 		case TextFilterCondition.IS_EMPTY:
 			return value === "";
