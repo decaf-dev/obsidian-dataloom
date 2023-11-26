@@ -17,3 +17,5 @@ export { default as MigrateState15 } from "./migrate-state-15";
 export { default as MigrateState16 } from "./migrate-state-16";
 export { default as MigrateState17 } from "./migrate-state-17";
 export { default as MigrateState18 } from "./migrate-state-18";
+export { default as MigrateState19 } from "./migrate-state-19";
+export { default as MigrateState20 } from "./migrate-state-20";

@@ -8,7 +8,7 @@ import Stack from "src/react/shared/stack";
 import "./styles.css";
 import Button from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
-import { getFilterConditionsFromPropertyType } from "../add-source-submenu/utils";
+import { getFilterConditionsForPropertyType } from "../add-source-submenu/utils";
 import FolderSourceItem from "../folder-source-item";
 import FrontmatterSourceItem from "../frontmatter-source-item";
 
@@ -52,7 +52,7 @@ export default function BaseContent({
 							propertyKey,
 						} = source;
 						const filterConditions =
-							getFilterConditionsFromPropertyType(propertyType);
+							getFilterConditionsForPropertyType(propertyType);
 						return (
 							<FrontmatterSourceItem
 								key={id}

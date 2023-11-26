@@ -57,12 +57,14 @@ import {
 	FileCell,
 	TagCell,
 	MultiTagCell,
+	FilterCondition,
 } from "./types/loom-state";
 
 import { Color } from "src/shared/loom-state/types/loom-state";
 import { generateUuid } from "../uuid";
 import { getCurrentDateTime } from "../date/utils";
 import { ObsidianPropertyType } from "../frontmatter/types";
+import { getFilterConditionsForPropertyType } from "src/react/loom-app/option-bar/sources-menu/add-source-submenu/utils";
 
 export const createFolderSource = (
 	path: string,
@@ -80,11 +82,17 @@ export const createFrontmatterSource = (
 	propertyType: ObsidianPropertyType,
 	propertyKey: string,
 	options?: {
-		filterCondition?: TextFilterCondition;
+		filterCondition?: FilterCondition;
 		filterText?: string;
 	}
 ): Source => {
-	const { filterCondition = null, filterText = "" } = options || {};
+	const { filterCondition: originalFilterCondition, filterText = "" } =
+		options || {};
+
+	let filterCondition = originalFilterCondition;
+	if (!filterCondition) {
+		filterCondition = getFilterConditionsForPropertyType(propertyType)[0];
+	}
 	return {
 		id: generateUuid(),
 		type: SourceType.FRONTMATTER,
