@@ -158,7 +158,7 @@ const doesCellMatchFilter = (
 		case CellType.NUMBER: {
 			const { value } = cell as NumberCell;
 			const { text } = filter as NumberFilter;
-			return doesNumberMatchFilter(value, condition, text);
+			return doesNumberMatchFilter(value, condition, text, true);
 		}
 		case CellType.EMBED: {
 			const { pathOrUrl } = cell as EmbedCell;

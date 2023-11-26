@@ -14,27 +14,28 @@ import {
 export const doesNumberMatchFilter = (
 	value: number | null,
 	condition: FilterCondition,
-	filterText: string
+	filterText: string,
+	shouldMatchIfNull: boolean
 ) => {
 	const filterNumber = Number(filterText);
 	switch (condition) {
 		case NumberFilterCondition.IS_EQUAL:
-			if (value === null) return true;
+			if (value === null) return shouldMatchIfNull;
 			return value === filterNumber;
 		case NumberFilterCondition.IS_GREATER:
-			if (value === null) return true;
+			if (value === null) return shouldMatchIfNull;
 			return value > filterNumber;
 		case NumberFilterCondition.IS_GREATER_OR_EQUAL:
-			if (value === null) return true;
+			if (value === null) return shouldMatchIfNull;
 			return value >= filterNumber;
 		case NumberFilterCondition.IS_LESS:
-			if (value === null) return true;
+			if (value === null) return shouldMatchIfNull;
 			return value < filterNumber;
 		case NumberFilterCondition.IS_LESS_OR_EQUAL:
-			if (value === null) return true;
+			if (value === null) return shouldMatchIfNull;
 			return value <= filterNumber;
 		case NumberFilterCondition.IS_NOT_EQUAL:
-			if (value === null) return true;
+			if (value === null) return shouldMatchIfNull;
 			return value !== filterNumber;
 		case NumberFilterCondition.IS_EMPTY:
 			return value === null;

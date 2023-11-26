@@ -208,7 +208,12 @@ const doesMatchFilterCondition = (
 			} else {
 				value = null;
 			}
-			return doesNumberMatchFilter(value, filterCondition, filterText);
+			return doesNumberMatchFilter(
+				value,
+				filterCondition,
+				filterText,
+				false
+			);
 		}
 		case ObsidianPropertyType.DATE:
 		case ObsidianPropertyType.DATETIME: {
