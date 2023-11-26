@@ -1,7 +1,6 @@
 import React from "react";
 
 import { usePlaceCursorAtEnd } from "src/shared/hooks";
-import { isNumberInput } from "src/shared/match";
 
 import Input from "src/react/shared/input";
 import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
@@ -35,17 +34,15 @@ export default function NumberCellEdit({
 	}, [initialValue, localValue, closeRequest, onClose, onChange]);
 
 	function handleChange(inputValue: string) {
-		if (!isNumberInput(inputValue)) return;
-
 		setLocalValue(inputValue);
 	}
 
 	return (
 		<div className="dataloom-number-cell-edit">
 			<Input
+				isNumeric
 				ref={inputRef}
 				focusOutline="default"
-				inputMode="numeric" //Set input mode so that the keyboard is numeric but selection is still available
 				value={localValue}
 				onChange={handleChange}
 				onBlur={(e) => {

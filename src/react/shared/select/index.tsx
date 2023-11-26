@@ -2,6 +2,7 @@ import "./styles.css";
 
 interface Props {
 	id?: string;
+	isDisabled?: boolean;
 	hasError?: boolean;
 	className?: string;
 	value: string;
@@ -12,6 +13,7 @@ interface Props {
 
 export default function Select({
 	id,
+	isDisabled,
 	hasError,
 	className: customClassName,
 	value,
@@ -28,6 +30,7 @@ export default function Select({
 	}
 	return (
 		<select
+			disabled={isDisabled}
 			id={id}
 			tabIndex={0}
 			className={className}

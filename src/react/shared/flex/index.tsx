@@ -7,6 +7,7 @@ import {
 import "./styles.css";
 
 interface Props {
+	grow?: boolean;
 	flexDir?: FlexDirection;
 	justify?: JustifyContent;
 	align?: AlignItems;
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export default function Flex({
+	grow = false,
 	flexDir = "row",
 	justify = "flex-start",
 	align = "flex-start",
@@ -29,6 +31,7 @@ export default function Flex({
 		<div
 			className="dataloom-flex"
 			style={{
+				flexGrow: grow ? 1 : 0,
 				flexDirection: flexDir,
 				justifyContent: justify,
 				alignItems: align,

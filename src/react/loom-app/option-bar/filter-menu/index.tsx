@@ -57,8 +57,9 @@ import {
 	createTagFilter,
 	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
-import DateFilterSelect from "./date-filter-select";
+import DateFilterSelect from "../../../shared/date-filter-select";
 import Tag from "src/react/shared/tag";
+import CheckboxFilterSelect from "src/react/shared/checkbox-filter-select";
 
 interface Props {
 	id: string;
@@ -433,22 +434,15 @@ export default function FilterMenu({
 								case CellType.CHECKBOX: {
 									const { value } = filter as CheckboxFilter;
 									inputNode = (
-										<Select
-											value={value ? "true" : "false"}
+										<CheckboxFilterSelect
+											value={value}
 											onChange={(newValue) =>
-												onCheckboxChange(id, newValue)
+												onCheckboxChange(
+													id,
+													newValue.toString()
+												)
 											}
-										>
-											<option value="">
-												Select an option
-											</option>
-											<option value="true">
-												Checked
-											</option>
-											<option value="false">
-												Unchecked
-											</option>
-										</Select>
+										/>
 									);
 									conditionOptions = [
 										TextFilterCondition.IS,
@@ -527,7 +521,7 @@ export default function FilterMenu({
 									const { text } = filter as NumberFilter;
 									inputNode = (
 										<Input
-											inputMode="numeric"
+											isNumeric
 											value={text}
 											onChange={(newValue) =>
 												onTextChange(id, newValue)

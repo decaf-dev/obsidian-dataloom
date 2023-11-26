@@ -13,6 +13,10 @@ export const getSourceCellContent = (source: Source | null) => {
 			const { path } = source as ObsidianFolderSource;
 			return path;
 		}
+		case SourceType.FRONTMATTER: {
+			const { propertyKey } = source;
+			return propertyKey;
+		}
 		default:
 			throw new Error("Source type not supported");
 	}
