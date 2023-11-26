@@ -174,13 +174,6 @@ const doesMatchFilterCondition = (
 ): boolean => {
 	switch (propertyType) {
 		case ObsidianPropertyType.TEXT: {
-			// //handle undefined
-			// let value: string | null;
-			// if (typeof propertyValue === "string") {
-			// 	value = propertyValue;
-			// } else {
-			// 	value = "";
-			// }
 			const value = propertyValue as string;
 			return doesTextMatchFilter(
 				value,
@@ -191,13 +184,6 @@ const doesMatchFilterCondition = (
 		}
 
 		case ObsidianPropertyType.CHECKBOX: {
-			//let value: boolean | null;
-			// //handle undefined
-			// if (typeof propertyValue === "boolean") {
-			// 	value = propertyValue;
-			// } else {
-			// 	value = false;
-			// }
 			const value = propertyValue as boolean;
 			return doesBooleanMatchFilter(
 				value,
@@ -207,13 +193,6 @@ const doesMatchFilterCondition = (
 		}
 
 		case ObsidianPropertyType.NUMBER: {
-			// //handle undefined
-			// let value: number | null;
-			// if (typeof propertyValue === "number") {
-			// 	value = propertyValue;
-			// } else {
-			// 	value = null;
-			// }
 			const value = propertyValue as number;
 			return doesNumberMatchFilter(
 				value,
@@ -224,13 +203,6 @@ const doesMatchFilterCondition = (
 		}
 		case ObsidianPropertyType.DATE:
 		case ObsidianPropertyType.DATETIME: {
-			// //handle undefined
-			// let value: string | null;
-			// if (typeof propertyValue === "string") {
-			// 	value = new Date(propertyValue).toISOString();
-			// } else {
-			// 	value = null;
-			// }
 			const value = propertyValue as string;
 			return doesDateMatchFilter(
 				value,
@@ -243,8 +215,6 @@ const doesMatchFilterCondition = (
 		case ObsidianPropertyType.ALIASES:
 		case ObsidianPropertyType.TAGS:
 		case ObsidianPropertyType.MULTITEXT: {
-			// //handle undefined
-			// const value = (propertyValue ?? []) as string[];
 			const value = propertyValue as string[];
 			return doesListMatchFilter(value, filterCondition, filterText);
 		}
