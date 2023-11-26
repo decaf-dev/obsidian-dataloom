@@ -29,7 +29,7 @@ export default function BaseContent({
 }: Props) {
 	return (
 		<Stack spacing="md">
-			<div className="dataloom-source-container">
+			<Stack spacing="md">
 				{sources.map((source) => {
 					const { id, type } = source;
 
@@ -74,7 +74,7 @@ export default function BaseContent({
 						throw new Error("Unhandled source type");
 					}
 				})}
-			</div>
+			</Stack>
 			<Button
 				icon={<Icon lucideId="plus"></Icon>}
 				onClick={() => onSourceAdd()}
