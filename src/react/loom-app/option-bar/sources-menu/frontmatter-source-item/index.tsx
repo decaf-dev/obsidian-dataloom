@@ -1,10 +1,11 @@
 import Bubble from "src/react/shared/bubble";
 import Button from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
-import Stack from "src/react/shared/stack";
 import Select from "src/react/shared/select";
 import FilterInput from "../add-source-submenu/filter-input";
 import SourceItem from "../source-item";
+import Wrap from "src/react/shared/wrap";
+import Flex from "src/react/shared/flex";
 
 import { getIconIdForSourceType } from "src/react/shared/icon/utils";
 import {
@@ -16,7 +17,6 @@ import {
 } from "src/shared/loom-state/types/loom-state";
 import { getDisplayNameForFilterCondition } from "src/shared/loom-state/type-display-names";
 import { ObsidianPropertyType } from "src/shared/frontmatter/types";
-import Wrap from "src/react/shared/wrap";
 
 interface Props {
 	id: string;
@@ -52,46 +52,48 @@ export default function FrontmatterSourceItem({
 		selectedFilterCondition !== NumberFilterCondition.IS_EMPTY;
 	return (
 		<SourceItem>
-			<Wrap>
-				<Stack isHorizontal spacing="sm">
+			<div className="dataloom-frontmatter-source-item">
+				<Wrap>
 					<Bubble
 						icon={<Icon lucideId={getIconIdForSourceType(type)} />}
 						variant="no-fill"
 						value={title}
 					/>
-				</Stack>
-				<Select
-					value={selectedFilterCondition ?? ""}
-					onChange={(value) =>
-						onFilterConditionChange(
-							id,
-							(value as FilterCondition) || null
-						)
-					}
-				>
-					{Object.values(filterConditions).map((type) => {
-						return (
-							<option key={type} value={type}>
-								{getDisplayNameForFilterCondition(type)}
-							</option>
-						);
-					})}
-				</Select>
-				{showFilterInput && (
-					<FilterInput
-						selectedPropertyType={selectedPropertyType}
-						filterText={filterText}
-						onFilterTextChange={(value) =>
-							onFilterTextChange(id, value)
+					<Select
+						value={selectedFilterCondition ?? ""}
+						onChange={(value) =>
+							onFilterConditionChange(
+								id,
+								(value as FilterCondition) || null
+							)
 						}
-					/>
-				)}
-				<Button
-					icon={<Icon lucideId="trash" />}
-					ariaLabel="Delete source"
-					onClick={() => onDelete(id)}
-				/>
-			</Wrap>
+					>
+						{Object.values(filterConditions).map((type) => {
+							return (
+								<option key={type} value={type}>
+									{getDisplayNameForFilterCondition(type)}
+								</option>
+							);
+						})}
+					</Select>
+					{showFilterInput && (
+						<FilterInput
+							selectedPropertyType={selectedPropertyType}
+							filterText={filterText}
+							onFilterTextChange={(value) =>
+								onFilterTextChange(id, value)
+							}
+						/>
+					)}
+					<Flex width="fit-content" grow justify="flex-end">
+						<Button
+							icon={<Icon lucideId="trash" />}
+							ariaLabel="Delete source"
+							onClick={() => onDelete(id)}
+						/>
+					</Flex>
+				</Wrap>
+			</div>
 		</SourceItem>
 	);
 }
