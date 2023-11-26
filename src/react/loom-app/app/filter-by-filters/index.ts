@@ -123,12 +123,12 @@ const doesCellMatchFilter = (
 		case CellType.TEXT: {
 			const { content } = cell as TextCell;
 			const { text } = filter as TextFilter;
-			return doesTextMatchFilter(content, condition, text);
+			return doesTextMatchFilter(content, condition, text, true);
 		}
 		case CellType.FILE: {
 			const { alias, path } = cell as FileCell;
 			const { text } = filter as FileFilter;
-			return doesTextMatchFilter(alias ?? path, condition, text);
+			return doesTextMatchFilter(alias ?? path, condition, text, true);
 		}
 		case CellType.CHECKBOX: {
 			const { value } = cell as CheckboxCell;
@@ -168,7 +168,7 @@ const doesCellMatchFilter = (
 			if (isRelativePath(pathOrUrl)) {
 				compareValue = getFileName(pathOrUrl);
 			}
-			return doesTextMatchFilter(compareValue, condition, text);
+			return doesTextMatchFilter(compareValue, condition, text, true);
 		}
 		case CellType.DATE: {
 			const { dateTime: cellDateTime } = cell as DateCell;
@@ -208,7 +208,7 @@ const doesCellMatchFilter = (
 			const { text } = filter as SourceFileFilter;
 			const { path } = cell as SourceFileCell;
 			const fileName = getFileName(path);
-			return doesTextMatchFilter(fileName ?? "", condition, text);
+			return doesTextMatchFilter(fileName ?? "", condition, text, true);
 		}
 
 		default:

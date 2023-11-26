@@ -183,7 +183,12 @@ const doesMatchFilterCondition = (
 			// 	value = "";
 			// }
 			const value = propertyValue as string;
-			return doesTextMatchFilter(value, filterCondition, filterText);
+			return doesTextMatchFilter(
+				value,
+				filterCondition,
+				filterText,
+				false
+			);
 		}
 
 		case ObsidianPropertyType.CHECKBOX: {
