@@ -30,7 +30,14 @@ export default class MigrateState18 implements MigrateState {
 		const nextRows = rows.map((row) => {
 			const { cells } = row;
 			const nextCells = cells.map((cell) => {
-				const { content, id, columnId, isExternalLink, tagIds } = cell;
+				const {
+					dateTime,
+					content,
+					id,
+					columnId,
+					isExternalLink,
+					tagIds,
+				} = cell;
 				const column = columns.find((column) => column.id === columnId);
 				if (!column) {
 					throw new ColumnNotFoundError({ id: columnId });
@@ -56,7 +63,7 @@ export default class MigrateState18 implements MigrateState {
 					const newCell: DateCell = {
 						id,
 						columnId,
-						dateTime: content,
+						dateTime,
 					};
 					return newCell;
 				} else if (type === CellType.CHECKBOX) {
