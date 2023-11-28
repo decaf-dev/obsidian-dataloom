@@ -135,7 +135,14 @@ export const deserializeFrontmatterForCell = (
 
 			//The formatterValue will return either YYYY-MM-DD or YYYY-MM-DDTHH:MM
 			//the date object will take this in as local time as output an ISO string
-			const dateString = frontmatterValue;
+			let dateString = frontmatterValue;
+
+			//2023-12-12 will be intrepreted in UTC time by `new Date()` if it doesn't have a timestamp
+			//so we need to add a time
+			const DATE_WITHOUT_TIME_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+			if (dateString.match(DATE_WITHOUT_TIME_REGEX)) {
+				dateString += "T00:00:00";
+			}
 			const newCell = createDateCell(id, {
 				dateTime: new Date(dateString).toISOString(),
 			});
