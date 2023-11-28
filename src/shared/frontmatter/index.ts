@@ -108,7 +108,7 @@ export const deserializeFrontmatterForCell = (
 				);
 
 			const newCell = createNumberCell(id, {
-				value: Number(frontmatterValue), //Convert to Number for redundancy
+				value: frontmatterValue,
 			});
 			return {
 				newCell,
@@ -121,7 +121,7 @@ export const deserializeFrontmatterForCell = (
 				);
 
 			const newCell = createCheckboxCell(id, {
-				value: Boolean(frontmatterValue), //Convert to Boolean for redundancy
+				value: frontmatterValue,
 			});
 			return {
 				newCell,
