@@ -46,24 +46,32 @@ export const deserializeFrontmatterForCell = (
 
 	switch (type) {
 		case CellType.TEXT: {
+			if (typeof frontmatterValue !== "string")
+				throw new Error(
+					"Failed to load content for CellType.TEXT. Frontmatter value is not a string"
+				);
 			const newCell = createTextCell(id, {
-				content: frontmatterValue as string,
+				content: frontmatterValue,
 			});
 			return {
 				newCell,
 			};
 		}
 		case CellType.EMBED: {
-			const isExternal = isExternalLink(frontmatterValue as string);
+			if (typeof frontmatterValue !== "string")
+				throw new Error(
+					"Failed to load content for CellType.EMBED. Frontmatter value is not a string"
+				);
+
+			const isExternal = isExternalLink(frontmatterValue);
 			let pathOrUrl = "";
 			let pathAlias: string | null = null;
 
-			if (isUrlLink(frontmatterValue as string)) {
-				pathOrUrl = frontmatterValue as string;
+			if (isUrlLink(frontmatterValue)) {
+				pathOrUrl = frontmatterValue;
 			} else {
-				const { path, alias } = extractWikiLinkComponents(
-					frontmatterValue as string
-				);
+				const { path, alias } =
+					extractWikiLinkComponents(frontmatterValue);
 				if (path !== null) {
 					pathOrUrl = path;
 					pathAlias = alias;
@@ -79,9 +87,12 @@ export const deserializeFrontmatterForCell = (
 			};
 		}
 		case CellType.FILE: {
-			const { path, alias } = extractWikiLinkComponents(
-				frontmatterValue as string
-			);
+			if (typeof frontmatterValue !== "string")
+				throw new Error(
+					"Failed to load content for CellType.FILE. Frontmatter value is not a string"
+				);
+
+			const { path, alias } = extractWikiLinkComponents(frontmatterValue);
 			const newCell = createFileCell(id, {
 				path: path ?? "",
 				alias: alias ?? "",
@@ -91,25 +102,40 @@ export const deserializeFrontmatterForCell = (
 			};
 		}
 		case CellType.NUMBER: {
+			if (typeof frontmatterValue !== "number")
+				throw new Error(
+					"Failed to load content for CellType.NUMBER. Frontmatter value is not a number"
+				);
+
 			const newCell = createNumberCell(id, {
-				value: Number(frontmatterValue), //Convert to Number for redundancy
+				value: frontmatterValue,
 			});
 			return {
 				newCell,
 			};
 		}
 		case CellType.CHECKBOX: {
+			if (typeof frontmatterValue !== "boolean")
+				throw new Error(
+					"Failed to load content for CellType.CHECKBOX. Frontmatter value is not a boolean"
+				);
+
 			const newCell = createCheckboxCell(id, {
-				value: Boolean(frontmatterValue), //Convert to Boolean for redundancy
+				value: frontmatterValue,
 			});
 			return {
 				newCell,
 			};
 		}
 		case CellType.DATE: {
+			if (typeof frontmatterValue !== "string")
+				throw new Error(
+					"Failed to load content for CellType.DATE. Frontmatter value is not a string"
+				);
+
 			//The formatterValue will return either YYYY-MM-DD or YYYY-MM-DDTHH:MM
 			//the date object will take this in as local time as output an ISO string
-			const dateString = frontmatterValue as string;
+			const dateString = frontmatterValue;
 			const newCell = createDateCell(id, {
 				dateTime: new Date(dateString).toISOString(),
 			});
@@ -121,6 +147,11 @@ export const deserializeFrontmatterForCell = (
 			};
 		}
 		case CellType.TAG: {
+			if (typeof frontmatterValue !== "string")
+				throw new Error(
+					"Failed to load content for CellType.TAG. Frontmatter value is not a string"
+				);
+
 			let newTag: Tag | null = null;
 			let cellTagId: string | null = null;
 			if (frontmatterValue !== "") {
@@ -130,7 +161,7 @@ export const deserializeFrontmatterForCell = (
 				if (existingTag) {
 					cellTagId = existingTag.id;
 				} else {
-					const tag = createTag(frontmatterValue as string);
+					const tag = createTag(frontmatterValue);
 					cellTagId = tag.id;
 					newTag = tag;
 				}
@@ -145,10 +176,15 @@ export const deserializeFrontmatterForCell = (
 			};
 		}
 		case CellType.MULTI_TAG: {
+			if (typeof frontmatterValue !== "object")
+				throw new Error(
+					"Failed to load content for CellType.MULTI_TAG. Frontmatter value is not an object"
+				);
+
 			const newTags: Tag[] = [];
 			const cellTagIds: string[] = [];
 
-			(frontmatterValue as string[]).forEach((tagContent) => {
+			frontmatterValue.forEach((tagContent) => {
 				if (tagContent !== "") {
 					const existingTag = tags.find(
 						(tag) => tag.content === tagContent
