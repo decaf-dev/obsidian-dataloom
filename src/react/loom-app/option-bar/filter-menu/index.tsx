@@ -333,6 +333,7 @@ export default function FilterMenu({
 			isOpen={isOpen}
 			position={position}
 			openDirection="bottom-left"
+			minWidth={200}
 			maxHeight={255}
 		>
 			<div
@@ -613,6 +614,7 @@ export default function FilterMenu({
 									index={i}
 									key={id}
 									id={id}
+									useSpacer={filters.length > 1 && i === 0}
 									columns={columns}
 									selectedColumnId={columnId}
 									selectedCondition={condition}
@@ -628,16 +630,16 @@ export default function FilterMenu({
 								/>
 							);
 						})}
-						<Stack isHorizontal>
-							<Button
-								icon={<Icon lucideId="plus" />}
-								ariaLabel="Add filter"
-								onClick={() => onAddClick()}
-							/>
-							{filters.length === 0 && (
+						{filters.length === 0 && (
+							<Padding pl="md">
 								<Text value="No filters to display" />
-							)}
-						</Stack>
+							</Padding>
+						)}
+						<Button
+							icon={<Icon lucideId="plus" />}
+							ariaLabel="Add filter"
+							onClick={() => onAddClick()}
+						/>
 					</Stack>
 				</Padding>
 			</div>

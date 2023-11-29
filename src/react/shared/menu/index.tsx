@@ -14,6 +14,7 @@ interface Props {
 	openDirection?: LoomMenuOpenDirection;
 	topOffset?: number;
 	leftOffset?: number;
+	minWidth?: number;
 	width?: number;
 	height?: number;
 	maxWidth?: number;
@@ -27,6 +28,7 @@ export default function Menu({
 	hideBorder = false,
 	openDirection,
 	position,
+	minWidth = 0,
 	width = 0,
 	height = 0,
 	leftOffset = 0,
@@ -53,6 +55,7 @@ export default function Menu({
 			position={position}
 			width={width}
 			height={height}
+			minWidth={minWidth}
 			maxHeight={maxHeight}
 			maxWidth={maxWidth}
 		>
