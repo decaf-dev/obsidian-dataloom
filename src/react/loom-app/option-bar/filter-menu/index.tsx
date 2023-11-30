@@ -3,7 +3,6 @@ import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
 import Icon from "src/react/shared/icon";
 import FilterRow from "./filter-row";
-import Text from "src/react/shared/text";
 import Button from "src/react/shared/button";
 
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
@@ -333,7 +332,6 @@ export default function FilterMenu({
 			isOpen={isOpen}
 			position={position}
 			openDirection="bottom-left"
-			minWidth={200}
 			maxHeight={255}
 		>
 			<div
@@ -630,11 +628,6 @@ export default function FilterMenu({
 								/>
 							);
 						})}
-						{filters.length === 0 && (
-							<Padding pl="md">
-								<Text value="No filters to display" />
-							</Padding>
-						)}
 						<Button
 							icon={<Icon lucideId="plus" />}
 							ariaLabel="Add filter"

@@ -59,7 +59,6 @@ export default function SourcesMenu({
 			openDirection="bottom-left"
 			isOpen={isOpen}
 			position={position}
-			maxHeight={255}
 		>
 			<Padding px="lg" py="md">
 				{submenu === null && (
