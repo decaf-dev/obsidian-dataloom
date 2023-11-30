@@ -26,6 +26,7 @@ interface Props {
 	conditionOptions: FilterCondition[];
 	selectedCondition: FilterCondition;
 	inputNode?: React.ReactNode;
+	useSpacer?: boolean;
 	onToggle: (id: string) => void;
 	onColumnChange: (id: string, columnId: string) => void;
 	onConditionChange: (id: string, value: FilterCondition) => void;
@@ -38,6 +39,7 @@ export default function FilterRow({
 	index,
 	id,
 	columns,
+	useSpacer,
 	isEnabled,
 	selectedColumnId,
 	selectedOperator,
@@ -53,15 +55,17 @@ export default function FilterRow({
 	return (
 		<div className="dataloom-filter-row">
 			<Wrap>
-				{index !== 0 ? (
+				{index !== 0 && (
 					<FilterOperator
 						id={id}
 						value={selectedOperator}
 						onChange={onOperatorChange}
 					/>
-				) : (
+				)}
+				{useSpacer && (
 					<div className="dataloom-filter-row__spacer"></div>
 				)}
+
 				<FilterColumnSelect
 					id={id}
 					columns={columns}
