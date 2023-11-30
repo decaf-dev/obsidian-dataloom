@@ -23,7 +23,6 @@ import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
 import { useMenu } from "src/react/shared/menu-provider/hooks";
 
 import "./styles.css";
-import React from "react";
 
 interface Props {
 	columns: Column[];
