@@ -32,7 +32,7 @@ export default class WelcomeModal extends Modal {
 			cardContainerEl,
 			"Quick start",
 			"Learn the basics of creating a loom",
-			"https://dataloom.xyz/basics/quick-start",
+			"https://dataloom.xyz/quick-start",
 			"table"
 		);
 
@@ -48,7 +48,7 @@ export default class WelcomeModal extends Modal {
 			cardContainerEl,
 			"Embedded looms",
 			"Learn how to embed a loom into a markdown note",
-			"https://dataloom.xyz/basics/embed-loom",
+			"https://dataloom.xyz/basics/embed-looms",
 			"sticky-note"
 		);
 
