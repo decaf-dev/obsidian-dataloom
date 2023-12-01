@@ -110,10 +110,22 @@ export default function OptionBar({
 
 	function handleFilterMenuOpen() {
 		filterMenu.onOpen(LoomMenuLevel.ONE);
+		if (filters.length === 0) {
+			onFilterAddClick();
+		}
 	}
 
 	function handleMoreMenuOpen() {
 		moreMenu.onOpen(LoomMenuLevel.ONE);
+	}
+
+	function handleFilterDelete(id: string) {
+		onFilterDeleteClick(id);
+
+		//Close the menu when the last filter is deleted
+		if (filters.length === 1) {
+			filterMenu.onClose();
+		}
 	}
 
 	const activeFilters = filters.filter((filter) => filter.isEnabled);
@@ -228,7 +240,7 @@ export default function OptionBar({
 				columns={columns}
 				filters={filters}
 				onUpdate={onFilterUpdate}
-				onDeleteClick={onFilterDeleteClick}
+				onDeleteClick={handleFilterDelete}
 				onAddClick={onFilterAddClick}
 			/>
 		</>

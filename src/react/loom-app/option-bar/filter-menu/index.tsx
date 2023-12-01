@@ -3,7 +3,6 @@ import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
 import Icon from "src/react/shared/icon";
 import FilterRow from "./filter-row";
-import Text from "src/react/shared/text";
 import Button from "src/react/shared/button";
 
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
@@ -613,6 +612,7 @@ export default function FilterMenu({
 									index={i}
 									key={id}
 									id={id}
+									useSpacer={filters.length > 1 && i === 0}
 									columns={columns}
 									selectedColumnId={columnId}
 									selectedCondition={condition}
@@ -628,16 +628,11 @@ export default function FilterMenu({
 								/>
 							);
 						})}
-						<Stack isHorizontal>
-							<Button
-								icon={<Icon lucideId="plus" />}
-								ariaLabel="Add filter"
-								onClick={() => onAddClick()}
-							/>
-							{filters.length === 0 && (
-								<Text value="No filters to display" />
-							)}
-						</Stack>
+						<Button
+							icon={<Icon lucideId="plus" />}
+							ariaLabel="Add filter"
+							onClick={() => onAddClick()}
+						/>
 					</Stack>
 				</Padding>
 			</div>

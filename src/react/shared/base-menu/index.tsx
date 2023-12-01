@@ -18,6 +18,7 @@ interface Props {
 	width?: number;
 	height?: number;
 	maxWidth?: number;
+	minWidth?: number;
 	maxHeight?: number;
 	children: React.ReactNode;
 }
@@ -31,6 +32,7 @@ const BaseMenu = React.forwardRef<HTMLDivElement, Props>(
 			position,
 			width = 0,
 			height = 0,
+			minWidth = 0,
 			maxHeight = 0,
 			maxWidth = 0,
 			children,
@@ -79,6 +81,7 @@ const BaseMenu = React.forwardRef<HTMLDivElement, Props>(
 					left: numToPx(position.left),
 					width: width !== 0 ? numToPx(width) : "max-content",
 					height: height !== 0 ? numToPx(height) : "max-content",
+					minWidth: minWidth !== 0 ? numToPx(minWidth) : undefined,
 					maxWidth: maxWidth !== 0 ? numToPx(maxWidth) : undefined,
 					maxHeight: maxHeight !== 0 ? numToPx(maxHeight) : undefined,
 					overflowY: maxHeight !== 0 ? "scroll" : undefined,
