@@ -17,7 +17,7 @@ import {
 	SourceFileCell,
 	TagCell,
 	TextCell,
-} from "../types/loom-state";
+} from "../types/loom-state-19";
 import { isUrlLink } from "src/shared/link-and-path/link-predicates";
 import { extractWikiLinkComponents } from "src/shared/link-and-path/markdown-link-utils";
 

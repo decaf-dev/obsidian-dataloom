@@ -62,6 +62,11 @@ export const serializeFrontmatter = async (app: App, state: LoomState) => {
 					rowId: row.id,
 				});
 
+			const { hasValidFrontmatter } = cell;
+			//If we don't have valid frontmatter, skip this cell, so we don't overwrite the invalid value
+			//we want the user to correct it themselves
+			if (hasValidFrontmatter === false) continue;
+
 			let saveValue: unknown = null;
 			if (type === CellType.TEXT) {
 				const { content } = cell as TextCell;

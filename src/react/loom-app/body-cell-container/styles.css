@@ -3,16 +3,15 @@
     width: 100%;
     height: 100%;
     min-height: var(--dataloom-cell-min-height);
-    padding: var(--dataloom-cell-spacing-x) var(--dataloom-cell-spacing-y);
+	padding: var(--dataloom-cell-spacing-x) var(--dataloom-cell-spacing-y);
     cursor: pointer;
     color: var(--text-normal); /* Stop dimming of text when mouse leaves embedded loom */
 }
 
-.dataloom-cell--uneditable {
-	cursor: default;
+.dataloom-cell--body__container--no-padding {
+	padding: 0;
 }
 
-.dataloom-cell--disabled {
+.dataloom-cell--uneditable {
 	cursor: default;
-	background-color: var(--background-secondary);
 }
