@@ -15,7 +15,6 @@ import { getAssignedPropertyType } from "./obsidian-utils";
 import { ObsidianPropertyType } from "./types";
 import { isExternalLink, isUrlLink } from "../link-and-path/link-predicates";
 import { extractWikiLinkComponents } from "../link-and-path/markdown-link-utils";
-import { isNumber } from "../match";
 import { parseDateTime } from "../date/date-validation";
 
 export const deserializeFrontmatterForCell = (
