@@ -1,0 +1,7 @@
+.dataloom-disabled-cell {
+	width: 100%;
+	height: 100%;
+	background-color: var(--background-secondary);
+	cursor: default;
+	padding: var(--dataloom-cell-spacing-x) var(--dataloom-cell-spacing-y);
+}
