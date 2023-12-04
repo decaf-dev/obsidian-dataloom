@@ -186,13 +186,15 @@ export const createTextCell = (
 	columnId: string,
 	options?: {
 		content?: string;
+		hasValidFrontmatter?: boolean;
 	}
 ): TextCell => {
-	const { content = "" } = options ?? {};
+	const { content = "", hasValidFrontmatter = null } = options ?? {};
 	return {
 		id: generateUuid(),
 		columnId,
 		content,
+		hasValidFrontmatter,
 	};
 };
 
@@ -200,13 +202,15 @@ export const createNumberCell = (
 	columnId: string,
 	options?: {
 		value?: number | null;
+		hasValidFrontmatter?: boolean;
 	}
 ): NumberCell => {
-	const { value = null } = options ?? {};
+	const { value = null, hasValidFrontmatter = null } = options ?? {};
 	return {
 		id: generateUuid(),
 		columnId,
 		value,
+		hasValidFrontmatter,
 	};
 };
 
@@ -214,13 +218,15 @@ export const createDateCell = (
 	columnId: string,
 	options?: {
 		dateTime?: string | null;
+		hasValidFrontmatter?: boolean;
 	}
 ): DateCell => {
-	const { dateTime = null } = options ?? {};
+	const { dateTime = null, hasValidFrontmatter = null } = options ?? {};
 	return {
 		id: generateUuid(),
 		columnId,
 		dateTime,
+		hasValidFrontmatter,
 	};
 };
 
@@ -230,6 +236,7 @@ export const createLastEditedTimeCell = (
 	return {
 		id: generateUuid(),
 		columnId,
+		hasValidFrontmatter: null,
 	};
 };
 
@@ -237,6 +244,7 @@ export const createCreationTimeCell = (columnId: string): CreationTimeCell => {
 	return {
 		id: generateUuid(),
 		columnId,
+		hasValidFrontmatter: null,
 	};
 };
 
@@ -244,6 +252,7 @@ export const createSourceCell = (columnId: string): SourceCell => {
 	return {
 		id: generateUuid(),
 		columnId,
+		hasValidFrontmatter: null,
 	};
 };
 
@@ -258,6 +267,7 @@ export const createSourceFileCell = (
 		id: generateUuid(),
 		columnId,
 		path,
+		hasValidFrontmatter: null,
 	};
 };
 
@@ -267,15 +277,22 @@ export const createEmbedCell = (
 		isExternal?: boolean;
 		pathOrUrl?: string;
 		alias?: string | null;
+		hasValidFrontmatter?: boolean;
 	}
 ): EmbedCell => {
-	const { isExternal = false, pathOrUrl = "", alias = null } = options || {};
+	const {
+		isExternal = false,
+		pathOrUrl = "",
+		alias = null,
+		hasValidFrontmatter = null,
+	} = options || {};
 	return {
 		id: generateUuid(),
 		columnId,
 		isExternal,
 		pathOrUrl,
 		alias,
+		hasValidFrontmatter,
 	};
 };
 
@@ -284,14 +301,20 @@ export const createFileCell = (
 	options?: {
 		path?: string;
 		alias?: string;
+		hasValidFrontmatter?: boolean;
 	}
 ): FileCell => {
-	const { path = "", alias = null } = options || {};
+	const {
+		path = "",
+		alias = null,
+		hasValidFrontmatter = null,
+	} = options || {};
 	return {
 		id: generateUuid(),
 		columnId,
 		path,
 		alias,
+		hasValidFrontmatter,
 	};
 };
 
@@ -299,13 +322,15 @@ export const createCheckboxCell = (
 	columnId: string,
 	options?: {
 		value?: boolean;
+		hasValidFrontmatter?: boolean;
 	}
 ): CheckboxCell => {
-	const { value = false } = options || {};
+	const { value = false, hasValidFrontmatter = null } = options || {};
 	return {
 		id: generateUuid(),
 		columnId,
 		value,
+		hasValidFrontmatter,
 	};
 };
 
@@ -313,13 +338,15 @@ export const createTagCell = (
 	columnId: string,
 	options?: {
 		tagId?: string | null;
+		hasValidFrontmatter?: boolean;
 	}
 ): TagCell => {
-	const { tagId = null } = options || {};
+	const { tagId = null, hasValidFrontmatter = null } = options || {};
 	return {
 		id: generateUuid(),
 		columnId,
 		tagId,
+		hasValidFrontmatter,
 	};
 };
 
@@ -327,13 +354,15 @@ export const createMultiTagCell = (
 	columnId: string,
 	options?: {
 		tagIds?: string[];
+		hasValidFrontmatter?: boolean;
 	}
 ): MultiTagCell => {
-	const { tagIds = [] } = options || {};
+	const { tagIds = [], hasValidFrontmatter = null } = options || {};
 	return {
 		id: generateUuid(),
 		columnId,
 		tagIds,
+		hasValidFrontmatter,
 	};
 };
 
@@ -343,6 +372,7 @@ export const createSourceFileFilter = (
 		condition?: TextCondition;
 		isEnabled?: boolean;
 		text?: string;
+		hasValidFrontmatter?: boolean;
 	}
 ): SourceFileFilter => {
 	const {

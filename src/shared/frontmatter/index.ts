@@ -47,11 +47,15 @@ export const deserializeFrontmatterForCell = (
 	switch (type) {
 		case CellType.TEXT: {
 			if (typeof frontmatterValue !== "string")
-				throw new Error(
-					"Failed to load content for CellType.TEXT. Frontmatter value is not a string"
-				);
+				return {
+					newCell: createTextCell(id, {
+						hasValidFrontmatter: false,
+					}),
+				};
+
 			const newCell = createTextCell(id, {
 				content: frontmatterValue,
+				hasValidFrontmatter: true,
 			});
 			return {
 				newCell,
@@ -59,9 +63,11 @@ export const deserializeFrontmatterForCell = (
 		}
 		case CellType.EMBED: {
 			if (typeof frontmatterValue !== "string")
-				throw new Error(
-					"Failed to load content for CellType.EMBED. Frontmatter value is not a string"
-				);
+				return {
+					newCell: createEmbedCell(id, {
+						hasValidFrontmatter: false,
+					}),
+				};
 
 			const isExternal = isExternalLink(frontmatterValue);
 			let pathOrUrl = "";
@@ -81,6 +87,7 @@ export const deserializeFrontmatterForCell = (
 				isExternal,
 				pathOrUrl,
 				alias: pathAlias,
+				hasValidFrontmatter: true,
 			});
 			return {
 				newCell,
@@ -88,14 +95,17 @@ export const deserializeFrontmatterForCell = (
 		}
 		case CellType.FILE: {
 			if (typeof frontmatterValue !== "string")
-				throw new Error(
-					"Failed to load content for CellType.FILE. Frontmatter value is not a string"
-				);
+				return {
+					newCell: createFileCell(id, {
+						hasValidFrontmatter: false,
+					}),
+				};
 
 			const { path, alias } = extractWikiLinkComponents(frontmatterValue);
 			const newCell = createFileCell(id, {
 				path: path ?? "",
 				alias: alias ?? "",
+				hasValidFrontmatter: true,
 			});
 			return {
 				newCell,
@@ -103,12 +113,15 @@ export const deserializeFrontmatterForCell = (
 		}
 		case CellType.NUMBER: {
 			if (typeof frontmatterValue !== "number")
-				throw new Error(
-					"Failed to load content for CellType.NUMBER. Frontmatter value is not a number"
-				);
+				return {
+					newCell: createNumberCell(id, {
+						hasValidFrontmatter: false,
+					}),
+				};
 
 			const newCell = createNumberCell(id, {
 				value: frontmatterValue,
+				hasValidFrontmatter: true,
 			});
 			return {
 				newCell,
@@ -116,12 +129,15 @@ export const deserializeFrontmatterForCell = (
 		}
 		case CellType.CHECKBOX: {
 			if (typeof frontmatterValue !== "boolean")
-				throw new Error(
-					"Failed to load content for CellType.CHECKBOX. Frontmatter value is not a boolean"
-				);
+				return {
+					newCell: createCheckboxCell(id, {
+						hasValidFrontmatter: true,
+					}),
+				};
 
 			const newCell = createCheckboxCell(id, {
 				value: frontmatterValue,
+				hasValidFrontmatter: true,
 			});
 			return {
 				newCell,
@@ -129,9 +145,11 @@ export const deserializeFrontmatterForCell = (
 		}
 		case CellType.DATE: {
 			if (typeof frontmatterValue !== "string")
-				throw new Error(
-					"Failed to load content for CellType.DATE. Frontmatter value is not a string"
-				);
+				return {
+					newCell: createDateCell(id, {
+						hasValidFrontmatter: false,
+					}),
+				};
 
 			//The formatterValue will return either YYYY-MM-DD or YYYY-MM-DDTHH:MM
 			//the date object will take this in as local time as output an ISO string
@@ -145,6 +163,7 @@ export const deserializeFrontmatterForCell = (
 			}
 			const newCell = createDateCell(id, {
 				dateTime: new Date(dateString).toISOString(),
+				hasValidFrontmatter: true,
 			});
 			const includeTime = assignedType === ObsidianPropertyType.DATETIME;
 
@@ -155,9 +174,11 @@ export const deserializeFrontmatterForCell = (
 		}
 		case CellType.TAG: {
 			if (typeof frontmatterValue !== "string")
-				throw new Error(
-					"Failed to load content for CellType.TAG. Frontmatter value is not a string"
-				);
+				return {
+					newCell: createTagCell(id, {
+						hasValidFrontmatter: false,
+					}),
+				};
 
 			let newTag: Tag | null = null;
 			let cellTagId: string | null = null;
@@ -175,6 +196,7 @@ export const deserializeFrontmatterForCell = (
 			}
 			const newCell = createTagCell(id, {
 				tagId: cellTagId,
+				hasValidFrontmatter: true,
 			});
 			const nextTags = [...column.tags, ...(newTag ? [newTag] : [])];
 			return {
@@ -183,10 +205,13 @@ export const deserializeFrontmatterForCell = (
 			};
 		}
 		case CellType.MULTI_TAG: {
-			if (typeof frontmatterValue !== "object")
-				throw new Error(
-					"Failed to load content for CellType.MULTI_TAG. Frontmatter value is not an object"
-				);
+			if (typeof frontmatterValue !== "object") {
+				return {
+					newCell: createMultiTagCell(id, {
+						hasValidFrontmatter: false,
+					}),
+				};
+			}
 
 			const newTags: Tag[] = [];
 			const cellTagIds: string[] = [];
@@ -208,6 +233,7 @@ export const deserializeFrontmatterForCell = (
 
 			const newCell = createMultiTagCell(id, {
 				tagIds: cellTagIds,
+				hasValidFrontmatter: true,
 			});
 			const nextTags = [...column.tags, ...newTags];
 			return {

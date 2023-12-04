@@ -11,8 +11,3 @@
 .dataloom-cell--uneditable {
 	cursor: default;
 }
-
-.dataloom-cell--disabled {
-	cursor: default;
-	background-color: var(--background-secondary);
-}

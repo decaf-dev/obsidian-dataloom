@@ -69,6 +69,7 @@ import { getSourceCellContent } from "src/shared/cell-content/source-cell-conten
 import { getSourceFileContent } from "src/shared/cell-content/source-file-content";
 import { getFileCellContent } from "src/shared/cell-content/file-cell-content";
 import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
+import DisabledCell from "../disabled-cell";
 
 interface BaseCellProps {
 	frontmatterKey: string | null;
@@ -185,6 +186,7 @@ export default function BodyCellContainer(props: Props) {
 	const {
 		id,
 		columnId,
+		hasValidFrontmatter,
 		source,
 		includeTime,
 		aspectRatio,
@@ -216,7 +218,17 @@ export default function BodyCellContainer(props: Props) {
 		type === CellType.MULTI_TAG ||
 		type === CellType.DATE;
 
-	const isDisabled = source !== null && frontmatterKey === null;
+	let isDisabled = false;
+	if (hasValidFrontmatter === false) {
+		isDisabled = true;
+	} else if (
+		source !== null &&
+		frontmatterKey === null &&
+		type !== CellType.SOURCE &&
+		type !== CellType.SOURCE_FILE
+	) {
+		isDisabled = true;
+	}
 
 	const isUneditable =
 		type === CellType.CHECKBOX ||
@@ -239,14 +251,12 @@ export default function BodyCellContainer(props: Props) {
 
 	function onMenuTriggerEnterDown(cellActionCallback: () => void) {
 		return () => {
-			if (isDisabled) return;
 			cellActionCallback();
 		};
 	}
 
 	function onMenuTriggerClick(cellActionCallback: () => void) {
 		return () => {
-			if (isDisabled) return;
 			cellActionCallback();
 		};
 	}
@@ -322,23 +332,17 @@ export default function BodyCellContainer(props: Props) {
 
 	if (isUneditable) {
 		className += " dataloom-cell--uneditable";
-	} else if (isDisabled) {
-		className += " dataloom-cell--disabled";
 	}
 
 	let shouldRunTrigger = true;
-	if (isUneditable || isDisabled) {
+	if (isUneditable) {
 		shouldRunTrigger = false;
 	}
 
-	let ariaLabel = "";
-	if (
-		isDisabled &&
-		type !== CellType.SOURCE &&
-		type !== CellType.SOURCE_FILE
-	) {
-		ariaLabel =
-			"This cell is disabled until you choose a frontmatter key for this column";
+	if (isDisabled) {
+		return (
+			<DisabledCell hasValidFrontmatter={hasValidFrontmatter ?? true} />
+		);
 	}
 
 	let contentNode: React.ReactNode | null = null;
@@ -728,7 +732,6 @@ export default function BodyCellContainer(props: Props) {
 	return (
 		<>
 			<MenuTrigger
-				ariaLabel={ariaLabel}
 				ref={menu.triggerRef}
 				variant="cell"
 				menuId={menu.id}

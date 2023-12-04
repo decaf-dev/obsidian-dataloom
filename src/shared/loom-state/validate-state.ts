@@ -349,6 +349,7 @@ const Column = Record({
 const BaseCell = Record({
 	id: String,
 	columnId: String,
+	hasValidFrontmatter: Union(Boolean, Literal(null)),
 });
 
 const TextCell = BaseCell.extend({

@@ -376,10 +376,11 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 
 						key = column.id;
 
-						const { id } = cell;
+						const { id, hasValidFrontmatter } = cell;
 
 						const commonProps = {
 							id,
+							hasValidFrontmatter,
 							columnId,
 							frontmatterKey,
 							verticalPadding,
