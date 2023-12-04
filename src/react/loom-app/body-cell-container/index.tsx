@@ -341,7 +341,19 @@ export default function BodyCellContainer(props: Props) {
 
 	if (isDisabled) {
 		return (
-			<DisabledCell hasValidFrontmatter={hasValidFrontmatter ?? true} />
+			<div
+				className={
+					className + " dataloom-cell--body__container--no-padding"
+				}
+				style={{
+					width,
+				}}
+			>
+				<DisabledCell
+					hasValidFrontmatter={hasValidFrontmatter ?? true}
+					doesColumnHaveFrontmatterKey={frontmatterKey !== null}
+				/>
+			</div>
 		);
 	}
 
