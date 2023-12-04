@@ -15,6 +15,8 @@ import { getAssignedPropertyType } from "./obsidian-utils";
 import { ObsidianPropertyType } from "./types";
 import { isExternalLink, isUrlLink } from "../link-and-path/link-predicates";
 import { extractWikiLinkComponents } from "../link-and-path/markdown-link-utils";
+import { isNumber } from "../match";
+import { parseDateTime } from "../date/date-validation";
 
 export const deserializeFrontmatterForCell = (
 	app: App,
@@ -144,7 +146,10 @@ export const deserializeFrontmatterForCell = (
 			};
 		}
 		case CellType.DATE: {
-			if (typeof frontmatterValue !== "string")
+			if (
+				typeof frontmatterValue !== "string" ||
+				parseDateTime(frontmatterValue) === null
+			)
 				return {
 					newCell: createDateCell(id, {
 						hasValidFrontmatter: false,
