@@ -304,8 +304,8 @@ export default function FilterMenu({
 		onUpdate(id, { text });
 	}
 
-	function onCheckboxChange(id: string, text: string) {
-		onUpdate(id, { text });
+	function onCheckboxChange(id: string, value: boolean) {
+		onUpdate(id, { value });
 	}
 
 	function onDateFilterOptionChange(id: string, option: DateFilterOption) {
@@ -432,14 +432,12 @@ export default function FilterMenu({
 								}
 								case CellType.CHECKBOX: {
 									const { value } = filter as CheckboxFilter;
+									console.log(value);
 									inputNode = (
 										<CheckboxFilterSelect
 											value={value}
 											onChange={(newValue) =>
-												onCheckboxChange(
-													id,
-													newValue.toString()
-												)
+												onCheckboxChange(id, newValue)
 											}
 										/>
 									);
