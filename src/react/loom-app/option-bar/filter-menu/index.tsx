@@ -432,7 +432,6 @@ export default function FilterMenu({
 								}
 								case CellType.CHECKBOX: {
 									const { value } = filter as CheckboxFilter;
-									console.log(value);
 									inputNode = (
 										<CheckboxFilterSelect
 											value={value}
