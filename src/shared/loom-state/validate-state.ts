@@ -223,7 +223,7 @@ const CheckboxConditionUnion = Union(
 const CheckboxFilter = BaseFilter.extend({
 	type: Literal(CellType.CHECKBOX),
 	condition: CheckboxConditionUnion,
-	text: String,
+	value: Boolean,
 });
 
 const TagFilterConditionUnion = Union(
