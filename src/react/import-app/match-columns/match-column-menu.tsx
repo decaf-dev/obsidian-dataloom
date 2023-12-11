@@ -5,7 +5,7 @@ import { ColumnMatch } from "../types";
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
 import Divider from "src/react/shared/divider";
 import { NEW_COLUMN_ID } from "../constants";
-import { Column } from "src/shared/loom-state/types/loom-state";
+import { CellType, Column } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	id: string;
@@ -33,23 +33,31 @@ export default function MatchColumnMenu({
 			position={position}
 			openDirection="bottom-left"
 		>
-			{columns.map((column) => {
-				const { id, content, type } = column;
-				const isDisabled = columnMatches.some(
-					(match) => match.columnId === id
-				);
+			{columns
+				.filter(
+					(column) =>
+						column.type !== CellType.SOURCE &&
+						column.type !== CellType.SOURCE_FILE &&
+						column.type !== CellType.LAST_EDITED_TIME &&
+						column.type !== CellType.CREATION_TIME
+				)
+				.map((column) => {
+					const { id, content, type } = column;
+					const isDisabled = columnMatches.some(
+						(match) => match.columnId === id
+					);
 
-				return (
-					<MenuItem
-						key={id}
-						name={content}
-						isDisabled={isDisabled}
-						lucideId={getIconIdForCellType(type)}
-						onClick={() => onColumnClick(id)}
-						isSelected={id === selectedColumnId}
-					/>
-				);
-			})}
+					return (
+						<MenuItem
+							key={id}
+							name={content}
+							isDisabled={isDisabled}
+							lucideId={getIconIdForCellType(type)}
+							onClick={() => onColumnClick(id)}
+							isSelected={id === selectedColumnId}
+						/>
+					);
+				})}
 			<Divider />
 			<MenuItem
 				name="Match as new"
