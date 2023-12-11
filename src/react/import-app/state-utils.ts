@@ -6,6 +6,14 @@ import {
 	createDateCell,
 	createMultiTagCell,
 	createTagCell,
+	createCheckboxCell,
+	createLastEditedTimeCell,
+	createCreationTimeCell,
+	createSourceCell,
+	createSourceFileCell,
+	createFileCell,
+	createEmbedCell,
+	createNumberCell,
 } from "src/shared/loom-state/loom-state-factory";
 import {
 	Cell,
@@ -83,39 +91,62 @@ export const addImportData = (
 				if (match) {
 					const { importColumnIndex } = match;
 					content = importRow[importColumnIndex].trim();
-
-					//TODO THIS BUILD: handle all cell types
-
-					if (type === CellType.TAG) {
-						const { cell, newTags } = findTagCell(
-							columnTags,
-							columnId,
-							content
-						);
-						newCell = cell;
-						columnTags.push(...newTags);
-					} else if (type === CellType.MULTI_TAG) {
-						const { cell, newTags } = findMultiTagCell(
-							columnTags,
-							columnId,
-							content
-						);
-						newCell = cell;
-						columnTags.push(...newTags);
-					} else if (type === CellType.DATE) {
-						const cell = findDateCell(
-							columnId,
-							content,
-							dateFormat,
-							dateFormatSeparator
-						);
-						newCell = cell;
-					}
 				}
-				if (!newCell) {
+
+				if (type === CellType.TAG) {
+					const { cell, newTags } = findTagCell(
+						columnTags,
+						columnId,
+						content
+					);
+					newCell = cell;
+					columnTags.push(...newTags);
+				} else if (type === CellType.MULTI_TAG) {
+					const { cell, newTags } = findMultiTagCell(
+						columnTags,
+						columnId,
+						content
+					);
+					newCell = cell;
+					columnTags.push(...newTags);
+				} else if (type === CellType.DATE) {
+					const cell = findDateCell(
+						columnId,
+						content,
+						dateFormat,
+						dateFormatSeparator
+					);
+					newCell = cell;
+				} else if (type === CellType.CHECKBOX) {
+					newCell = createCheckboxCell(columnId, {
+						value: content.toLowerCase() === "true" ? true : false,
+					});
+				} else if (type === CellType.NUMBER) {
+					newCell = createNumberCell(columnId, {
+						value: parseFloat(content),
+					});
+				} else if (type === CellType.EMBED) {
+					newCell = createEmbedCell(columnId, {
+						pathOrUrl: content,
+					});
+				} else if (type === CellType.FILE) {
+					newCell = createFileCell(columnId, {
+						path: content,
+					});
+				} else if (type === CellType.CREATION_TIME) {
+					newCell = createCreationTimeCell(columnId);
+				} else if (type === CellType.LAST_EDITED_TIME) {
+					newCell = createLastEditedTimeCell(columnId);
+				} else if (type === CellType.SOURCE) {
+					newCell = createSourceCell(columnId);
+				} else if (type === CellType.SOURCE_FILE) {
+					newCell = createSourceFileCell(columnId);
+				} else if (type === CellType.TEXT) {
 					newCell = createTextCell(columnId, {
 						content,
 					});
+				} else {
+					throw new Error("Unhandled cell type");
 				}
 				nextCells.push(newCell);
 			});
