@@ -90,7 +90,10 @@ export const addImportData = (
 				let newCell: Cell | null = null;
 				if (match) {
 					const { importColumnIndex } = match;
-					content = importRow[importColumnIndex].trim();
+					content = importRow[importColumnIndex];
+					if (content !== undefined && content !== null) {
+						content = content.trim();
+					}
 				}
 
 				if (type === CellType.TAG) {
