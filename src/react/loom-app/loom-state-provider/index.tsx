@@ -130,16 +130,16 @@ export default function LoomStateProvider({
 	}, [reactAppId, loomFile, app]);
 
 	React.useEffect(() => {
-		async function handleRefreshEvent(file: TFile) {
+		async function handleRefreshEvent(file: TFile, pluginVersion: string) {
 			if (file.path === loomFile.path) {
 				const fileData = await app.vault.read(loomFile);
 
 				try {
-					const state = deserializeState(fileData, "8.15.9");
+					const state = deserializeState(fileData, pluginVersion);
 					setLoomState({
 						state,
 						shouldSaveToDisk: false,
-						shouldSaveFrontmatter: true,
+						shouldSaveFrontmatter: false,
 						time: Date.now(),
 					});
 				} catch (err) {

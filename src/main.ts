@@ -302,7 +302,7 @@ export default class DataLoomPlugin extends Plugin {
 			this.app.vault.on("modify", async (file: TAbstractFile) => {
 				if (file instanceof TFile) {
 					if (file.extension === LOOM_EXTENSION) {
-						EventManager.getInstance().emit("app-refresh-by-file", file);
+						EventManager.getInstance().emit("app-refresh-by-file", file, this.manifest.version);
 					}
 				}
 			})
