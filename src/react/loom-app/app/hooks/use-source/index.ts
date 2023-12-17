@@ -21,6 +21,7 @@ export const useSource = () => {
 		return JSON.stringify(columns.map((column) => column.frontmatterKey));
 	}, [columns]);
 
+	//TODO fix double update on file modify
 	const updateRowsFromSources = React.useCallback(
 		(fromObsidianEvent = true) => {
 			logger("updateRowsFromSources called");

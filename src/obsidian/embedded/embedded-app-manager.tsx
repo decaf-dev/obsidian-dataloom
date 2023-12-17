@@ -213,7 +213,12 @@ const handleSave = async (
 	await app.vault.modify(file, serialized);
 
 	//Trigger an event to refresh the other open views of this file
-	EventManager.getInstance().emit("app-refresh", file.path, appId, state);
+	EventManager.getInstance().emit(
+		"app-refresh-by-state",
+		file.path,
+		appId,
+		state
+	);
 };
 
 /**
