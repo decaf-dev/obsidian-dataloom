@@ -114,7 +114,7 @@ export default class DataLoomView extends TextFileView {
 
 		//Trigger an event to refresh the other open views of this file
 		EventManager.getInstance().emit(
-			"app-refresh",
+			"app-refresh-by-state",
 			this.file.path,
 			appId,
 			state

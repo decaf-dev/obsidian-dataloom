@@ -6,6 +6,8 @@ import { useLogger } from "src/shared/logger";
 import { sortRows } from "src/shared/loom-state/sort-rows";
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
 import EventManager from "src/shared/event/event-manager";
+import { TFile } from "obsidian";
+import { deserializeState } from "src/data/serialize-state";
 
 interface Props {
 	initialState: LoomState;
@@ -75,6 +77,8 @@ export default function LoomStateProvider({
 	const logger = useLogger();
 	const { reactAppId, loomFile, app } = useAppMount();
 
+	const [error, setError] = React.useState<unknown>(null);
+
 	// React.useEffect(() => {
 	// 	const jsonSizeInBytes = new TextEncoder().encode(
 	// 		JSON.stringify(history)
@@ -114,10 +118,46 @@ export default function LoomStateProvider({
 			}
 		}
 
-		EventManager.getInstance().on("app-refresh", handleRefreshEvent);
+		EventManager.getInstance().on(
+			"app-refresh-by-state",
+			handleRefreshEvent
+		);
 		return () =>
-			EventManager.getInstance().off("app-refresh", handleRefreshEvent);
+			EventManager.getInstance().off(
+				"app-refresh-by-state",
+				handleRefreshEvent
+			);
 	}, [reactAppId, loomFile, app]);
+
+	React.useEffect(() => {
+		async function handleRefreshEvent(file: TFile, pluginVersion: string) {
+			if (file.path === loomFile.path) {
+				const fileData = await app.vault.read(loomFile);
+
+				try {
+					const state = deserializeState(fileData, pluginVersion);
+					setLoomState({
+						state,
+						shouldSaveToDisk: false,
+						shouldSaveFrontmatter: false,
+						time: Date.now(),
+					});
+				} catch (err) {
+					setError(err);
+				}
+			}
+		}
+
+		EventManager.getInstance().on(
+			"app-refresh-by-file",
+			handleRefreshEvent
+		);
+		return () =>
+			EventManager.getInstance().off(
+				"app-refresh-by-file",
+				handleRefreshEvent
+			);
+	}, [loomFile, app]);
 
 	function handleToggleSearchBar() {
 		setSearchBarVisible((prevState) => !prevState);
@@ -198,6 +238,10 @@ export default function LoomStateProvider({
 		},
 		[position, history, loomState]
 	);
+
+	if (error) {
+		throw error;
+	}
 
 	return (
 		<LoomStateContext.Provider
