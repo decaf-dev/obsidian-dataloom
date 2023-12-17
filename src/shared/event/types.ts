@@ -4,6 +4,7 @@ export type DataLoomEvent =
 	| "add-row"
 	| "delete-row"
 	| "app-refresh-by-state"
+	| "app-refresh-by-file"
 	| "file-frontmatter-change"
 	| "file-delete"
 	| "folder-delete"
