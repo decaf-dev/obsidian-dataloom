@@ -3,7 +3,7 @@ export type DataLoomEvent =
 	| "delete-column"
 	| "add-row"
 	| "delete-row"
-	| "app-refresh"
+	| "app-refresh-by-state"
 	| "file-frontmatter-change"
 	| "file-delete"
 	| "folder-delete"

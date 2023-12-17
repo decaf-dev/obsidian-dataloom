@@ -114,9 +114,15 @@ export default function LoomStateProvider({
 			}
 		}
 
-		EventManager.getInstance().on("app-refresh", handleRefreshEvent);
+		EventManager.getInstance().on(
+			"app-refresh-by-state",
+			handleRefreshEvent
+		);
 		return () =>
-			EventManager.getInstance().off("app-refresh", handleRefreshEvent);
+			EventManager.getInstance().off(
+				"app-refresh-by-state",
+				handleRefreshEvent
+			);
 	}, [reactAppId, loomFile, app]);
 
 	function handleToggleSearchBar() {

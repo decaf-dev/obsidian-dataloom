@@ -59,7 +59,7 @@ export default class ImportModal extends Modal {
 
 		//Trigger an event to refresh the other open views of this file
 		EventManager.getInstance().emit(
-			"app-refresh",
+			"app-refresh-by-state",
 			this.loomFile.path,
 			"", //No app id. Target all views of this file
 			state

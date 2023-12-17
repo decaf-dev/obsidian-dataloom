@@ -53,7 +53,7 @@ export const handleFileRename = async (
 			await file.vault.modify(loomFile, serializeState(updatedState));
 
 			EventManager.getInstance().emit(
-				"app-refresh",
+				"app-refresh-by-state",
 				loomFile.path,
 				-1, //update all looms that match this path
 				updatedState
@@ -62,8 +62,7 @@ export const handleFileRename = async (
 	}
 	if (totalLinksUpdated > 0) {
 		new Notice(
-			`Updated ${totalLinksUpdated} link${
-				totalLinksUpdated > 1 ? "s" : ""
+			`Updated ${totalLinksUpdated} link${totalLinksUpdated > 1 ? "s" : ""
 			} in ${numFilesUpdated} loom file${numFilesUpdated > 1 ? "s" : ""}.`
 		);
 	}
