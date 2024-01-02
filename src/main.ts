@@ -31,10 +31,11 @@ import EventManager from "./shared/event/event-manager";
 import { getAssignedPropertyType } from "./shared/frontmatter/obsidian-utils";
 import { handleFileRename } from "./data/main-utils";
 import { getBasename } from "./shared/link-and-path/file-path-utils";
-import Logger, { ILogLevel } from "js-logger";
+import Logger from "js-logger";
+import { LOG_LEVEL_OFF, stringToLogLevel } from "./shared/logger";
 
 export interface DataLoomSettings {
-	debugLevel: ILogLevel;
+	logLevel: string;
 	createAtObsidianAttachmentFolder: boolean;
 	customFolderForNewFiles: string;
 	removeMarkdownOnExport: boolean;
@@ -48,7 +49,7 @@ export interface DataLoomSettings {
 }
 
 export const DEFAULT_SETTINGS: DataLoomSettings = {
-	debugLevel: Logger.OFF,
+	logLevel: LOG_LEVEL_OFF,
 	createAtObsidianAttachmentFolder: false,
 	customFolderForNewFiles: "",
 	removeMarkdownOnExport: true,
@@ -70,8 +71,12 @@ export default class DataLoomPlugin extends Plugin {
 	 * This can be when the plugin is enabled or Obsidian is first opened.
 	 */
 	async onload() {
-		Logger.useDefaults();
 		await this.loadSettings();
+
+		Logger.useDefaults();
+
+		const logLevel = stringToLogLevel(this.settings.logLevel);
+		Logger.setLevel(logLevel);
 
 		this.registerView(
 			DATA_LOOM_VIEW,

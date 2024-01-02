@@ -1,21 +1,46 @@
-import React from "react";
-import { useAppSelector } from "src/redux/hooks";
+import Logger, { ILogLevel } from "js-logger";
 
-export const log = (shouldDebug: boolean, message: string, args = {}) => {
-	if (shouldDebug) {
-		console.log(message);
-		if (Object.keys(args).length !== 0) console.log(args);
+export const LOG_LEVEL_OFF = "off";
+export const LOG_LEVEL_ERROR = "error";
+export const LOG_LEVEL_WARN = "warn";
+export const LOG_LEVEL_INFO = "info";
+export const LOG_LEVEL_DEBUG = "debug";
+export const LOG_LEVEL_TRACE = "trace";
+
+export const logLevelToString = (level: ILogLevel) => {
+	switch (level) {
+		case Logger.OFF:
+			return LOG_LEVEL_OFF;
+		case Logger.ERROR:
+			return LOG_LEVEL_ERROR;
+		case Logger.WARN:
+			return LOG_LEVEL_WARN;
+		case Logger.INFO:
+			return LOG_LEVEL_INFO;
+		case Logger.DEBUG:
+			return LOG_LEVEL_DEBUG;
+		case Logger.TRACE:
+			return LOG_LEVEL_TRACE;
+		default:
+			throw new Error("Unhandled log level");
 	}
-};
+}
 
-export const useLogger = () => {
-	const { shouldDebug } = useAppSelector((state) => state.global.settings);
-
-	const logger = React.useCallback(
-		(message: string, args?: Record<string, any>) =>
-			log(shouldDebug, message, args),
-		[shouldDebug]
-	);
-
-	return logger;
-};
+export const stringToLogLevel = (value: string) => {
+	switch (value) {
+		case LOG_LEVEL_OFF:
+			return Logger.OFF;
+		case LOG_LEVEL_ERROR:
+			return Logger.ERROR;
+		case LOG_LEVEL_WARN:
+			return Logger.WARN;
+		case LOG_LEVEL_INFO:
+			return Logger.INFO;
+		case LOG_LEVEL_DEBUG:
+			return Logger.DEBUG;
+		case LOG_LEVEL_TRACE:
+			return Logger.TRACE;
+		default:
+			throw new Error(`Unhandled log level: ${value}`);
+	}
+}
