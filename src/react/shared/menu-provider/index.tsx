@@ -151,7 +151,7 @@ export default function MenuProvider({ children }: Props) {
 				prevRequests.filter((request) => request.menuId !== id)
 			);
 		},
-		[logger, openMenus, focusMenuTrigger]
+		[openMenus, focusMenuTrigger]
 	);
 
 	const handleRequestClose = React.useCallback(
@@ -168,7 +168,7 @@ export default function MenuProvider({ children }: Props) {
 				handleClose(id);
 			}
 		},
-		[logger, setCloseRequests, handleClose, openMenus]
+		[setCloseRequests, handleClose, openMenus]
 	);
 
 	const handlePositionUpdate = React.useCallback(

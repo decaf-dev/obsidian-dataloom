@@ -34,5 +34,5 @@ export const useColumnEvents = () => {
 				handleColumnDeleteEvent
 			);
 		};
-	}, [doCommand, logger, reactAppId, app]);
+	}, [doCommand, reactAppId, app]);
 };

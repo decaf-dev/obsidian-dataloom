@@ -33,7 +33,7 @@ export const useRow = () => {
 				doCommand(new RowInsertCommand(rowId, "above"));
 			}
 		},
-		[doCommand, logger, loomState]
+		[doCommand, loomState]
 	);
 
 	const handleRowInsertBelowClick = React.useCallback(
@@ -45,7 +45,7 @@ export const useRow = () => {
 				doCommand(new RowInsertCommand(rowId, "below"));
 			}
 		},
-		[doCommand, logger, loomState]
+		[doCommand, loomState]
 	);
 
 	const handleRowReorder = React.useCallback(

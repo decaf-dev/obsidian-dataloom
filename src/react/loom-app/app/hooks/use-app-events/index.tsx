@@ -15,7 +15,7 @@ export const useAppEvents = () => {
 			}
 			onRequestClose(topMenu.id, "save-and-close");
 		},
-		[topMenu, logger, onRequestClose, onClearMenuTriggerFocus]
+		[topMenu, onRequestClose, onClearMenuTriggerFocus]
 	);
 	return {
 		onClick: handleClick,

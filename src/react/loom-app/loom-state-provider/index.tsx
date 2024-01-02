@@ -98,7 +98,7 @@ export default function LoomStateProvider({
 			logger("LoomStateProvider saving state to disk!");
 			onSaveState(reactAppId, state, shouldSaveFrontmatter);
 		}
-	}, [logger, reactAppId, loomState, onSaveState]);
+	}, [reactAppId, loomState, onSaveState]);
 
 	React.useEffect(() => {
 		function handleRefreshEvent(

@@ -42,7 +42,7 @@ const useLockTableScroll = () => {
 			);
 			tableContainerEl.style.overflow = "auto";
 		}
-	}, [topMenu, logger, reactAppId]);
+	}, [topMenu, reactAppId]);
 };
 
 /**
@@ -112,7 +112,7 @@ const useCloseOnOutsideClick = () => {
 
 		return () =>
 			EventManager.getInstance().off("global-click", handleGlobalClick);
-	}, [app, logger, onCloseAll]);
+	}, [app, onCloseAll]);
 };
 
 /**
@@ -150,5 +150,5 @@ const useCloseOnObsidianModalOpen = () => {
 		observer.observe(document.body, { childList: true });
 
 		return () => observer.disconnect();
-	}, [logger, onCloseAll]);
+	}, [onCloseAll]);
 };

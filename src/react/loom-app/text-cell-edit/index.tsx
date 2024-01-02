@@ -85,7 +85,7 @@ export default function TextCellEdit({
 			if (localValue !== value) onChange(localValue);
 			onClose();
 		}
-	}, [logger, value, localValue, closeRequest, onClose, onChange]);
+	}, [value, localValue, closeRequest, onClose, onChange]);
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
 		const el = e.target as HTMLTextAreaElement;
