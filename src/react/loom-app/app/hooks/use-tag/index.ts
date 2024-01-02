@@ -1,4 +1,3 @@
-import { useLogger } from "src/shared/logger";
 import { Color, Tag } from "src/shared/loom-state/types/loom-state";
 import TagDeleteCommand from "src/shared/loom-state/commands/tag-delete-command";
 import { useLoomState } from "../../../loom-state-provider";
@@ -11,7 +10,6 @@ import React from "react";
 
 export const useTag = () => {
 	const { doCommand } = useLoomState();
-	const logger = useLogger();
 
 	const handleTagAdd = React.useCallback(
 		(cellId: string, columnId: string, markdown: string, color: Color) => {

@@ -4,7 +4,7 @@ import Text from "src/react/shared/text";
 import { TFile } from "obsidian";
 
 import "./styles.css";
-import { useLogger } from "src/shared/logger";
+import Logger from "js-logger";
 
 interface Props {
 	index: number;
@@ -18,7 +18,6 @@ const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
 		{ index, file, isHighlighted, onItemClick }: Props,
 		ref
 	) {
-		const logger = useLogger();
 		const handleClick = React.useCallback(
 			(e: React.MouseEvent) => {
 				//Stop propagation so the menu doesn't remove the focus class
@@ -29,7 +28,7 @@ const SuggestItem = React.forwardRef<HTMLDivElement, Props>(
 		);
 
 		function handleKeyDown(e: React.KeyboardEvent) {
-			logger("SuggestItem handleKeyDown");
+			Logger.trace("SuggestItem handleKeyDown");
 			if (e.key === "Enter") {
 				//Don't insert a new line
 				e.preventDefault();

@@ -9,7 +9,6 @@ import {
 	LoomMenuCloseRequestType,
 	LoomMenuLevel,
 } from "./types";
-import { useLogger } from "src/shared/logger";
 import { getPositionFromEl } from "./utils";
 import EventManager from "src/shared/event/event-manager";
 
@@ -67,8 +66,6 @@ export default function MenuProvider({ children }: Props) {
 	>([]);
 	const [focusedMenuTrigger, setFocusedMenuTrigger] =
 		React.useState<FocusedMenuTrigger | null>(null);
-
-	const logger = useLogger();
 
 	const clearMenuTriggerFocus = React.useCallback(() => {
 		logger("MenuProvider clearMenuTriggerFocus");

@@ -1,7 +1,6 @@
 import React from "react";
 
 import { Source } from "src/shared/loom-state/types/loom-state";
-import { useLogger } from "src/shared/logger";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import SourceAddCommand from "src/shared/loom-state/commands/source-add-command";
 import SourceDeleteCommand from "src/shared/loom-state/commands/source-delete-command";
@@ -10,10 +9,7 @@ import { useAppMount } from "src/react/loom-app/app-mount-provider";
 import EventManager from "src/shared/event/event-manager";
 import SourceUpdateCommand from "src/shared/loom-state/commands/source-update-command";
 
-import { useWhatChanged } from '@simbathesailor/use-what-changed';
-
 export const useSource = () => {
-	const logger = useLogger();
 	const { app } = useAppMount();
 	const { doCommand, loomState, setLoomState } = useLoomState();
 

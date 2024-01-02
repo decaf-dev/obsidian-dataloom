@@ -15,13 +15,11 @@ import {
 	moveMenuFocusDown,
 	moveMenuFocusUp,
 } from "src/react/loom-app/app/hooks/use-focus/move-focus";
-import { useLogger } from "src/shared/logger";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
 import { useMenuOperations } from "src/react/shared/menu-provider/hooks";
 
 export default function useFocus() {
-	const logger = useLogger();
 	const { reactAppId } = useAppMount();
 	const { loomState } = useLoomState();
 	const { topMenu, onClearMenuTriggerFocus } = useMenuOperations();

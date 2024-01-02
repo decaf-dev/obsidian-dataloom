@@ -13,7 +13,6 @@ import {
 	isSurroundedByDoubleBrackets,
 	removeClosingBracket,
 } from "./utils";
-import { useLogger } from "src/shared/logger";
 
 import "./styles.css";
 import {
@@ -55,7 +54,6 @@ export default function TextCellEdit({
 		null
 	);
 	const inputRef = React.useRef<HTMLTextAreaElement | null>(null);
-	const logger = useLogger();
 
 	usePlaceCursorAtEnd(inputRef, localValue);
 

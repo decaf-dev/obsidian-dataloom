@@ -26,7 +26,6 @@ import {
 	isWindowsRedoDown,
 	isWindowsUndoDown,
 } from "src/shared/keyboard-event";
-import { useLogger } from "src/shared/logger";
 import { useSource } from "./hooks/use-source";
 
 import "src/react/global.css";
@@ -35,7 +34,6 @@ import { useAppEvents } from "./hooks/use-app-events";
 import { useMenuEvents } from "./hooks/use-menu-events";
 
 export default function App() {
-	const logger = useLogger();
 	const { reactAppId, isMarkdownView } = useAppMount();
 
 	const { loomState, resizingColumnId, searchText, onRedo, onUndo } =

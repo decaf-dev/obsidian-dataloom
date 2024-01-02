@@ -2,7 +2,6 @@ import React from "react";
 
 import { LoomState } from "src/shared/loom-state/types/loom-state";
 import LoomStateCommand from "src/shared/loom-state/commands/loom-state-command";
-import { useLogger } from "src/shared/logger";
 import { sortRows } from "src/shared/loom-state/sort-rows";
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
 import EventManager from "src/shared/event/event-manager";
@@ -74,7 +73,6 @@ export default function LoomStateProvider({
 	]);
 	const [position, setPosition] = React.useState(0);
 
-	const logger = useLogger();
 	const { reactAppId, loomFile, app } = useAppMount();
 
 	const [error, setError] = React.useState<unknown>(null);

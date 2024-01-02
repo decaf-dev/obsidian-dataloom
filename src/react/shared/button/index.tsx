@@ -1,6 +1,5 @@
 import React from "react";
 
-import { useLogger } from "src/shared/logger";
 import Stack from "../stack";
 import { ButtonSize, ButtonVariant } from "./types";
 
@@ -33,7 +32,6 @@ export default function Button({
 	onClick,
 	onMouseDown,
 }: ButtonProps) {
-	const logger = useLogger();
 	function handleClick() {
 		onClick?.();
 	}

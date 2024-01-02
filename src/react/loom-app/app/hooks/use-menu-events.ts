@@ -1,6 +1,5 @@
 import React from "react";
 
-import { useLogger } from "src/shared/logger";
 import { useAppMount } from "../../app-mount-provider";
 import _ from "lodash";
 import { useMenuOperations } from "src/react/shared/menu-provider/hooks";
@@ -16,7 +15,6 @@ export const useMenuEvents = () => {
 const useLockTableScroll = () => {
 	const { reactAppId } = useAppMount();
 	const { topMenu } = useMenuOperations();
-	const logger = useLogger();
 	const hasLockRef = React.useRef(false);
 
 	React.useEffect(() => {
@@ -98,8 +96,6 @@ const useCloseOnOutsideClick = () => {
 	const { app } = useAppMount();
 	const { onCloseAll } = useMenuOperations();
 
-	const logger = useLogger();
-
 	React.useEffect(() => {
 		function handleGlobalClick() {
 			logger("handleGlobalClick");
@@ -125,8 +121,6 @@ const useCloseOnOutsideClick = () => {
 const useCloseOnObsidianModalOpen = () => {
 	const hasCloseLock = React.useRef(false);
 	const { topMenu, onCloseAll } = useMenuOperations();
-
-	const logger = useLogger();
 
 	React.useEffect(() => {
 		if (!topMenu) hasCloseLock.current = false;

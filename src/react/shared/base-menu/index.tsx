@@ -5,7 +5,6 @@ import { numToPx } from "src/shared/conversion";
 
 import { LoomMenuPosition } from "../menu/types";
 
-import { useLogger } from "src/shared/logger";
 import { useMenuOperations } from "../menu-provider/hooks";
 
 import "./styles.css";
@@ -39,7 +38,6 @@ const BaseMenu = React.forwardRef<HTMLDivElement, Props>(
 		}: Props,
 		ref
 	) => {
-		const logger = useLogger();
 		const { topMenu, onRequestClose, onClose } = useMenuOperations();
 
 		function handleClick(e: React.MouseEvent) {
