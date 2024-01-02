@@ -10,6 +10,8 @@ import { useAppMount } from "src/react/loom-app/app-mount-provider";
 import EventManager from "src/shared/event/event-manager";
 import SourceUpdateCommand from "src/shared/loom-state/commands/source-update-command";
 
+import { useWhatChanged } from '@simbathesailor/use-what-changed';
+
 export const useSource = () => {
 	const logger = useLogger();
 	const { app } = useAppMount();
@@ -17,11 +19,9 @@ export const useSource = () => {
 
 	const { sources, columns } = loomState.model;
 
-	const frontmatterKeyHash = React.useMemo(() => {
-		return JSON.stringify(columns.map((column) => column.frontmatterKey));
-	}, [columns]);
+	const frontmatterKeyHash = JSON.stringify(columns.map((column) => column.frontmatterKey));
+	const sourcesHash = JSON.stringify(sources);
 
-	//TODO fix double update on file modify
 	const updateRowsFromSources = React.useCallback(
 		(fromObsidianEvent = true) => {
 			logger("updateRowsFromSources called");
@@ -67,7 +67,7 @@ export const useSource = () => {
 
 	React.useEffect(() => {
 		updateRowsFromSources(false);
-	}, [sources, frontmatterKeyHash, updateRowsFromSources]);
+	}, [sourcesHash, frontmatterKeyHash, updateRowsFromSources]);
 
 	React.useEffect(() => {
 		EventManager.getInstance().on("file-create", updateRowsFromSources);
