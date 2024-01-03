@@ -52,7 +52,7 @@ export const formatMessageForLogger = (...args: string[]): FormattedLogMessage =
 
 	if (args.length === 4) {
 		const data = args[3];
-		if (Object.keys(args).length !== 0) {
+		if (Object.keys(data).length !== 0) {
 			return { message: `[${fileName}:${functionName}] ${message}`, data: data as unknown as Record<string, unknown> };
 		}
 	}
