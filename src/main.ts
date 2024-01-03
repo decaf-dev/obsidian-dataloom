@@ -34,6 +34,7 @@ import { getBasename } from "./shared/link-and-path/file-path-utils";
 import Logger from "js-logger";
 import { formatMessageForLogger, stringToLogLevel } from "./shared/logger";
 import { LOG_LEVEL_OFF } from "./shared/logger/constants";
+import LastSavedManager from "./shared/last-saved-manager";
 
 export interface DataLoomSettings {
 	logLevel: string;
@@ -327,9 +328,18 @@ export default class DataLoomPlugin extends Plugin {
 
 		this.registerEvent(
 			this.app.vault.on("modify", async (file: TAbstractFile) => {
-				Logger.trace(FILE_NAME, "registerEvent", "vault.modify event called");
+				Logger.trace(FILE_NAME, "registerEvent", "vault.modify event called", file);
 				if (file instanceof TFile) {
 					if (file.extension === LOOM_EXTENSION) {
+						const lastSavedFile = LastSavedManager.getInstance().getLastSavedFile();
+						if (lastSavedFile === file.path) {
+							const now = Date.now();
+							const lastTime = LastSavedManager.getInstance().getLastSavedTime();
+							if (now - lastTime < 5000) {
+								Logger.debug(FILE_NAME, "registerEvent", "vault.modify event ignored because it file was saved less than 5 seconds ago");
+								return;
+							}
+						}
 						EventManager.getInstance().emit("app-refresh-by-file", file, this.manifest.version);
 					}
 				}

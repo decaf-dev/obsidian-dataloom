@@ -10,6 +10,7 @@ import ErrorApp from "src/react/error-app";
 import DeserializationError from "src/data/deserialization-error";
 import { serializeFrontmatter } from "src/data/serialize-frontmatter";
 import EventManager from "src/shared/event/event-manager";
+import LastSavedManager from "src/shared/last-saved-manager";
 
 export const DATA_LOOM_VIEW = "dataloom";
 
@@ -104,6 +105,8 @@ export default class DataLoomView extends TextFileView {
 		}
 
 		const serialized = serializeState(state);
+
+		LastSavedManager.getInstance().setLastSavedFile(this.file.path);
 
 		//We need this for when we open a new tab of the same file
 		//so that the data is up to date
