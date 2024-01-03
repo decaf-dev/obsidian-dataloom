@@ -44,3 +44,7 @@ export const stringToLogLevel = (value: string) => {
 			throw new Error(`Unhandled log level: ${value}`);
 	}
 }
+
+export const formatMessageForLogger = (fileName: string, functionName: string, message: string) => {
+	return `[${fileName}:${functionName}] ${message}`;
+}
