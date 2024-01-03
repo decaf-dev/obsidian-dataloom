@@ -18,6 +18,7 @@ import {
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
 import { useMenuOperations } from "src/react/shared/menu-provider/hooks";
+import Logger from "js-logger";
 
 export default function useFocus() {
 	const { reactAppId } = useAppMount();
@@ -25,7 +26,7 @@ export default function useFocus() {
 	const { topMenu, onClearMenuTriggerFocus } = useMenuOperations();
 
 	function handleKeyDown(e: React.KeyboardEvent) {
-		logger("useFocus handleKeyDown");
+		Logger.trace("useFocus handleKeyDown");
 
 		if (e.key === "Tab") {
 			onClearMenuTriggerFocus();

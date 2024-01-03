@@ -4,6 +4,7 @@ import { useAppMount } from "../../app-mount-provider";
 import _ from "lodash";
 import { useMenuOperations } from "src/react/shared/menu-provider/hooks";
 import EventManager from "src/shared/event/event-manager";
+import Logger from "js-logger";
 
 export const useMenuEvents = () => {
 	useCloseOnOutsideClick();
@@ -33,11 +34,11 @@ const useLockTableScroll = () => {
 			const { parentComponentId } = topMenu;
 			if (!parentComponentId?.includes("cell")) return;
 
-			logger("useLockTableScroll cell menu opened. locking table scroll");
+			Logger.debug("useLockTableScroll cell menu opened. locking table scroll");
 			tableContainerEl.style.overflow = "hidden";
 		} else {
 			hasLockRef.current = false;
-			logger(
+			Logger.debug(
 				"useLockTableScroll cell menu closed. unlocking table scroll"
 			);
 			tableContainerEl.style.overflow = "auto";
@@ -98,7 +99,7 @@ const useCloseOnOutsideClick = () => {
 
 	React.useEffect(() => {
 		function handleGlobalClick() {
-			logger("handleGlobalClick");
+			Logger.trace("handleGlobalClick");
 
 			//If the user selected text and then released outside the app
 			//we don't want to close the menu
@@ -137,7 +138,7 @@ const useCloseOnObsidianModalOpen = () => {
 			for (const entry of entries) {
 				if (entry.target === document.body) {
 					if (hasOpenModal()) {
-						logger("obsidian modal opened. closing all menus");
+						Logger.info("obsidian modal opened. closing all menus");
 						hasCloseLock.current = true;
 						onCloseAll();
 						break;

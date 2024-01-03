@@ -1,3 +1,4 @@
+import Logger from "js-logger";
 import React from "react";
 import { useMenuOperations } from "src/react/shared/menu-provider/hooks";
 
@@ -6,7 +7,7 @@ export const useAppEvents = () => {
 		useMenuOperations();
 	const handleClick = React.useCallback(
 		(e: React.MouseEvent) => {
-			logger("App handleClick");
+			Logger.trace("App handleClick");
 			e.stopPropagation();
 
 			if (!topMenu) {

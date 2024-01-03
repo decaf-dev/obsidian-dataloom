@@ -4,6 +4,7 @@ import Stack from "../stack";
 import { ButtonSize, ButtonVariant } from "./types";
 
 import "./styles.css";
+import Logger from "js-logger";
 
 interface ButtonProps {
 	isDisabled?: boolean;
@@ -37,7 +38,7 @@ export default function Button({
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent) {
-		logger("Button handleKeyDown");
+		Logger.trace("Button handleKeyDown");
 		if (e.key === "Enter") {
 			//Stop click event
 			e.preventDefault();

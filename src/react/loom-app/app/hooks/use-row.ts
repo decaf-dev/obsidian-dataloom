@@ -5,28 +5,29 @@ import React from "react";
 import RowInsertCommand from "src/shared/loom-state/commands/row-insert-command";
 import { confirmSortOrderChange } from "src/shared/sort-utils";
 import RowReorderCommand from "src/shared/loom-state/commands/row-reorder-command";
+import Logger from "js-logger";
 
 export const useRow = () => {
 	const { doCommand, loomState } = useLoomState();
 
 	const handleRowDeleteClick = React.useCallback(
 		(rowId: string) => {
-			logger("handleRowDeleteClick", {
+			Logger.trace("handleRowDeleteClick", {
 				rowId,
 			});
 			doCommand(new RowDeleteCommand({ id: rowId }));
 		},
-		[doCommand, logger]
+		[doCommand]
 	);
 
 	const handleNewRowClick = React.useCallback(() => {
-		logger("handleNewRowClick");
+		Logger.trace("handleNewRowClick");
 		doCommand(new RowAddCommand());
-	}, [doCommand, logger]);
+	}, [doCommand]);
 
 	const handleRowInsertAboveClick = React.useCallback(
 		(rowId: string) => {
-			logger("handleRowInsertAboveClick", {
+			Logger.trace("handleRowInsertAboveClick", {
 				rowId,
 			});
 			if (confirmSortOrderChange(loomState)) {
@@ -38,7 +39,7 @@ export const useRow = () => {
 
 	const handleRowInsertBelowClick = React.useCallback(
 		(rowId: string) => {
-			logger("handleRowInsertBelowClick", {
+			Logger.trace("handleRowInsertBelowClick", {
 				rowId,
 			});
 			if (confirmSortOrderChange(loomState)) {
@@ -50,13 +51,13 @@ export const useRow = () => {
 
 	const handleRowReorder = React.useCallback(
 		(dragId: string, targetId: string) => {
-			logger("handleRowReorder", {
+			Logger.trace("handleRowReorder", {
 				dragId,
 				targetId,
 			});
 			doCommand(new RowReorderCommand(dragId, targetId));
 		},
-		[doCommand, logger]
+		[doCommand]
 	);
 
 	return {

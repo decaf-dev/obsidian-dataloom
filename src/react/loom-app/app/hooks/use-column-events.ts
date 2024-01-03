@@ -5,6 +5,7 @@ import { isEventForThisApp } from "src/shared/event/utils";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import { useAppMount } from "../../app-mount-provider";
 import EventManager from "src/shared/event/event-manager";
+import Logger from "js-logger";
 
 export const useColumnEvents = () => {
 	const { reactAppId, app } = useAppMount();
@@ -13,14 +14,14 @@ export const useColumnEvents = () => {
 	React.useEffect(() => {
 		function handleColumnAddEvent() {
 			if (isEventForThisApp(reactAppId)) {
-				logger("handleColumnAddEvent");
+				Logger.trace("handleColumnAddEvent");
 				doCommand(new ColumnAddCommand());
 			}
 		}
 
 		function handleColumnDeleteEvent() {
 			if (isEventForThisApp(reactAppId)) {
-				logger("handleColumnDeleteEvent");
+				Logger.trace("handleColumnDeleteEvent");
 				doCommand(new ColumnDeleteCommand({ last: true }));
 			}
 		}

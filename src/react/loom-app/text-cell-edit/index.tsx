@@ -28,6 +28,7 @@ import {
 	isMarkdownFile,
 	stripFileExtension,
 } from "src/shared/link-and-path/file-path-utils";
+import Logger from "js-logger";
 
 interface Props {
 	cellId: string;
@@ -81,7 +82,7 @@ export default function TextCellEdit({
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
-			logger("TextCellEdit onClose");
+			Logger.trace("TextCellEdit onClose");
 			if (localValue !== value) onChange(localValue);
 			onClose();
 		}
@@ -89,7 +90,7 @@ export default function TextCellEdit({
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
 		const el = e.target as HTMLTextAreaElement;
-		logger("TextCellEdit handleKeyDown");
+		Logger.trace("TextCellEdit handleKeyDown");
 
 		//Prevent enter from creating a new line
 		//unless shift or alt is pressed
@@ -151,7 +152,7 @@ export default function TextCellEdit({
 	}
 
 	function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-		logger("TextCellEdit handleTextareaChange");
+		Logger.trace("TextCellEdit handleTextareaChange");
 
 		const inputValue = e.target.value;
 		let newValue = inputValue;

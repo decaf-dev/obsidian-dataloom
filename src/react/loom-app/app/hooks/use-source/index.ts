@@ -8,6 +8,7 @@ import updateStateFromSources from "src/shared/loom-state/update-state-from-sour
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
 import EventManager from "src/shared/event/event-manager";
 import SourceUpdateCommand from "src/shared/loom-state/commands/source-update-command";
+import Logger from "js-logger";
 
 export const useSource = () => {
 	const { app } = useAppMount();
@@ -20,7 +21,7 @@ export const useSource = () => {
 
 	const updateRowsFromSources = React.useCallback(
 		(fromObsidianEvent = true) => {
-			logger("updateRowsFromSources called");
+			Logger.trace("updateRowsFromSources called");
 			setLoomState((prevState) => {
 				if (fromObsidianEvent) {
 					if (Date.now() - prevState.time < 1000) {
@@ -58,7 +59,7 @@ export const useSource = () => {
 				};
 			});
 		},
-		[app, setLoomState, logger]
+		[app, setLoomState]
 	);
 
 	React.useEffect(() => {
@@ -113,17 +114,17 @@ export const useSource = () => {
 	}, [updateRowsFromSources, app]);
 
 	function handleSourceAdd(source: Source) {
-		logger("handleSourceAdd");
+		Logger.trace("handleSourceAdd");
 		doCommand(new SourceAddCommand(source));
 	}
 
 	function handleSourceDelete(id: string) {
-		logger("handleSourceDelete", { id });
+		Logger.trace("handleSourceDelete", { id });
 		doCommand(new SourceDeleteCommand(id));
 	}
 
 	function handleSourceUpdate(id: string, data: Partial<Source>) {
-		logger("handleSourceUpdate", {
+		Logger.trace("handleSourceUpdate", {
 			id,
 			data,
 		});
