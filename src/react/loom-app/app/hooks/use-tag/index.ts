@@ -1,4 +1,3 @@
-import { useLogger } from "src/shared/logger";
 import { Color, Tag } from "src/shared/loom-state/types/loom-state";
 import TagDeleteCommand from "src/shared/loom-state/commands/tag-delete-command";
 import { useLoomState } from "../../../loom-state-provider";
@@ -8,14 +7,14 @@ import TagCellRemoveCommand from "src/shared/loom-state/commands/tag-cell-remove
 import TagCellAddCommand from "src/shared/loom-state/commands/tag-cell-add-command";
 import TagCellMultipleRemoveCommand from "src/shared/loom-state/commands/tag-cell-multiple-remove-command";
 import React from "react";
+import Logger from "js-logger";
 
 export const useTag = () => {
 	const { doCommand } = useLoomState();
-	const logger = useLogger();
 
 	const handleTagAdd = React.useCallback(
 		(cellId: string, columnId: string, markdown: string, color: Color) => {
-			logger("handleTagAdd", {
+			Logger.trace("handleTagAdd", {
 				cellId,
 				columnId,
 				markdown,
@@ -23,29 +22,29 @@ export const useTag = () => {
 			});
 			doCommand(new TagAddCommand(cellId, columnId, markdown, color));
 		},
-		[doCommand, logger]
+		[doCommand]
 	);
 
 	const handleTagCellAdd = React.useCallback(
 		(cellId: string, tagId: string) => {
-			logger("handleTagCellAdd", {
+			Logger.trace("handleTagCellAdd", {
 				cellId,
 				tagId,
 			});
 			doCommand(new TagCellAddCommand(cellId, tagId));
 		},
-		[doCommand, logger]
+		[doCommand]
 	);
 
 	const handleTagCellRemove = React.useCallback(
 		(cellId: string, tagId: string) => {
-			logger("handleTagCellRemove", {
+			Logger.trace("handleTagCellRemove", {
 				cellId,
 				tagId,
 			});
 			doCommand(new TagCellRemoveCommand(cellId, tagId));
 		},
-		[doCommand, logger]
+		[doCommand]
 	);
 
 	const handleTagChange = React.useCallback(
@@ -55,36 +54,36 @@ export const useTag = () => {
 			data: Partial<Tag>,
 			isPartial = true
 		) => {
-			logger("handleTagChange", {
+			Logger.trace("handleTagChange", {
 				columnId,
 				tagId,
 				data,
 			});
 			doCommand(new TagUpdateCommand(columnId, tagId, data, isPartial));
 		},
-		[doCommand, logger]
+		[doCommand]
 	);
 
 	const handleTagCellMultipleRemove = React.useCallback(
 		(cellId: string, tagIds: string[]) => {
-			logger("handleTagCellMultipleRemove", {
+			Logger.trace("handleTagCellMultipleRemove", {
 				cellId,
 				tagIds,
 			});
 			doCommand(new TagCellMultipleRemoveCommand(cellId, tagIds));
 		},
-		[doCommand, logger]
+		[doCommand]
 	);
 
 	const handleTagDeleteClick = React.useCallback(
 		(columnId: string, tagId: string) => {
-			logger("handleTagDeleteClick", {
+			Logger.trace("handleTagDeleteClick", {
 				columnId,
 				tagId,
 			});
 			doCommand(new TagDeleteCommand(columnId, tagId));
 		},
-		[doCommand, logger]
+		[doCommand]
 	);
 
 	return {

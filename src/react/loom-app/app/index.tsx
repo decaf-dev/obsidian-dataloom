@@ -26,16 +26,15 @@ import {
 	isWindowsRedoDown,
 	isWindowsUndoDown,
 } from "src/shared/keyboard-event";
-import { useLogger } from "src/shared/logger";
 import { useSource } from "./hooks/use-source";
 
 import "src/react/global.css";
 import "./styles.css";
 import { useAppEvents } from "./hooks/use-app-events";
 import { useMenuEvents } from "./hooks/use-menu-events";
+import Logger from "js-logger";
 
 export default function App() {
-	const logger = useLogger();
 	const { reactAppId, isMarkdownView } = useAppMount();
 
 	const { loomState, resizingColumnId, searchText, onRedo, onUndo } =
@@ -98,7 +97,7 @@ export default function App() {
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent) {
-		logger("App handleKeyDown");
+		Logger.trace("App handleKeyDown");
 		//Stop propagation to the global event
 		e.stopPropagation();
 		if (isWindowsRedoDown(e) || isMacRedoDown(e)) {

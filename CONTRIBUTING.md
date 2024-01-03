@@ -36,15 +36,25 @@ Install dependencies
 bun install
 ```
 
-Create a symbolic link from the cloned repository to your Obsidan vault.
+Build the project. This will create a `dist` folder
+
+```shell
+bun run build
+```
+
+Create a symbolic link from the cloned repository to your Obsidan vault. Be sure to link the `dist` folder
 
 Note: I recommend making a new Obsidian vault just for development.
 
 ```shell
-ln -s <repo-path> <dev-vault-path>/.obsidian/plugins
+ln -s <repository-path>/dist <development-vault-path>/.obsidian/plugins/obsidian-dataloom
 ```
 
-e.g. `ln -s /users/trey/desktop/obsidian-dataloom /users/trey/desktop/test-vault/.obsidian/plugins`
+e.g
+
+```shell
+ln -s /users/trey/desktop/obsidian-dataloom/dist /users/trey/desktop/test-vault/.obsidian/plugins/obsidian-dataloom
+```
 
 Checkout the `dev` branch and make a child branch off of it. The branching strategy is `<feature>` -> `dev` -> `master`.
 

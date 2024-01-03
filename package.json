@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-dataloom",
-	"version": "8.15.10",
+	"version": "8.15.11",
 	"description": "Weave together data from diverse sources into different views. Inspired by Excel Spreadsheets and Notion.so.",
 	"main": "main.js",
 	"scripts": {
@@ -36,7 +36,7 @@
 		"@typescript-eslint/parser": "^5.59.8",
 		"babel-jest": "^29.0.2",
 		"builtin-modules": "^3.2.0",
-		"esbuild": "^0.15.7",
+		"esbuild": "^0.19.11",
 		"eslint": "^8.41.0",
 		"eslint-config-react-app": "^7.0.1",
 		"eslint-plugin-react-hooks": "^4.6.0",
@@ -58,6 +58,7 @@
 		"dayjs": "^1.11.10",
 		"fuzzysort": "^2.0.4",
 		"htmlparser2": "^9.0.0",
+		"js-logger": "^1.6.1",
 		"jsondiffpatch": "^0.5.0",
 		"lucide": "^0.241.0",
 		"markdown-it": "^13.0.1",

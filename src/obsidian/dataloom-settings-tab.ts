@@ -2,6 +2,9 @@ import { PluginSettingTab, App } from "obsidian";
 import { Setting } from "obsidian";
 import DataLoomPlugin from "../main";
 import { renderBuyMeACoffeeBadge } from "./shared";
+import Logger from "js-logger";
+import { LOG_LEVEL_DEBUG, LOG_LEVEL_ERROR, LOG_LEVEL_INFO, LOG_LEVEL_OFF, LOG_LEVEL_TRACE, LOG_LEVEL_WARN } from "src/shared/logger/constants";
+import { stringToLogLevel } from "src/shared/logger";
 
 export default class DataLoomSettingsTab extends PluginSettingTab {
 	plugin: DataLoomPlugin;
@@ -208,17 +211,26 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 	}
 
 	private renderDebugSettings(containerEl: HTMLElement) {
-		new Setting(containerEl).setName("Debug").setHeading();
+		new Setting(containerEl).setName("Debugging").setHeading();
 		new Setting(containerEl)
-			.setName("Debug mode")
+			.setName("Log level")
 			.setDesc(
-				"Turns on console.log for plugin events. This is useful for troubleshooting."
+				"Sets the log level. Please use trace to see all log messages."
 			)
-			.addToggle((cb) => {
-				cb.setValue(this.plugin.settings.shouldDebug).onChange(
+			.addDropdown((cb) => {
+				cb.addOptions({
+					[LOG_LEVEL_OFF]: "Off",
+					[LOG_LEVEL_ERROR]: "Error",
+					[LOG_LEVEL_WARN]: "Warn",
+					[LOG_LEVEL_INFO]: "Info",
+					[LOG_LEVEL_DEBUG]: "Debug",
+					[LOG_LEVEL_TRACE]: "Trace"
+				})
+				cb.setValue(this.plugin.settings.logLevel).onChange(
 					async (value) => {
-						this.plugin.settings.shouldDebug = value;
+						this.plugin.settings.logLevel = value;
 						await this.plugin.saveSettings();
+						Logger.setLevel(stringToLogLevel(value));
 					}
 				);
 			});

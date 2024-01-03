@@ -13,7 +13,6 @@ import {
 	isSurroundedByDoubleBrackets,
 	removeClosingBracket,
 } from "./utils";
-import { useLogger } from "src/shared/logger";
 
 import "./styles.css";
 import {
@@ -29,6 +28,7 @@ import {
 	isMarkdownFile,
 	stripFileExtension,
 } from "src/shared/link-and-path/file-path-utils";
+import Logger from "js-logger";
 
 interface Props {
 	cellId: string;
@@ -55,7 +55,6 @@ export default function TextCellEdit({
 		null
 	);
 	const inputRef = React.useRef<HTMLTextAreaElement | null>(null);
-	const logger = useLogger();
 
 	usePlaceCursorAtEnd(inputRef, localValue);
 
@@ -83,15 +82,15 @@ export default function TextCellEdit({
 
 	React.useEffect(() => {
 		if (closeRequest !== null) {
-			logger("TextCellEdit onClose");
+			Logger.trace("TextCellEdit onClose");
 			if (localValue !== value) onChange(localValue);
 			onClose();
 		}
-	}, [logger, value, localValue, closeRequest, onClose, onChange]);
+	}, [value, localValue, closeRequest, onClose, onChange]);
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
 		const el = e.target as HTMLTextAreaElement;
-		logger("TextCellEdit handleKeyDown");
+		Logger.trace("TextCellEdit handleKeyDown");
 
 		//Prevent enter from creating a new line
 		//unless shift or alt is pressed
@@ -153,7 +152,7 @@ export default function TextCellEdit({
 	}
 
 	function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-		logger("TextCellEdit handleTextareaChange");
+		Logger.trace("TextCellEdit handleTextareaChange");
 
 		const inputValue = e.target.value;
 		let newValue = inputValue;

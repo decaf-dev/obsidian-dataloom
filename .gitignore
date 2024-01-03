@@ -24,9 +24,6 @@ main.css.map
 main.js
 main.js.map
 
-# Ignore only the build styles.css
-/styles.css
-
 # obsidian
 data.json
 
@@ -36,4 +33,4 @@ pnpm-lock.yaml
 *.log
 .DS_Store
 
-
+dist/

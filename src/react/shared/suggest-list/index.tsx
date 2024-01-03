@@ -11,10 +11,10 @@ import CreateButton from "./create-button";
 import Divider from "../divider";
 import Padding from "../padding";
 
-import { useLogger } from "src/shared/logger";
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
 
 import "./styles.css";
+import Logger from "js-logger";
 
 interface ContentProps {
 	showInput?: boolean;
@@ -44,7 +44,6 @@ export function SuggestList({
 	const [highlightIndex, setHighlightIndex] = React.useState(-1);
 
 	const { app } = useAppMount();
-	const logger = useLogger();
 
 	React.useEffect(() => {
 		setLocalFilterValue(filterValue ?? "");
@@ -79,7 +78,7 @@ export function SuggestList({
 	}
 
 	function handleKeyDown() {
-		logger("SuggestMenuContent handleKeyDown");
+		Logger.trace("SuggestMenuContent handleKeyDown");
 		const focusedEl = document.activeElement;
 		if (!focusedEl) return;
 

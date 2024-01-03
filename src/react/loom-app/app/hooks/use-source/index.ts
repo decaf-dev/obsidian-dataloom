@@ -1,7 +1,6 @@
 import React from "react";
 
 import { Source } from "src/shared/loom-state/types/loom-state";
-import { useLogger } from "src/shared/logger";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import SourceAddCommand from "src/shared/loom-state/commands/source-add-command";
 import SourceDeleteCommand from "src/shared/loom-state/commands/source-delete-command";
@@ -9,28 +8,26 @@ import updateStateFromSources from "src/shared/loom-state/update-state-from-sour
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
 import EventManager from "src/shared/event/event-manager";
 import SourceUpdateCommand from "src/shared/loom-state/commands/source-update-command";
+import Logger from "js-logger";
+
+const HOOK_NAME = "useSource";
 
 export const useSource = () => {
-	const logger = useLogger();
 	const { app } = useAppMount();
 	const { doCommand, loomState, setLoomState } = useLoomState();
 
 	const { sources, columns } = loomState.model;
 
-	const frontmatterKeyHash = React.useMemo(() => {
-		return JSON.stringify(columns.map((column) => column.frontmatterKey));
-	}, [columns]);
+	const frontmatterKeyHash = JSON.stringify(columns.map((column) => column.frontmatterKey));
+	const sourcesHash = JSON.stringify(sources);
 
-	//TODO fix double update on file modify
 	const updateRowsFromSources = React.useCallback(
 		(fromObsidianEvent = true) => {
-			logger("updateRowsFromSources called");
+			Logger.trace(HOOK_NAME, "updateRowsFromSources", "called");
 			setLoomState((prevState) => {
 				if (fromObsidianEvent) {
 					if (Date.now() - prevState.time < 1000) {
-						// console.log(
-						// 	"updateRowsFromSources called in the last 1000ms. returning..."
-						// );
+						Logger.trace(HOOK_NAME, "updateRowsFromSource", "event ignored because it was called in the last 1000ms.")
 						return prevState;
 					}
 				}
@@ -62,12 +59,12 @@ export const useSource = () => {
 				};
 			});
 		},
-		[app, setLoomState, logger]
+		[app, setLoomState]
 	);
 
 	React.useEffect(() => {
 		updateRowsFromSources(false);
-	}, [sources, frontmatterKeyHash, updateRowsFromSources]);
+	}, [sourcesHash, frontmatterKeyHash, updateRowsFromSources]);
 
 	React.useEffect(() => {
 		EventManager.getInstance().on("file-create", updateRowsFromSources);
@@ -117,17 +114,17 @@ export const useSource = () => {
 	}, [updateRowsFromSources, app]);
 
 	function handleSourceAdd(source: Source) {
-		logger("handleSourceAdd");
+		Logger.trace("handleSourceAdd");
 		doCommand(new SourceAddCommand(source));
 	}
 
 	function handleSourceDelete(id: string) {
-		logger("handleSourceDelete", { id });
+		Logger.trace("handleSourceDelete", { id });
 		doCommand(new SourceDeleteCommand(id));
 	}
 
 	function handleSourceUpdate(id: string, data: Partial<Source>) {
-		logger("handleSourceUpdate", {
+		Logger.trace("handleSourceUpdate", {
 			id,
 			data,
 		});

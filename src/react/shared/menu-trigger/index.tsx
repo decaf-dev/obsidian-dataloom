@@ -6,9 +6,9 @@ import {
 	isWindowsRedoDown,
 	isWindowsUndoDown,
 } from "src/shared/keyboard-event";
-import { useLogger } from "src/shared/logger";
 import { useMenuOperations } from "../menu-provider/hooks";
 import { LoomMenuLevel } from "../menu-provider/types";
+import Logger from "js-logger";
 
 interface Props {
 	ariaLabel?: string;
@@ -43,11 +43,10 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 		}: Props,
 		ref
 	) => {
-		const logger = useLogger();
 		const { topMenu, canOpen, onRequestClose } = useMenuOperations();
 
 		function handleKeyDown(e: React.KeyboardEvent) {
-			logger("MenuTrigger handleKeyDown");
+			Logger.trace("MenuTrigger handleKeyDown");
 
 			if (e.key === "Enter") {
 				e.stopPropagation();
@@ -90,7 +89,7 @@ const MenuTrigger = React.forwardRef<HTMLDivElement, Props>(
 		}
 
 		function handleClick(e: React.MouseEvent) {
-			logger("MenuTrigger handleClick");
+			Logger.trace("MenuTrigger handleClick");
 			//Don't propagate to the app or global event handlers
 			e.stopPropagation();
 			onClick?.(e);
