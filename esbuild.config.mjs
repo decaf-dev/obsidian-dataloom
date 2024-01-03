@@ -13,10 +13,11 @@ if you want to view the source, please visit the github repository of this plugi
 const prod = process.argv[2] === "production";
 const tools = process.argv[2] === "tools";
 
-let envPlugin = {
-	name: "watch-handler",
+const rebuildPlugin = {
+	name: "rebuild-handler",
 	setup(build) {
-		build.onEnd(async (result) => {
+		build.onEnd(async () => {
+			await fs.promises.rename("dist/main.css", "dist/styles.css");
 			await fs.promises.copyFile(
 				path.join(path.resolve(), "manifest.json"),
 				path.join(path.resolve(), "dist", "manifest.json")
@@ -68,16 +69,12 @@ const context = await esbuild.context({
 	},
 	treeShaking: true,
 	outdir: "dist",
-	plugins: [envPlugin],
+	plugins: [rebuildPlugin],
 });
 
 if (prod) {
 	await context.rebuild();
-	await fs.promises.rename("dist/main.css", "dist/styles.css");
-	await fs.promises.copyFile(
-		path.join(path.resolve(), "manifest.json"),
-		path.join(path.resolve(), "dist", "manifest.json")
-	);
+	process.exit(0);
 } else {
 	await context.watch();
 }
