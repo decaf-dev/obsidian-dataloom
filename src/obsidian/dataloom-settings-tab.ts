@@ -218,12 +218,12 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 			)
 			.addDropdown((cb) => {
 				cb.addOptions({
-					"Off": LOG_LEVEL_OFF,
-					"Error": LOG_LEVEL_ERROR,
-					"Warn": LOG_LEVEL_WARN,
-					"Info": LOG_LEVEL_INFO,
-					"Debug": LOG_LEVEL_DEBUG,
-					"Trace": LOG_LEVEL_TRACE
+					[LOG_LEVEL_OFF]: "Off",
+					[LOG_LEVEL_ERROR]: "Error",
+					[LOG_LEVEL_WARN]: "Warn",
+					[LOG_LEVEL_INFO]: "Info",
+					[LOG_LEVEL_DEBUG]: "Debug",
+					[LOG_LEVEL_TRACE]: "Trace"
 				})
 				cb.setValue(this.plugin.settings.logLevel).onChange(
 					async (value) => {
