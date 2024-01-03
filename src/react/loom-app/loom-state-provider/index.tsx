@@ -2,12 +2,12 @@ import React from "react";
 
 import { LoomState } from "src/shared/loom-state/types/loom-state";
 import LoomStateCommand from "src/shared/loom-state/commands/loom-state-command";
-import { useLogger } from "src/shared/logger";
 import { sortRows } from "src/shared/loom-state/sort-rows";
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
 import EventManager from "src/shared/event/event-manager";
 import { TFile } from "obsidian";
 import { deserializeState } from "src/data/serialize-state";
+import Logger from "js-logger";
 
 interface Props {
 	initialState: LoomState;
@@ -74,7 +74,6 @@ export default function LoomStateProvider({
 	]);
 	const [position, setPosition] = React.useState(0);
 
-	const logger = useLogger();
 	const { reactAppId, loomFile, app } = useAppMount();
 
 	const [error, setError] = React.useState<unknown>(null);
@@ -97,10 +96,10 @@ export default function LoomStateProvider({
 
 		const { shouldSaveToDisk, state, shouldSaveFrontmatter } = loomState;
 		if (shouldSaveToDisk) {
-			logger("LoomStateProvider saving state to disk!");
+			Logger.info("LoomStateProvider saving state to disk!");
 			onSaveState(reactAppId, state, shouldSaveFrontmatter);
 		}
-	}, [logger, reactAppId, loomState, onSaveState]);
+	}, [reactAppId, loomState, onSaveState]);
 
 	React.useEffect(() => {
 		function handleRefreshEvent(
@@ -165,14 +164,14 @@ export default function LoomStateProvider({
 
 	const undo = React.useCallback(() => {
 		if (position > 0) {
-			logger("handleUndoEvent");
+			Logger.trace("handleUndoEvent");
 
 			const currentPosition = position - 1;
 			setPosition(currentPosition);
 
 			const command = history[position];
 			if (command !== null) {
-				logger(command.constructor.name + ".undo");
+				Logger.trace(command.constructor.name + ".undo");
 				let newState = command.undo(loomState.state);
 				if (command.shouldSortRows) {
 					newState = sortRows(newState);
@@ -185,18 +184,18 @@ export default function LoomStateProvider({
 				});
 			}
 		}
-	}, [position, history, loomState, logger]);
+	}, [position, history, loomState]);
 
 	const redo = React.useCallback(() => {
 		if (position < history.length - 1) {
-			logger("handleRedoEvent");
+			Logger.trace("handleRedoEvent");
 
 			const currentPosition = position + 1;
 			setPosition(currentPosition);
 
 			const command = history[currentPosition];
 			if (command !== null) {
-				logger(command.constructor.name + ".redo");
+				Logger.trace(command.constructor.name + ".redo");
 				let newState = command.redo(loomState.state);
 				if (command.shouldSortRows) {
 					newState = sortRows(newState);
@@ -209,7 +208,7 @@ export default function LoomStateProvider({
 				});
 			}
 		}
-	}, [position, history, loomState, logger]);
+	}, [position, history, loomState]);
 
 	const doCommand = React.useCallback(
 		(command: LoomStateCommand) => {

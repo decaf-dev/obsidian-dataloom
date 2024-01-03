@@ -1,24 +1,23 @@
-import { useLogger } from "src/shared/logger";
 import { useLoomState } from "../../loom-state-provider";
 import TableSettingsUpdateCommand from "src/shared/loom-state/commands/table-settings-update-command";
 import React from "react";
+import Logger from "js-logger";
 
 export const useTableSettings = () => {
-	const logger = useLogger();
 	const { doCommand } = useLoomState();
 
 	const handleFrozenColumnsChange = React.useCallback(
 		(numColumns: number) => {
-			logger("handleFrozenColumnsChange", { numColumns });
+			Logger.trace("handleFrozenColumnsChange", { numColumns });
 			doCommand(
 				new TableSettingsUpdateCommand("numFrozenColumns", numColumns)
 			);
 		},
-		[doCommand, logger]
+		[doCommand]
 	);
 
 	function handleCalculationRowToggle(value: boolean) {
-		logger("handleCalculationRowToggle");
+		Logger.trace("handleCalculationRowToggle");
 		doCommand(new TableSettingsUpdateCommand("showCalculationRow", value));
 	}
 

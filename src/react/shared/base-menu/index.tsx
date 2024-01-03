@@ -5,10 +5,10 @@ import { numToPx } from "src/shared/conversion";
 
 import { LoomMenuPosition } from "../menu/types";
 
-import { useLogger } from "src/shared/logger";
 import { useMenuOperations } from "../menu-provider/hooks";
 
 import "./styles.css";
+import Logger from "js-logger";
 
 interface Props {
 	id: string;
@@ -39,11 +39,10 @@ const BaseMenu = React.forwardRef<HTMLDivElement, Props>(
 		}: Props,
 		ref
 	) => {
-		const logger = useLogger();
 		const { topMenu, onRequestClose, onClose } = useMenuOperations();
 
 		function handleClick(e: React.MouseEvent) {
-			logger("Menu handleClick");
+			Logger.trace("Menu handleClick");
 			//Don't propagate to the app
 			//it will close the menu again
 			e.stopPropagation();
@@ -54,7 +53,7 @@ const BaseMenu = React.forwardRef<HTMLDivElement, Props>(
 		}
 
 		function handleKeyDown(e: React.KeyboardEvent) {
-			logger("Menu handleKeyDown");
+			Logger.trace("Menu handleKeyDown");
 			if (topMenu === null) return;
 
 			if (e.key === "Enter") {

@@ -18,6 +18,7 @@ import ErrorApp from "src/react/error-app";
 import DeserializationError from "src/data/deserialization-error";
 import { serializeFrontmatter } from "src/data/serialize-frontmatter";
 import EventManager from "src/shared/event/event-manager";
+import LastSavedManager from "src/shared/last-saved-manager";
 
 interface EmbeddedApp {
 	id: string;
@@ -205,6 +206,8 @@ const handleSave = async (
 	state: LoomState,
 	shouldSaveFrontmatter: boolean
 ) => {
+	LastSavedManager.getInstance().setLastSavedFile(file.path);
+
 	if (shouldSaveFrontmatter) {
 		await serializeFrontmatter(app, state);
 	}

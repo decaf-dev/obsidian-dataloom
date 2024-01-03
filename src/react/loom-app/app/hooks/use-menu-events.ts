@@ -1,10 +1,10 @@
 import React from "react";
 
-import { useLogger } from "src/shared/logger";
 import { useAppMount } from "../../app-mount-provider";
 import _ from "lodash";
 import { useMenuOperations } from "src/react/shared/menu-provider/hooks";
 import EventManager from "src/shared/event/event-manager";
+import Logger from "js-logger";
 
 export const useMenuEvents = () => {
 	useCloseOnOutsideClick();
@@ -16,7 +16,6 @@ export const useMenuEvents = () => {
 const useLockTableScroll = () => {
 	const { reactAppId } = useAppMount();
 	const { topMenu } = useMenuOperations();
-	const logger = useLogger();
 	const hasLockRef = React.useRef(false);
 
 	React.useEffect(() => {
@@ -35,16 +34,16 @@ const useLockTableScroll = () => {
 			const { parentComponentId } = topMenu;
 			if (!parentComponentId?.includes("cell")) return;
 
-			logger("useLockTableScroll cell menu opened. locking table scroll");
+			Logger.debug("useLockTableScroll cell menu opened. locking table scroll");
 			tableContainerEl.style.overflow = "hidden";
 		} else {
 			hasLockRef.current = false;
-			logger(
+			Logger.debug(
 				"useLockTableScroll cell menu closed. unlocking table scroll"
 			);
 			tableContainerEl.style.overflow = "auto";
 		}
-	}, [topMenu, logger, reactAppId]);
+	}, [topMenu, reactAppId]);
 };
 
 /**
@@ -98,11 +97,9 @@ const useCloseOnOutsideClick = () => {
 	const { app } = useAppMount();
 	const { onCloseAll } = useMenuOperations();
 
-	const logger = useLogger();
-
 	React.useEffect(() => {
 		function handleGlobalClick() {
-			logger("handleGlobalClick");
+			Logger.trace("handleGlobalClick");
 
 			//If the user selected text and then released outside the app
 			//we don't want to close the menu
@@ -116,7 +113,7 @@ const useCloseOnOutsideClick = () => {
 
 		return () =>
 			EventManager.getInstance().off("global-click", handleGlobalClick);
-	}, [app, logger, onCloseAll]);
+	}, [app, onCloseAll]);
 };
 
 /**
@@ -125,8 +122,6 @@ const useCloseOnOutsideClick = () => {
 const useCloseOnObsidianModalOpen = () => {
 	const hasCloseLock = React.useRef(false);
 	const { topMenu, onCloseAll } = useMenuOperations();
-
-	const logger = useLogger();
 
 	React.useEffect(() => {
 		if (!topMenu) hasCloseLock.current = false;
@@ -143,7 +138,7 @@ const useCloseOnObsidianModalOpen = () => {
 			for (const entry of entries) {
 				if (entry.target === document.body) {
 					if (hasOpenModal()) {
-						logger("obsidian modal opened. closing all menus");
+						Logger.info("obsidian modal opened. closing all menus");
 						hasCloseLock.current = true;
 						onCloseAll();
 						break;
@@ -156,5 +151,5 @@ const useCloseOnObsidianModalOpen = () => {
 		observer.observe(document.body, { childList: true });
 
 		return () => observer.disconnect();
-	}, [logger, onCloseAll]);
+	}, [onCloseAll]);
 };
