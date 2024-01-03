@@ -45,6 +45,12 @@ export const stringToLogLevel = (value: string) => {
 	}
 }
 
-export const formatMessageForLogger = (fileName: string, functionName: string, message: string) => {
+export const formatMessageForLogger = (...args: string[]) => {
+	if (args.length < 3) {
+		return args[0];
+	}
+	const fileName = args[0];
+	const functionName = args[1];
+	const message = args[2];
 	return `[${fileName}:${functionName}] ${message}`;
 }
