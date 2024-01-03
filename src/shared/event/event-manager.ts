@@ -1,4 +1,7 @@
+import Logger from "js-logger";
 import { DataLoomEvent, EventCallback } from "./types";
+
+const CLASS_NAME = "EventManager";
 
 export default class EventManager {
 	private static instance: EventManager;
@@ -39,7 +42,7 @@ export default class EventManager {
 
 	// Method to trigger all callbacks associated with an event
 	public emit(eventName: DataLoomEvent, ...data: any[]): void {
-		// console.log("[EventManager] emiting event:", eventName);
+		Logger.trace(CLASS_NAME, "emit", `emiting ${eventName} event`, data);
 		if (!this.eventListeners[eventName]) {
 			return;
 		}
