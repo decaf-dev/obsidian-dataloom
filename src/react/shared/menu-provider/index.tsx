@@ -60,6 +60,8 @@ interface Props {
 	children: React.ReactNode;
 }
 
+const CLASS_NAME = "MenuProvider";
+
 export default function MenuProvider({ children }: Props) {
 	const [openMenus, setOpenMenus] = React.useState<LoomMenu[]>([]);
 	const [closeRequests, setCloseRequests] = React.useState<
@@ -69,7 +71,7 @@ export default function MenuProvider({ children }: Props) {
 		React.useState<FocusedMenuTrigger | null>(null);
 
 	const clearMenuTriggerFocus = React.useCallback(() => {
-		Logger.trace("MenuProvider: clearMenuTriggerFocus");
+		Logger.trace(CLASS_NAME, "clearMenuTriggerFocus", "called");
 		setFocusedMenuTrigger(null);
 	}, []);
 
@@ -95,20 +97,33 @@ export default function MenuProvider({ children }: Props) {
 			shouldFocusTriggerOnClose?: boolean;
 		}
 	) {
-		Logger.trace("MenuProvider handleOpenMenu");
+		Logger.trace(CLASS_NAME, "handleOpenMenu", "called");
 
 		const { name, shouldRequestOnClose, shouldFocusTriggerOnClose } =
 			options ?? {};
 
 		if (!triggerRef.current) {
-			Logger.trace("No trigger ref. Cannot open menu");
+			Logger.debug(
+				CLASS_NAME,
+				"handleOpenMenu",
+				"No trigger ref. Cannot open menu"
+			);
 			return;
 		}
 		if (!canOpen(level)) {
-			Logger.trace("Level is too low. Cannot open menu");
+			Logger.debug(
+				CLASS_NAME,
+				"handleOpenMenu",
+				"Level is too low. Cannot open menu"
+			);
 			return;
 		}
-		Logger.trace("MenuProvider opening menu", { level });
+		Logger.trace(
+			CLASS_NAME,
+			"handleOpenMenu",
+			"MenuProvider opening menu",
+			{ level }
+		);
 
 		const position = getPositionFromEl(triggerRef.current);
 		const menu = createMenu(parentComponentId, level, position, {
@@ -123,7 +138,7 @@ export default function MenuProvider({ children }: Props) {
 
 	const focusMenuTrigger = React.useCallback(
 		(parentComponentId: string, name?: string) => {
-			Logger.trace("MenuProvider focusMenuTrigger", {
+			Logger.trace(CLASS_NAME, "focusMenuTrigger", "called", {
 				parentComponentId,
 				name,
 			});
@@ -137,7 +152,7 @@ export default function MenuProvider({ children }: Props) {
 
 	const handleClose = React.useCallback(
 		(id: string) => {
-			Logger.trace("MenuProvider onClose");
+			Logger.trace(CLASS_NAME, "handleClose", "called", { id });
 
 			const menu = openMenus.find((menu) => menu.id === id);
 			if (!menu) throw new Error("Menu not found");
@@ -157,7 +172,7 @@ export default function MenuProvider({ children }: Props) {
 
 	const handleRequestClose = React.useCallback(
 		(id: string, type: LoomMenuCloseRequestType) => {
-			Logger.trace("MenuProvider onRequestClose", { type });
+			Logger.trace(CLASS_NAME, "onRequestClose", "called", { id, type });
 			const menu = openMenus.find((menu) => menu.id === id);
 			if (!menu) return;
 
@@ -174,7 +189,10 @@ export default function MenuProvider({ children }: Props) {
 
 	const handlePositionUpdate = React.useCallback(
 		(id: string, position: LoomMenuPosition) => {
-			Logger.trace("MenuProvider onPositionUpdate", { id, position });
+			Logger.trace(CLASS_NAME, "onPositionUpdate", "called", {
+				id,
+				position,
+			});
 			setOpenMenus((prevMenus) => {
 				return prevMenus.map((menu) => {
 					if (menu.id === id) {
@@ -222,7 +240,7 @@ export default function MenuProvider({ children }: Props) {
 	}
 
 	const handleCloseAll = React.useCallback(() => {
-		Logger.trace("MenuProvider onCloseAll");
+		Logger.trace(CLASS_NAME, "handleCloseAll", "called");
 		setOpenMenus((prevState) =>
 			prevState.filter((menu) => menu.shouldRequestOnClose)
 		);
@@ -248,6 +266,7 @@ export default function MenuProvider({ children }: Props) {
 	);
 
 	function handleCloseRequestClear(id: string) {
+		Logger.trace(CLASS_NAME, "handleCloseRequestClear", "called", { id });
 		setCloseRequests((prevRequests) =>
 			prevRequests.filter((request) => request.menuId !== id)
 		);
