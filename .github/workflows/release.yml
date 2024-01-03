@@ -25,6 +25,6 @@ jobs:
                   name: ${{  github.ref_name }}
                   tag_name: ${{ github.ref }}
                   files: |
-                      main.js
-                      manifest.json
-                      styles.css
+                      dist/main.js
+                      dist/manifest.json
+                      dist/styles.css
