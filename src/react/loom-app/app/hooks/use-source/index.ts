@@ -10,6 +10,8 @@ import EventManager from "src/shared/event/event-manager";
 import SourceUpdateCommand from "src/shared/loom-state/commands/source-update-command";
 import Logger from "js-logger";
 
+const HOOK_NAME = "useSource";
+
 export const useSource = () => {
 	const { app } = useAppMount();
 	const { doCommand, loomState, setLoomState } = useLoomState();
@@ -21,13 +23,11 @@ export const useSource = () => {
 
 	const updateRowsFromSources = React.useCallback(
 		(fromObsidianEvent = true) => {
-			Logger.trace("updateRowsFromSources called");
+			Logger.trace(HOOK_NAME, "updateRowsFromSources", "called");
 			setLoomState((prevState) => {
 				if (fromObsidianEvent) {
 					if (Date.now() - prevState.time < 1000) {
-						// console.log(
-						// 	"updateRowsFromSources called in the last 1000ms. returning..."
-						// );
+						Logger.trace(HOOK_NAME, "updateRowsFromSource", "event ignored because it was called in the last 1000ms.")
 						return prevState;
 					}
 				}
