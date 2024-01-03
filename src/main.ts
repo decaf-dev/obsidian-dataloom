@@ -32,7 +32,8 @@ import { getAssignedPropertyType } from "./shared/frontmatter/obsidian-utils";
 import { handleFileRename } from "./data/main-utils";
 import { getBasename } from "./shared/link-and-path/file-path-utils";
 import Logger from "js-logger";
-import { LOG_LEVEL_OFF, formatMessageForLogger, stringToLogLevel } from "./shared/logger";
+import { formatMessageForLogger, stringToLogLevel } from "./shared/logger";
+import { LOG_LEVEL_OFF } from "./shared/logger/constants";
 
 export interface DataLoomSettings {
 	logLevel: string;
@@ -78,7 +79,11 @@ export default class DataLoomPlugin extends Plugin {
 		Logger.useDefaults();
 
 		Logger.setHandler(function (messages) {
-			console.log(formatMessageForLogger(...messages));
+			const { message, data } = formatMessageForLogger(...messages);
+			console.log(message);
+			if (data) {
+				console.log(data);
+			}
 		});
 
 		const logLevel = stringToLogLevel(this.settings.logLevel);

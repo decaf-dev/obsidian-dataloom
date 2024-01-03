@@ -1,11 +1,7 @@
 import Logger, { ILogLevel } from "js-logger";
+import { LOG_LEVEL_OFF, LOG_LEVEL_ERROR, LOG_LEVEL_WARN, LOG_LEVEL_INFO, LOG_LEVEL_DEBUG, LOG_LEVEL_TRACE } from "./constants";
+import { FormattedLogMessage } from "./types";
 
-export const LOG_LEVEL_OFF = "off";
-export const LOG_LEVEL_ERROR = "error";
-export const LOG_LEVEL_WARN = "warn";
-export const LOG_LEVEL_INFO = "info";
-export const LOG_LEVEL_DEBUG = "debug";
-export const LOG_LEVEL_TRACE = "trace";
 
 export const logLevelToString = (level: ILogLevel) => {
 	switch (level) {
@@ -45,12 +41,21 @@ export const stringToLogLevel = (value: string) => {
 	}
 }
 
-export const formatMessageForLogger = (...args: string[]) => {
+export const formatMessageForLogger = (...args: string[]): FormattedLogMessage => {
 	if (args.length < 3) {
-		return args[0];
+		return { message: args[0], data: null };
 	}
+
 	const fileName = args[0];
 	const functionName = args[1];
 	const message = args[2];
-	return `[${fileName}:${functionName}] ${message}`;
+
+	if (args.length === 4) {
+		const data = args[3];
+		if (Object.keys(args).length !== 0) {
+			return { message: `[${fileName}:${functionName}] ${message}`, data: data as unknown as Record<string, unknown> };
+		}
+	}
+
+	return { message: `[${fileName}:${functionName}] ${message}`, data: null };
 }

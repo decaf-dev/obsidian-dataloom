@@ -3,7 +3,8 @@ import { Setting } from "obsidian";
 import DataLoomPlugin from "../main";
 import { renderBuyMeACoffeeBadge } from "./shared";
 import Logger from "js-logger";
-import { LOG_LEVEL_DEBUG, LOG_LEVEL_ERROR, LOG_LEVEL_INFO, LOG_LEVEL_OFF, LOG_LEVEL_TRACE, LOG_LEVEL_WARN, stringToLogLevel } from "src/shared/logger";
+import { LOG_LEVEL_DEBUG, LOG_LEVEL_ERROR, LOG_LEVEL_INFO, LOG_LEVEL_OFF, LOG_LEVEL_TRACE, LOG_LEVEL_WARN } from "src/shared/logger/constants";
+import { stringToLogLevel } from "src/shared/logger";
 
 export default class DataLoomSettingsTab extends PluginSettingTab {
 	plugin: DataLoomPlugin;
