@@ -8,6 +8,7 @@ import {
 	DateFormatSeparator,
 	NumberFormat,
 	PaddingSize,
+	SortDir
 } from "src/shared/loom-state/types/loom-state";
 import Stack from "src/react/shared/stack";
 import Padding from "src/react/shared/padding";
@@ -33,6 +34,7 @@ interface Props {
 	verticalPadding: PaddingSize;
 	horizontalPadding: PaddingSize;
 	aspectRatio: AspectRatio;
+	contentsSortDir: SortDir;
 	onBackClick: () => void;
 	onSubmenuChange: (value: SubmenuType) => void;
 }
@@ -51,6 +53,7 @@ export default function OptionSubmenu({
 	horizontalPadding,
 	title,
 	dateFormat,
+	contentsSortDir,
 	onBackClick,
 	onSubmenuChange,
 }: Props) {
@@ -164,6 +167,15 @@ export default function OptionSubmenu({
 								}
 							/>
 						</>
+					)}
+					{type === CellType.MULTI_TAG && (
+						<MenuItem
+							name="Contents sorting"
+							value={contentsSortDir}
+							onClick={() =>
+								onSubmenuChange(SubmenuType.CONTENTS_SORT_DIR)
+							}
+						/>
 					)}
 				</Stack>
 			</Padding>

@@ -71,6 +71,8 @@ import { getFileCellContent } from "src/shared/cell-content/file-cell-content";
 import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
 import DisabledCell from "../disabled-cell";
 
+import { sortByText } from "src/shared/sort-utils";
+
 interface BaseCellProps {
 	frontmatterKey: string | null;
 	aspectRatio: AspectRatio;
@@ -440,9 +442,11 @@ export default function BodyCellContainer(props: Props) {
 					}
 				};
 			} else {
-				const { tagIds } = props as MultiTagCellProps;
-				cellTags = columnTags.filter((tag) => tagIds.includes(tag.id));
+				const { tagIds, contentsSortDir } = props as MultiTagCellProps;
 
+				cellTags = columnTags.filter((tag) => tagIds.includes(tag.id));
+				cellTags.sort((a, b) => sortByText(a.content, b.content, contentsSortDir, false));
+				
 				handleMenuTriggerBackspaceDown = () => {
 					onTagCellMultipleRemove(id, tagIds);
 				};

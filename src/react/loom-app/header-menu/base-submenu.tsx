@@ -70,7 +70,8 @@ export default function BaseSubmenu({
 		columnType === CellType.EMBED ||
 		columnType === CellType.NUMBER ||
 		columnType === CellType.LAST_EDITED_TIME ||
-		columnType === CellType.CREATION_TIME;
+		columnType === CellType.CREATION_TIME||
+		columnType === CellType.MULTI_TAG;
 
 	return (
 		<Stack spacing="sm">

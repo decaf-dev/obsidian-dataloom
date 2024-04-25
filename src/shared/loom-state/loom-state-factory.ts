@@ -152,6 +152,7 @@ export const createColumn = (options?: {
 		horizontalPadding: PaddingSize.UNSET,
 		verticalPadding: PaddingSize.UNSET,
 		frontmatterKey,
+		contentsSortDir: SortDir.NONE
 	};
 };
 
@@ -355,14 +356,16 @@ export const createMultiTagCell = (
 	options?: {
 		tagIds?: string[];
 		hasValidFrontmatter?: boolean;
+		contentsSortDir?: SortDir;
 	}
 ): MultiTagCell => {
-	const { tagIds = [], hasValidFrontmatter = null } = options || {};
+	const { tagIds = [], hasValidFrontmatter = null, contentsSortDir = SortDir.NONE } = options || {};
 	return {
 		id: generateUuid(),
 		columnId,
 		tagIds,
 		hasValidFrontmatter,
+		contentsSortDir
 	};
 };
 

@@ -213,6 +213,7 @@ export const deserializeFrontmatterForCell = (
 				return {
 					newCell: createMultiTagCell(id, {
 						hasValidFrontmatter: false,
+						contentsSortDir: column.contentsSortDir
 					}),
 				};
 			}
@@ -238,6 +239,7 @@ export const deserializeFrontmatterForCell = (
 			const newCell = createMultiTagCell(id, {
 				tagIds: cellTagIds,
 				hasValidFrontmatter: true,
+				contentsSortDir: column.contentsSortDir
 			});
 			const nextTags = [...column.tags, ...newTags];
 			return {

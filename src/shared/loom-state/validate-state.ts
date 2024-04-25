@@ -344,6 +344,7 @@ const Column = Record({
 	aspectRatio: AspectRatioUnion,
 	horizontalPadding: PaddingSizeUnion,
 	verticalPadding: PaddingSizeUnion,
+	contentsSortDir: SortDirUnion
 });
 
 const BaseCell = Record({

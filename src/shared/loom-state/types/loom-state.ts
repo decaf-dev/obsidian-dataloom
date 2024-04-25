@@ -1,9 +1,9 @@
-/******* Type definitions for v8.15.6 *******/
+/******* Type definitions for v8.15.13 *******/
 
 import { ObsidianPropertyType } from "src/shared/frontmatter/types";
 
 /**
- * v8.15.6
+ * v8.15.13
  */
 export interface LoomState {
 	pluginVersion: string;
@@ -53,6 +53,7 @@ export interface Column {
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
 	frontmatterKey: string | null;
+	contentsSortDir: SortDir;
 }
 
 export interface Row {
@@ -106,6 +107,7 @@ export interface TagCell extends BaseCell {
 
 export interface MultiTagCell extends BaseCell {
 	tagIds: string[];
+	contentsSortDir: SortDir;
 }
 
 export interface NumberCell extends BaseCell {
