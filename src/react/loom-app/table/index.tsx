@@ -358,6 +358,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 							horizontalPadding,
 							aspectRatio,
 							frontmatterKey,
+							multiTagSortDir
 						} = column;
 
 						const cell = row.cells.find(
@@ -457,6 +458,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 										{...commonProps}
 										type={type}
 										tagIds={tagIds}
+										multiTagSortDir={multiTagSortDir}
 										onCellChange={onCellChange}
 										onTagAdd={onTagAdd}
 										onTagCellAdd={onTagCellAdd}

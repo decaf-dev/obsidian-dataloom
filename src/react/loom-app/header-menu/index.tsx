@@ -12,6 +12,7 @@ import FrontmatterKeySubmenu from "./frontmatter-key-submenu";
 import BaseSubmenu from "./base-submenu";
 import DateFormatSeparatorSubmenu from "./date-format-separator-submenu";
 import TimeFormatSubmenu from "./time-format-submenu";
+import MultiTagSortDirSubmenu from "./multitag-sort-dir-submenu";
 
 import {
 	AspectRatio,
@@ -88,6 +89,7 @@ export default function HeaderMenu({
 		numberSeparator,
 		numberSuffix,
 		frontmatterKey,
+		multiTagSortDir
 	} = column;
 	const [submenu, setSubmenu] = React.useState<SubmenuType | null>(null);
 	const [localValue, setLocalValue] = React.useState(content);
@@ -241,6 +243,13 @@ export default function HeaderMenu({
 		onClose();
 	}
 
+	function handleMultiTagSortDirClick(value: SortDir) {
+		onColumnChange(columnId, { multiTagSortDir: value });
+		saveLocalValue();
+		onClose();
+		setSubmenu(SubmenuType.OPTIONS);
+	}
+
 	return (
 		<Menu isOpen={isOpen} id={id} position={position} width={190}>
 			<div className="dataloom-header-menu">
@@ -280,6 +289,7 @@ export default function HeaderMenu({
 						numberPrefix={numberPrefix}
 						numberSuffix={numberSuffix}
 						numberSeparator={numberSeparator}
+						multiTagSortDir={multiTagSortDir}
 						onBackClick={() => setSubmenu(null)}
 						onSubmenuChange={setSubmenu}
 					/>
@@ -387,6 +397,14 @@ export default function HeaderMenu({
 						selectedKey={frontmatterKey}
 						frontmatterKeys={frontmatterKeys}
 						onFrontmatterKeyChange={handleFrontmatterKeyChange}
+						onBackClick={() => setSubmenu(null)}
+					/>
+				)}
+				{submenu === SubmenuType.CONTENTS_SORT_DIR && (
+					<MultiTagSortDirSubmenu
+						title="Sort"
+						value={multiTagSortDir}
+						onValueClick={handleMultiTagSortDirClick}
 						onBackClick={() => setSubmenu(null)}
 					/>
 				)}
