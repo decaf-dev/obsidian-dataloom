@@ -13,7 +13,7 @@ export default class MigrateState22 implements MigrateState {
 		const nextColumns: Column[] = columns.map((column) => {
             return {
                 ...column,
-                contentsSortDir: SortDir.NONE,
+                multiTagSortDir: SortDir.NONE,
             };
 		});
 

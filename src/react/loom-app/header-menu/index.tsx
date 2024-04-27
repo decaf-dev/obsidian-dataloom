@@ -12,7 +12,7 @@ import FrontmatterKeySubmenu from "./frontmatter-key-submenu";
 import BaseSubmenu from "./base-submenu";
 import DateFormatSeparatorSubmenu from "./date-format-separator-submenu";
 import TimeFormatSubmenu from "./time-format-submenu";
-import ContentsSortDirSubmenu from "./contents-sort-dir-submenu";
+import MultiTagSortDirSubmenu from "./multitag-sort-dir-submenu";
 
 import {
 	AspectRatio,
@@ -89,7 +89,7 @@ export default function HeaderMenu({
 		numberSeparator,
 		numberSuffix,
 		frontmatterKey,
-		contentsSortDir
+		multiTagSortDir
 	} = column;
 	const [submenu, setSubmenu] = React.useState<SubmenuType | null>(null);
 	const [localValue, setLocalValue] = React.useState(content);
@@ -243,8 +243,8 @@ export default function HeaderMenu({
 		onClose();
 	}
 
-	function handleContentsSortDirectionClick(value: SortDir) {
-		onColumnChange(columnId, { contentsSortDir: value });
+	function handleMultiTagSortDirClick(value: SortDir) {
+		onColumnChange(columnId, { multiTagSortDir: value });
 		saveLocalValue();
 		onClose();
 		setSubmenu(SubmenuType.OPTIONS);
@@ -289,7 +289,7 @@ export default function HeaderMenu({
 						numberPrefix={numberPrefix}
 						numberSuffix={numberSuffix}
 						numberSeparator={numberSeparator}
-						contentsSortDir={contentsSortDir}
+						multiTagSortDir={multiTagSortDir}
 						onBackClick={() => setSubmenu(null)}
 						onSubmenuChange={setSubmenu}
 					/>
@@ -401,10 +401,10 @@ export default function HeaderMenu({
 					/>
 				)}
 				{submenu === SubmenuType.CONTENTS_SORT_DIR && (
-					<ContentsSortDirSubmenu
-						title="Contents sorting"
-						value={contentsSortDir}
-						onValueClick={handleContentsSortDirectionClick}
+					<MultiTagSortDirSubmenu
+						title="Sort"
+						value={multiTagSortDir}
+						onValueClick={handleMultiTagSortDirClick}
 						onBackClick={() => setSubmenu(null)}
 					/>
 				)}

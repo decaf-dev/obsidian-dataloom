@@ -34,7 +34,7 @@ interface Props {
 	verticalPadding: PaddingSize;
 	horizontalPadding: PaddingSize;
 	aspectRatio: AspectRatio;
-	contentsSortDir: SortDir;
+	multiTagSortDir: SortDir;
 	onBackClick: () => void;
 	onSubmenuChange: (value: SubmenuType) => void;
 }
@@ -53,7 +53,7 @@ export default function OptionSubmenu({
 	horizontalPadding,
 	title,
 	dateFormat,
-	contentsSortDir,
+	multiTagSortDir,
 	onBackClick,
 	onSubmenuChange,
 }: Props) {
@@ -170,8 +170,8 @@ export default function OptionSubmenu({
 					)}
 					{type === CellType.MULTI_TAG && (
 						<MenuItem
-							name="Contents sorting"
-							value={contentsSortDir}
+							name="Sort"
+							value={multiTagSortDir}
 							onClick={() =>
 								onSubmenuChange(SubmenuType.CONTENTS_SORT_DIR)
 							}

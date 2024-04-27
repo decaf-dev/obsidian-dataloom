@@ -442,10 +442,10 @@ export default function BodyCellContainer(props: Props) {
 					}
 				};
 			} else {
-				const { tagIds, contentsSortDir } = props as MultiTagCellProps;
+				const { tagIds, multiTagSortDir } = props as MultiTagCellProps;
 
 				cellTags = columnTags.filter((tag) => tagIds.includes(tag.id));
-				cellTags.sort((a, b) => sortByText(a.content, b.content, contentsSortDir, false));
+				cellTags.sort((a, b) => sortByText(a.content, b.content, multiTagSortDir, false));
 				
 				handleMenuTriggerBackspaceDown = () => {
 					onTagCellMultipleRemove(id, tagIds);

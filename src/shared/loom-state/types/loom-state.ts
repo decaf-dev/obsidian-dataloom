@@ -53,7 +53,7 @@ export interface Column {
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
 	frontmatterKey: string | null;
-	contentsSortDir: SortDir;
+	multiTagSortDir: SortDir;
 }
 
 export interface Row {
@@ -107,7 +107,7 @@ export interface TagCell extends BaseCell {
 
 export interface MultiTagCell extends BaseCell {
 	tagIds: string[];
-	contentsSortDir: SortDir;
+	multiTagSortDir: SortDir;
 }
 
 export interface NumberCell extends BaseCell {

@@ -9,7 +9,7 @@ interface Props {
 	onBackClick: () => void;
 }
 
-export default function ContentsSortDirSubmenu({
+export default function MultiTagSortDirSubmenu({
 	title,
 	value,
 	onValueClick,

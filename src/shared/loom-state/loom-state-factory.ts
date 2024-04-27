@@ -152,7 +152,7 @@ export const createColumn = (options?: {
 		horizontalPadding: PaddingSize.UNSET,
 		verticalPadding: PaddingSize.UNSET,
 		frontmatterKey,
-		contentsSortDir: SortDir.NONE
+		multiTagSortDir: SortDir.NONE
 	};
 };
 
@@ -356,16 +356,16 @@ export const createMultiTagCell = (
 	options?: {
 		tagIds?: string[];
 		hasValidFrontmatter?: boolean;
-		contentsSortDir?: SortDir;
+		multiTagSortDir?: SortDir;
 	}
 ): MultiTagCell => {
-	const { tagIds = [], hasValidFrontmatter = null, contentsSortDir = SortDir.NONE } = options || {};
+	const { tagIds = [], hasValidFrontmatter = null, multiTagSortDir = SortDir.NONE } = options || {};
 	return {
 		id: generateUuid(),
 		columnId,
 		tagIds,
 		hasValidFrontmatter,
-		contentsSortDir
+		multiTagSortDir
 	};
 };
 
