@@ -80,17 +80,6 @@ interface EmbedCell extends BaseCell {
 	alias: string | null;
 }
 
-interface EmbedUrl {
-	type: "url";
-	url: string;
-}
-
-interface EmbedPath {
-	type: "path";
-	path: string;
-	alias: string | null;
-}
-
 interface FileCell extends BaseCell {
 	path: string;
 	alias: string | null; //We save an alias to be able to serialize into the frontmatter
@@ -309,11 +298,6 @@ enum DateFilterOption {
 	ONE_MONTH_FROM_NOW = "one-month-from-now",
 }
 
-type FilterCondition =
-	| TextFilterCondition
-	| DateFilterCondition
-	| NumberFilterCondition;
-
 interface BaseFilter {
 	id: string;
 	columnId: string;
@@ -470,10 +454,10 @@ interface ObsidianFrontmatterSource extends BaseSource {
 	propertyType: ObsidianPropertyType;
 	propertyKey: string;
 	filterCondition:
-		| TextFilterCondition
-		| NumberFilterCondition
-		| DateFilterCondition
-		| null;
+	| TextFilterCondition
+	| NumberFilterCondition
+	| DateFilterCondition
+	| null;
 	filterText: string;
 }
 

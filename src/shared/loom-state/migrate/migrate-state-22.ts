@@ -1,6 +1,6 @@
 import MigrateState from "./migrate-state";
-import { LoomState20, LoomState } from "../types";
-import { Row, SortDir, Column } from "../types/loom-state";
+import { LoomState } from "../types";
+import { SortDir, Column } from "../types/loom-state";
 import { LoomState21 } from "../types/loom-state-21";
 
 /**
@@ -11,10 +11,10 @@ export default class MigrateState22 implements MigrateState {
 		const { columns } = prevState.model;
 
 		const nextColumns: Column[] = columns.map((column) => {
-            return {
-                ...column,
-                multiTagSortDir: SortDir.NONE,
-            };
+			return {
+				...column,
+				multiTagSortDir: SortDir.NONE,
+			};
 		});
 
 		return {
