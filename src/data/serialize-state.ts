@@ -318,9 +318,9 @@ export const deserializeState = (
 			failedMigration = null;
 		}
 
-		const VERSION_8_15_13 = "8.15.13"; 
-		if (isVersionLessThan(fileVersion, VERSION_8_15_13)) {
-			failedMigration = VERSION_8_15_13;
+		const VERSION_8_16_0 = "8.16.0";
+		if (isVersionLessThan(fileVersion, VERSION_8_16_0)) {
+			failedMigration = VERSION_8_16_0;
 			const nextState = new MigrateState22().migrate(
 				currentState as LoomState21
 			);

@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-dataloom",
-	"version": "8.15.13",
+	"version": "8.16.0",
 	"description": "Weave together data from diverse sources into different views. Inspired by Excel Spreadsheets and Notion.so.",
 	"main": "main.js",
 	"scripts": {

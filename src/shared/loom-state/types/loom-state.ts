@@ -1,9 +1,9 @@
-/******* Type definitions for v8.15.13 *******/
+/******* Type definitions for v8.16.0 *******/
 
 import { ObsidianPropertyType } from "src/shared/frontmatter/types";
 
 /**
- * v8.15.13
+ * v8.16.0
  */
 export interface LoomState {
 	pluginVersion: string;
@@ -472,10 +472,10 @@ export interface ObsidianFrontmatterSource extends BaseSource {
 	propertyType: ObsidianPropertyType;
 	propertyKey: string;
 	filterCondition:
-		| TextFilterCondition
-		| NumberFilterCondition
-		| DateFilterCondition
-		| null;
+	| TextFilterCondition
+	| NumberFilterCondition
+	| DateFilterCondition
+	| null;
 	filterText: string;
 }
 

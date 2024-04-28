@@ -4,7 +4,7 @@ import { SortDir, Column } from "../types/loom-state";
 import { LoomState21 } from "../types/loom-state-21";
 
 /**
- * Migrates to 8.15.13
+ * Migrates to 8.16.0
  */
 export default class MigrateState22 implements MigrateState {
 	public migrate(prevState: LoomState21): LoomState {
