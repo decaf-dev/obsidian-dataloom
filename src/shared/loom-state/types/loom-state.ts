@@ -1,9 +1,9 @@
-/******* Type definitions for v8.15.6 *******/
+/******* Type definitions for v8.16.0 *******/
 
 import { ObsidianPropertyType } from "src/shared/frontmatter/types";
 
 /**
- * v8.15.6
+ * v8.16.0
  */
 export interface LoomState {
 	pluginVersion: string;
@@ -53,6 +53,7 @@ export interface Column {
 	horizontalPadding: PaddingSize;
 	verticalPadding: PaddingSize;
 	frontmatterKey: string | null;
+	multiTagSortDir: SortDir;
 }
 
 export interface Row {
@@ -106,6 +107,7 @@ export interface TagCell extends BaseCell {
 
 export interface MultiTagCell extends BaseCell {
 	tagIds: string[];
+	multiTagSortDir: SortDir;
 }
 
 export interface NumberCell extends BaseCell {
@@ -470,10 +472,10 @@ export interface ObsidianFrontmatterSource extends BaseSource {
 	propertyType: ObsidianPropertyType;
 	propertyKey: string;
 	filterCondition:
-		| TextFilterCondition
-		| NumberFilterCondition
-		| DateFilterCondition
-		| null;
+	| TextFilterCondition
+	| NumberFilterCondition
+	| DateFilterCondition
+	| null;
 	filterText: string;
 }
 

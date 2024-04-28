@@ -13,6 +13,7 @@ import {
 	DateFilterOption,
 	SourceType,
 	DateFormatSeparator,
+	SortDir,
 } from "./types/loom-state";
 
 const getShortDisplayNameForCalculation = (value: GeneralCalculation) => {
@@ -168,6 +169,17 @@ export const getDisplayNameForDateFormatSeparator = (
 			return "";
 	}
 };
+
+export const getDisplayNameForSortDir = (dir: SortDir) => {
+	switch (dir) {
+		case SortDir.ASC:
+			return "Ascending";
+		case SortDir.DESC:
+			return "Descending";
+		default:
+			return "Default";
+	}
+}
 
 export const getDisplayNameForCurrencyType = (type: CurrencyType) => {
 	switch (type) {

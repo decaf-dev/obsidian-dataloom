@@ -26,6 +26,7 @@ import {
 	LoomState18,
 	LoomState19,
 	LoomState20,
+	LoomState21,
 } from "src/shared/loom-state/types";
 
 import {
@@ -50,10 +51,11 @@ import {
 	MigrateState18,
 	MigrateState19,
 	MigrateState20,
+	MigrateState21,
+	MigrateState22,
 } from "src/shared/loom-state/migrate";
 import { LoomStateObject } from "src/shared/loom-state/validate-state";
 import DeserializationError from "./deserialization-error";
-import MigrateState21 from "src/shared/loom-state/migrate/migrate-state-21";
 
 export const serializeState = (state: LoomState): string => {
 	//Filter out any source rows, as these are populated by the plugin
@@ -311,6 +313,16 @@ export const deserializeState = (
 			failedMigration = VERSION_8_15_6;
 			const nextState = new MigrateState21().migrate(
 				currentState as LoomState20
+			);
+			currentState = nextState;
+			failedMigration = null;
+		}
+
+		const VERSION_8_16_0 = "8.16.0";
+		if (isVersionLessThan(fileVersion, VERSION_8_16_0)) {
+			failedMigration = VERSION_8_16_0;
+			const nextState = new MigrateState22().migrate(
+				currentState as LoomState21
 			);
 			currentState = nextState;
 			failedMigration = null;
