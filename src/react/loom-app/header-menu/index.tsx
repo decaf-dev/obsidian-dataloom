@@ -89,7 +89,7 @@ export default function HeaderMenu({
 		numberSeparator,
 		numberSuffix,
 		frontmatterKey,
-		multiTagSortDir
+		multiTagSortDir,
 	} = column;
 	const [submenu, setSubmenu] = React.useState<SubmenuType | null>(null);
 	const [localValue, setLocalValue] = React.useState(content);
@@ -245,8 +245,6 @@ export default function HeaderMenu({
 
 	function handleMultiTagSortDirClick(value: SortDir) {
 		onColumnChange(columnId, { multiTagSortDir: value });
-		saveLocalValue();
-		onClose();
 		setSubmenu(SubmenuType.OPTIONS);
 	}
 
