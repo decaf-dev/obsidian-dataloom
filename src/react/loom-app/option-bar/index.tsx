@@ -41,6 +41,7 @@ interface Props {
 	onSourceDelete: (id: string) => void;
 	onColumnChange: ColumnChangeHandler;
 	onSourceUpdate: (id: string, data: Partial<Source>) => void;
+	handleClearAllRowsClick: () => void;
 }
 export default function OptionBar({
 	columns,
@@ -55,6 +56,7 @@ export default function OptionBar({
 	onSourceDelete,
 	onColumnChange,
 	onSourceUpdate,
+	handleClearAllRowsClick
 }: Props) {
 	const COMPONENT_ID = "option-bar";
 	const SOURCE_MENU_ID = "sources-menu";
@@ -117,6 +119,11 @@ export default function OptionBar({
 
 	function handleMoreMenuOpen() {
 		moreMenu.onOpen(LoomMenuLevel.ONE);
+	}
+
+	function onClearRowsClick() {
+		handleClearAllRowsClick();
+		moreMenu.onClose();
 	}
 
 	function handleFilterDelete(id: string) {
@@ -230,6 +237,7 @@ export default function OptionBar({
 				onCalculationRowToggle={onCalculationRowToggle}
 				onClose={moreMenu.onClose}
 				onSourcesClick={handleSourceMenuOpen}
+				onClearRowsClick={onClearRowsClick}
 			/>
 			<FilterMenu
 				id={filterMenu.id}

@@ -12,6 +12,7 @@ interface Props {
 	onToggleColumnClick: () => void;
 	onFilterClick: () => void;
 	onSourcesClick: () => void;
+	onClearRowsClick: () => void;
 }
 
 export default function BaseContent({
@@ -20,6 +21,7 @@ export default function BaseContent({
 	onSettingsClick,
 	onSourcesClick,
 	onClose,
+	onClearRowsClick: onClearAllRowsClick,
 }: Props) {
 	const { app, loomFile } = useAppMount();
 	const { loomState } = useLoomState();
@@ -66,6 +68,12 @@ export default function BaseContent({
 				lucideId="wrench"
 				name="Settings"
 				onClick={onSettingsClick}
+			/>
+			<MenuItem
+				lucideId="trash-2"
+				name="Clear all rows"
+				textVariant="error"
+				onClick={onClearAllRowsClick}
 			/>
 		</Padding>
 	);

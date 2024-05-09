@@ -16,6 +16,7 @@ interface Props {
 	ariaLabel?: string;
 	name: string;
 	value?: string;
+	textVariant?: "semibold" | "faint" | "muted" | "on-accent" | "error" | "normal";
 	onClick?: () => void;
 }
 
@@ -28,6 +29,7 @@ export default function MenuItem({
 	value,
 	onClick,
 	isSelected = false,
+	textVariant
 }: Props) {
 	const ref = React.useRef(null);
 	React.useEffect(() => {
@@ -82,7 +84,7 @@ export default function MenuItem({
 							<Icon lucideId={lucideId} />
 						</Padding>
 					)}
-					<Text value={name} />
+					<Text variant={textVariant} value={name} />
 				</Stack>
 				{value !== undefined && <Text variant="faint" value={value} />}
 			</Flex>

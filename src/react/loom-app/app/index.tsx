@@ -96,6 +96,13 @@ export default function App() {
 		tableRef.current?.scrollToIndex(filteredRows.length - 1);
 	}
 
+	function handleClearAllRowsClick() {
+		if (window.confirm("This action will clear data in all rows.\n\nDo you wish to continue?"))
+		{
+			loomState.model.rows = [];
+		}		
+	}
+
 	function handleKeyDown(e: React.KeyboardEvent) {
 		Logger.trace("App handleKeyDown");
 		//Stop propagation to the global event
@@ -145,6 +152,7 @@ export default function App() {
 				onSourceAdd={onSourceAdd}
 				onSourceDelete={onSourceDelete}
 				onSourceUpdate={onSourceUpdate}
+				handleClearAllRowsClick={handleClearAllRowsClick}
 			/>
 			<Table
 				ref={tableRef}

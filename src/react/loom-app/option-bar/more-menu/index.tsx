@@ -19,6 +19,7 @@ interface Props {
 	onColumnToggle: (id: string, isVisible: boolean) => void;
 	onCalculationRowToggle: (value: boolean) => void;
 	onClose: () => void;
+	onClearRowsClick: () => void;
 }
 
 export default function MoreMenu({
@@ -32,6 +33,7 @@ export default function MoreMenu({
 	onClose,
 	onCalculationRowToggle,
 	onColumnToggle,
+	onClearRowsClick,
 }: Props) {
 	const [submenu, setSubmenu] = React.useState<MoreMenuSubmenu | null>(null);
 
@@ -56,6 +58,7 @@ export default function MoreMenu({
 					onSourcesClick={onSourcesClick}
 					onClose={onClose}
 					onSettingsClick={() => setSubmenu(MoreMenuSubmenu.SETTINGS)}
+					onClearRowsClick={onClearRowsClick}
 				/>
 			)}
 			{submenu === MoreMenuSubmenu.SETTINGS && (
