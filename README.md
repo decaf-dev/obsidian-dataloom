@@ -117,7 +117,7 @@ DataLoom will make one `GET` request to `https://api.github.com/repos/trey-walli
 
 ## License
 
-DataLoom is distributed under the [Mozilla Public License 2.0](https://github.com/trey-wallis/obsidian-dataloom/blob/master/LICENSE)
+DataLoom is distributed under the [MIT License](https://github.com/trey-wallis/obsidian-dataloom/blob/master/LICENSE)
 
 ## Disclaimer
 
