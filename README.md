@@ -6,7 +6,7 @@ DataLoom is no longer maintained.
 
 Please export any existing DataLoom files into raw markdown format. This will make your data available with the native Obsidian table editor. You can do this by following the [export guide](https://dataloom.xyz/basics/export).
 
-If you run into any problems with exporting, please open a [bug report](https://github.com/decaf-dev/obsidian-dataloom/issues/new?assignees=&labels=bug&projects=&template=BUG.yml). I will promptly respond and fix the issue.
+If you run into any problems with exporting, please open a [bug report](https://github.com/decaf-dev/obsidian-dataloom/issues/new?assignees=&labels=bug). I will promptly respond and fix the issue.
 
 As alternatives for DataLoom, I recommend the following plugins:
 
