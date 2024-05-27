@@ -1,5 +1,23 @@
 ![](/docusaurus/static/img/cover.png)
 
+## Notice
+
+DataLoom is no longer maintained.
+
+Please export any existing DataLoom files into raw markdown format. This will make your data available with the native Obsidian table editor. You can do this by following the [export guide](https://dataloom.xyz/basics/export).
+
+If you run into any problems with exporting, please open a [bug report](https://github.com/decaf-dev/obsidian-dataloom/issues/new?assignees=&labels=bug). I will promptly respond and fix the issue.
+
+As alternatives for DataLoom, I recommend the following plugins:
+
+-   [Vault Explorer](https://github.com/decaf-dev/obsidian-vault-explorer) - This is my new plugin for viewing notes using their frontmatter properties. It mimics the "sources" feature of DataLoom.
+-   [Projects](https://github.com/marcusolsson/obsidian-projects) - This is a mature and stable project manager that is implemented using native Obsidian UI.
+
+For general table usage, I recommend using the new [Obsidian table editor](https://www.youtube.com/watch?v=kl47U4CgyJg) released in 1.5.0.
+
+<details>
+<summary>To check out the old README, click here.</summary>
+
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)
 
 Find detailed documentation at [dataloom.xyz](https://dataloom.xyz)
@@ -120,3 +138,5 @@ DataLoom is distributed under the [MIT License](https://github.com/decaf-dev/obs
 ## Disclaimer
 
 This plugin extends the functionality of Obsidian.md. Although tested during development, there may still be bugs in the software. I **strongly** recommend you to make frequent backup copies of your vault. I am not responsible for any data that is lost due to the usage of this plugin.
+
+</details>
