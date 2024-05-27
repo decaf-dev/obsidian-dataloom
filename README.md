@@ -115,7 +115,7 @@ DataLoom will make one `GET` request to `https://api.github.com/repos/decaf-dev/
 
 ## License
 
-DataLoom is distributed under the [Mozilla Public License 2.0](https://github.com/decaf-dev/obsidian-dataloom/blob/master/LICENSE)
+DataLoom is distributed under the [MIT License](https://github.com/decaf-dev/obsidian-dataloom/blob/master/LICENSE)
 
 ## Disclaimer
 
