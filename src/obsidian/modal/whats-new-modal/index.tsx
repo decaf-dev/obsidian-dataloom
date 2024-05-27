@@ -67,7 +67,7 @@ export default class WhatsNewModal extends Modal {
 
 			contentEl.createEl("a", {
 				text: "View all releases",
-				href: "https://github.com/trey-wallis/obsidian-dataloom/releases",
+				href: "https://github.com/decaf-dev/obsidian-dataloom/releases",
 			});
 		} else {
 			contentEl.createDiv({
@@ -81,7 +81,7 @@ export default class WhatsNewModal extends Modal {
 		const regex = /#(\d+)/g;
 		const replacedText = text.replace(
 			regex,
-			"https://github.com/trey-wallis/obsidian-dataloom/issues/$1"
+			"https://github.com/decaf-dev/obsidian-dataloom/issues/$1"
 		);
 		return replacedText;
 	}
