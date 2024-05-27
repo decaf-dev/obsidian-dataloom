@@ -3,7 +3,7 @@ import { Notice, requestUrl } from "obsidian";
 export const getLastestGithubRelease = async () => {
 	try {
 		const response = await requestUrl({
-			url: "https://api.github.com/repos/trey-wallis/obsidian-dataloom/releases/latest",
+			url: "https://api.github.com/repos/decaf-dev/obsidian-dataloom/releases/latest",
 			method: "GET",
 		});
 		const body = response.json;

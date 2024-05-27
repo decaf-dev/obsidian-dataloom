@@ -8,8 +8,6 @@ DataLoom is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile
 
 With DataLoom, you can weave together data from diverse sources and display them in different views. Use this plugin if you want a straightforward way to create and manage databases and enhance the organization of your Obsidian vault.
 
-Join the [Discord](https://discord.gg/QaFbepMdN4) community
-
 ## About
 
 -   [Screenshots](#screenshots)
@@ -93,7 +91,7 @@ Join the [Discord](https://discord.gg/QaFbepMdN4) community
 
 ## Roadmap
 
-See our [project roadmap](https://github.com/users/trey-wallis/projects/2) for details on
+See our [project roadmap](https://github.com/users/decaf-dev/projects/2) for details on
 
 -   What is currently in progress
 -   What will be worked on next
@@ -101,19 +99,19 @@ See our [project roadmap](https://github.com/users/trey-wallis/projects/2) for d
 
 ## Issues
 
-Please see [issues](https://github.com/trey-wallis/obsidian-dataloom/issues) for feature requests and bug reports.
+Please see [issues](https://github.com/decaf-dev/obsidian-dataloom/issues) for feature requests and bug reports.
 
 If you are experiencing a problem with the plugin, please search the issues for any open bug reports related to your problem before opening a new issue.
 
 ## Contributing
 
-Please see our [contribution guide](https://github.com/trey-wallis/obsidian-dataloom/blob/master/CONTRIBUTING.md) for details on how to contribute
+Please see our [contribution guide](https://github.com/decaf-dev/obsidian-dataloom/blob/master/CONTRIBUTING.md) for details on how to contribute
 
 ## Network Usage
 
 According to [Obsidian developer policies](https://docs.obsidian.md/Developer+policies), an Obsidian plugin must explain which network services are used and why.
 
-DataLoom will make one `GET` request to `https://api.github.com/repos/trey-wallis/obsidian-dataloom/releases/latest` to pull the latest release for the What's New Modal. Besides this, DataLoom does not make any network requests. DataLoom does not include client-side telemetry.
+DataLoom will make one `GET` request to `https://api.github.com/repos/decaf-dev/obsidian-dataloom/releases/latest` to pull the latest release for the What's New Modal. Besides this, DataLoom does not make any network requests. DataLoom does not include client-side telemetry.
 
 ## License
 

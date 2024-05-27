@@ -2,9 +2,9 @@
 
 ## Issues
 
-Issues are prioritized in the [project roadmap](https://github.com/users/trey-wallis/projects/2). However, you are welcome to work on whatever issue you would like.
+Issues are prioritized in the [project roadmap](https://github.com/users/decaf-dev/projects/2). However, you are welcome to work on whatever issue you would like.
 
-If the code you wish to contribute is related to an existing issue, please make a comment on the related issue and tag @trey-wallis.
+If the code you wish to contribute is related to an existing issue, please make a comment on the related issue and tag @decaf-dev.
 
 ## Diagrams
 
@@ -15,7 +15,7 @@ State machines and flowcharts can be found can be found in the `diagrams` folder
 Start by cloning the repository
 
 ```shell
-git clone https://github.com/trey-wallis/obsidian-dataloom.git
+git clone https://github.com/decaf-dev/obsidian-dataloom.git
 ```
 
 We use [Bun](https://bun.sh/) for dependency management instead of npm. Please make sure that you have installed Bun.
@@ -53,7 +53,7 @@ ln -s <repository-path>/dist <development-vault-path>/.obsidian/plugins/obsidian
 e.g
 
 ```shell
-ln -s /users/trey/desktop/obsidian-dataloom/dist /users/trey/desktop/test-vault/.obsidian/plugins/obsidian-dataloom
+ln -s /users/decaf/desktop/obsidian-dataloom/dist /users/decaf/desktop/test-vault/.obsidian/plugins/obsidian-dataloom
 ```
 
 Checkout the `dev` branch and make a child branch off of it. The branching strategy is `<feature>` -> `dev` -> `master`.
@@ -81,7 +81,7 @@ Restart Obsidian to see your code changes
 
 ## Tests
 
-Please make [jest](https://jestjs.io/) tests for the code that you create. Please note that some Obsidian functionality is very hard to test due to the library being an external dependency and closed source. If tests cannot be written, your code can be still be accepted. If you need help with writing tests, please DM @treywa on discord.
+Please make [jest](https://jestjs.io/) tests for the code that you create. Please note that some Obsidian functionality is very hard to test due to the library being an external dependency and closed source. If tests cannot be written, your code can be still be accepted. If you need help with writing tests, please DM @decaf_dev on discord.
 
 ## Pull requests
 

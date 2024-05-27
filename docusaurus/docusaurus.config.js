@@ -19,7 +19,7 @@ const config = {
 
 	// GitHub pages deployment config.
 	// If you aren't using GitHub pages, you don't need these.
-	organizationName: "trey-wallis", // Usually your GitHub org/user name.
+	organizationName: "decaf-dev", // Usually your GitHub org/user name.
 	projectName: "obsidian-dataloom", // Usually your repo name.
 
 	onBrokenLinks: "throw",
@@ -54,7 +54,7 @@ const config = {
 					// Please change this to your repo.
 					// Remove this to remove the "edit this page" links.
 					editUrl:
-						"https://github.com/trey-wallis/obsidian-dataloom/tree/master/docusaurus/",
+						"https://github.com/decaf-dev/obsidian-dataloom/tree/master/docusaurus/",
 				},
 				blog: false,
 				theme: {
@@ -81,13 +81,7 @@ const config = {
 				},
 				items: [
 					{
-						href: "https://discord.gg/QaFbepMdN4",
-						arialabel: "Discord",
-						position: "right",
-						className: "fa-brands fa-discord fa-xl",
-					},
-					{
-						href: "https://github.com/trey-wallis/obsidian-dataloom",
+						href: "https://github.com/decaf-dev/obsidian-dataloom",
 						arialabel: "GitHub",
 						position: "right",
 						className: "fa-brands fa-github fa-xl",
@@ -96,7 +90,7 @@ const config = {
 			},
 			footer: {
 				style: "dark",
-				copyright: `Copyright © ${new Date().getFullYear()} Trey Wallis. Built with Docusaurus.`,
+				copyright: `Copyright © ${new Date().getFullYear()} DecafDev. Built with Docusaurus.`,
 			},
 			prism: {
 				theme: lightCodeTheme,

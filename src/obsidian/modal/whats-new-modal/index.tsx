@@ -26,17 +26,6 @@ export default class WhatsNewModal extends Modal {
 		containerEl.createDiv({
 			text: "Thank you for using DataLoom! Here are the latest updates:",
 		});
-
-		// containerEl.createDiv({
-		// 	text: "DataLoom is now on Discord. Please join to get help, report bugs, and participate in the community.",
-		// });
-		// containerEl.createDiv({
-		// 	cls: "dataloom-whats-new-modal__spacer",
-		// });
-		// containerEl.createEl("a", {
-		// 	text: "Join Discord",
-		// 	href: "https://discord.gg/QaFbepMdN4",
-		// });
 	}
 
 	async renderContent(contentEl: HTMLElement, body: string) {
@@ -67,7 +56,7 @@ export default class WhatsNewModal extends Modal {
 
 			contentEl.createEl("a", {
 				text: "View all releases",
-				href: "https://github.com/trey-wallis/obsidian-dataloom/releases",
+				href: "https://github.com/decaf-dev/obsidian-dataloom/releases",
 			});
 		} else {
 			contentEl.createDiv({
@@ -81,7 +70,7 @@ export default class WhatsNewModal extends Modal {
 		const regex = /#(\d+)/g;
 		const replacedText = text.replace(
 			regex,
-			"https://github.com/trey-wallis/obsidian-dataloom/issues/$1"
+			"https://github.com/decaf-dev/obsidian-dataloom/issues/$1"
 		);
 		return replacedText;
 	}
