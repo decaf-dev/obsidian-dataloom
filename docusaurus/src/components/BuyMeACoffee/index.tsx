@@ -9,7 +9,7 @@ export default function BuyMeACoffee(): JSX.Element {
 		>
 			<img
 				width="175"
-				src="https://github.com/trey-wallis/obsidian-dataloom/assets/40307803/dee919ac-1065-4595-8511-7e7e7a962356"
+				src="https://github.com/decaf-dev/obsidian-dataloom/assets/40307803/dee919ac-1065-4595-8511-7e7e7a962356"
 				alt="Buy me a coffee"
 			/>
 		</a>

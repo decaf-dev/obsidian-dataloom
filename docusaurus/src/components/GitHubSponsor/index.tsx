@@ -3,7 +3,7 @@ import React from "react";
 export default function GitHubSponsor(): JSX.Element {
 	return (
 		<a
-			href="https://github.com/sponsors/trey-wallis"
+			href="https://github.com/sponsors/decaf-dev"
 			target="_blank"
 			rel="noopener"
 		>
