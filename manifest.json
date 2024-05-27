@@ -3,11 +3,9 @@
 	"name": "DataLoom",
 	"minAppVersion": "1.4.0",
 	"description": "Weave together data from diverse sources into different views. Inspired by Excel Spreadsheets and Notion.so.",
-	"author": "Trey Wallis",
+	"author": "DecafDev",
 	"authorUrl": "https://github.com/decaf-dev",
 	"isDesktopOnly": false,
-	"fundingUrl": {
-		"Buymeacoffee": "https://www.buymeacoffee.com/decaf_dev"
-	},
+	"fundingUrl": "https://www.buymeacoffee.com/decaf_dev",
 	"version": "8.16.0"
 }
