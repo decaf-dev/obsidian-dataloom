@@ -81,12 +81,6 @@ const config = {
 				},
 				items: [
 					{
-						href: "https://discord.gg/QaFbepMdN4",
-						arialabel: "Discord",
-						position: "right",
-						className: "fa-brands fa-discord fa-xl",
-					},
-					{
 						href: "https://github.com/decaf-dev/obsidian-dataloom",
 						arialabel: "GitHub",
 						position: "right",
