@@ -8,8 +8,6 @@ DataLoom is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile
 
 With DataLoom, you can weave together data from diverse sources and display them in different views. Use this plugin if you want a straightforward way to create and manage databases and enhance the organization of your Obsidian vault.
 
-Join the [Discord](https://discord.gg/QaFbepMdN4) community
-
 ## About
 
 -   [Screenshots](#screenshots)
@@ -117,7 +115,7 @@ DataLoom will make one `GET` request to `https://api.github.com/repos/decaf-dev/
 
 ## License
 
-DataLoom is distributed under the [Mozilla Public License 2.0](https://github.com/decaf-dev/obsidian-dataloom/blob/master/LICENSE)
+DataLoom is distributed under the [MIT License](https://github.com/decaf-dev/obsidian-dataloom/blob/master/LICENSE)
 
 ## Disclaimer
 

@@ -26,17 +26,6 @@ export default class WhatsNewModal extends Modal {
 		containerEl.createDiv({
 			text: "Thank you for using DataLoom! Here are the latest updates:",
 		});
-
-		// containerEl.createDiv({
-		// 	text: "DataLoom is now on Discord. Please join to get help, report bugs, and participate in the community.",
-		// });
-		// containerEl.createDiv({
-		// 	cls: "dataloom-whats-new-modal__spacer",
-		// });
-		// containerEl.createEl("a", {
-		// 	text: "Join Discord",
-		// 	href: "https://discord.gg/QaFbepMdN4",
-		// });
 	}
 
 	async renderContent(contentEl: HTMLElement, body: string) {
