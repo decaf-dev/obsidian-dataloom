@@ -8,12 +8,12 @@ Please export any existing DataLoom files into raw markdown format. This will ma
 
 If you run into any problems with exporting, please open a [bug report](https://github.com/decaf-dev/obsidian-dataloom/issues/new?assignees=&labels=bug&projects=&template=BUG.yml). I will promptly respond and fix the issue.
 
-As alternatives for DataLoom I recommend the following plugins:
+As alternatives for DataLoom, I recommend the following plugins:
 
 -   [Vault Explorer](https://github.com/decaf-dev/obsidian-vault-explorer) - This is my new plugin for viewing notes using their frontmatter properties. It mimics the "sources" feature of DataLoom.
--   [Projects](https://github.com/marcusolsson/obsidian-projects) - This is mature and stable project manager that is implemented using native Obsidian UI.
+-   [Projects](https://github.com/marcusolsson/obsidian-projects) - This is a mature and stable project manager that is implemented using native Obsidian UI.
 
-For general table usage, I recommend using the new Obsidian [table editor](https://help.obsidian.md/Editing+and+formatting/Advanced+formatting+syntax#Tables) released in 1.5.0.
+For general table usage, I recommend using the new [Obsidian table editor](https://www.youtube.com/watch?v=kl47U4CgyJg) released in 1.5.0.
 
 <details>
 <summary>To check out the old README, click here.</summary>
