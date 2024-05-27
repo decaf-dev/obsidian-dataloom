@@ -3,7 +3,7 @@ import React from "react";
 export default function BuyMeACoffee(): JSX.Element {
 	return (
 		<a
-			href="https://buymeacoffee.com/treywallis"
+			href="https://buymeacoffee.com/decaf_dev"
 			target="_blank"
 			rel="noopener"
 		>
