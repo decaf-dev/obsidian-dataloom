@@ -1,7 +1,6 @@
 import { PluginSettingTab, App } from "obsidian";
 import { Setting } from "obsidian";
 import DataLoomPlugin from "../main";
-import { renderBuyMeACoffeeBadge } from "./shared";
 import Logger from "js-logger";
 import { LOG_LEVEL_DEBUG, LOG_LEVEL_ERROR, LOG_LEVEL_INFO, LOG_LEVEL_OFF, LOG_LEVEL_TRACE, LOG_LEVEL_WARN } from "src/shared/logger/constants";
 import { stringToLogLevel } from "src/shared/logger";
@@ -19,28 +18,12 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		this.renderSupportHeader(containerEl);
 		this.renderFileSettings(containerEl);
 		this.renderTableSettings(containerEl);
 		this.renderExportSettings(containerEl);
 		this.renderEmbeddedLoomSettings(containerEl);
 		this.renderModalSettings(containerEl);
 		this.renderDebugSettings(containerEl);
-	}
-
-	private renderSupportHeader(containerEl: HTMLElement) {
-		new Setting(containerEl).setName("DataLoom").setHeading();
-
-		const supportDesc = new DocumentFragment();
-		supportDesc.createDiv({
-			text: "Enjoying the plugin? Please buy me an herbal tea to support the development of DataLoom.",
-		});
-
-		new Setting(containerEl).setDesc(supportDesc);
-
-		renderBuyMeACoffeeBadge(containerEl);
-		const spacing = containerEl.createDiv();
-		spacing.style.marginBottom = "0.75em";
 	}
 
 	private renderFileSettings(containerEl: HTMLElement) {
