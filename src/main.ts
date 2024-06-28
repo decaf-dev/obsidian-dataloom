@@ -8,7 +8,6 @@ import {
 } from "obsidian";
 
 import WelcomeModal from "./obsidian/modal/welcome-modal";
-import WhatsNewModal from "./obsidian/modal/whats-new-modal";
 import DataLoomSettingsTab from "./obsidian/dataloom-settings-tab";
 import EditingViewPlugin from "./obsidian/editing-view-plugin";
 import DataLoomView, { DATA_LOOM_VIEW } from "./obsidian/dataloom-view";
@@ -45,7 +44,6 @@ export interface DataLoomSettings {
 	defaultEmbedHeight: string;
 	hasMigratedTo800: boolean;
 	showWelcomeModal: boolean;
-	showWhatsNewModal: boolean;
 	defaultFrozenColumnCount: number;
 	pluginVersion: string;
 }
@@ -59,7 +57,6 @@ export const DEFAULT_SETTINGS: DataLoomSettings = {
 	defaultEmbedHeight: "340px",
 	hasMigratedTo800: false,
 	showWelcomeModal: true,
-	showWhatsNewModal: true,
 	defaultFrozenColumnCount: 1,
 	pluginVersion: "",
 };
@@ -302,9 +299,6 @@ export default class DataLoomPlugin extends Plugin {
 
 				if (shouldOpen) {
 					this.displayModalsOnLoomOpen = false;
-					if (this.settings.showWhatsNewModal) {
-						new WhatsNewModal(this.app).open();
-					}
 				}
 			})
 		);
