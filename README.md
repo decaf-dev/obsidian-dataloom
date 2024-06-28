@@ -10,8 +10,8 @@ If you run into any problems with exporting, please open a [bug report](https://
 
 As alternatives for DataLoom, I recommend the following plugins:
 
--   [Vault Explorer](https://github.com/decaf-dev/obsidian-vault-explorer) - This is my new plugin for viewing notes using their frontmatter properties. It mimics the "sources" feature of DataLoom.
--   [Projects](https://github.com/marcusolsson/obsidian-projects) - This is a mature and stable project manager that is implemented using native Obsidian UI.
+-   [Vault Explorer](https://github.com/decaf-dev/obsidian-vault-explorer) - My new plugin for exploring your vault in visual format
+-   [Projects](https://github.com/marcusolsson/obsidian-projects)
 
 For general table usage, I recommend using the new [Obsidian table editor](https://www.youtube.com/watch?v=kl47U4CgyJg) released in 1.5.0.
 
