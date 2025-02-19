@@ -1,30 +1,12 @@
 ![](/docusaurus/static/img/cover.png)
 
-## Notice
-
-DataLoom is [no longer maintained](https://github.com/decaf-dev/obsidian-dataloom/issues/958).
-
-Please [export](https://dataloom.xyz/basics/export) any existing DataLoom files into raw markdown format. This will make your data available with the native Obsidian table editor.
-
-If you run into any problems with exporting, please open a [bug report](https://github.com/decaf-dev/obsidian-dataloom/issues/new?assignees=&labels=bug). I will promptly respond and fix the issue.
-
-As alternatives to DataLoom, I recommend the following plugins:
-
--   [Vault Explorer](https://github.com/decaf-dev/obsidian-vault-explorer)
--   [Projects](https://github.com/marcusolsson/obsidian-projects)
-
-For basic table usage, I recommend just using the native Obsidian table editor.
-
-<details>
-<summary>To check out the old README, click here.</summary>
-
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)
 
 Find detailed documentation at [dataloom.xyz](https://dataloom.xyz)
 
 DataLoom is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile. It allows you to create databases similar to [Notion.so](https://notion.so).
 
-With DataLoom, you can weave together data from diverse sources and display them in different views. Use this plugin if you want a straightforward way to create and manage databases and enhance the organization of your Obsidian vault.
+We are working on a new version of DataLoom that will use Svelte instead of React. Please stay tuned.
 
 ## About
 
@@ -107,14 +89,6 @@ With DataLoom, you can weave together data from diverse sources and display them
 
 -   [x] Mobile support
 
-## Roadmap
-
-See our [project roadmap](https://github.com/users/decaf-dev/projects/2) for details on
-
--   What is currently in progress
--   What will be worked on next
--   What is waiting to be released
-
 ## Issues
 
 Please see [issues](https://github.com/decaf-dev/obsidian-dataloom/issues) for feature requests and bug reports.
@@ -138,5 +112,3 @@ DataLoom is distributed under the [MIT License](https://github.com/decaf-dev/obs
 ## Disclaimer
 
 This plugin extends the functionality of Obsidian.md. Although tested during development, there may still be bugs in the software. I **strongly** recommend you to make frequent backup copies of your vault. I am not responsible for any data that is lost due to the usage of this plugin.
-
-</details>
