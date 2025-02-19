@@ -1,4 +1,4 @@
-![](/docusaurus/static/img/cover.png)
+![](/readme/cover.png)
 
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22notion-like-tables%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)
 
@@ -6,7 +6,7 @@ Find detailed documentation at [dataloom.xyz](https://dataloom.xyz)
 
 DataLoom is an [Obsidian.md](https://obsidian.md/) plugin for desktop and mobile. It allows you to create databases similar to [Notion.so](https://notion.so).
 
-We are working on a new version of DataLoom that will use Svelte instead of React. Please stay tuned.
+As of **2025-02-19**, we are working on a new version that will use Svelte instead of React. The update will include changes to how data is stored and rendered within the plugin.
 
 ## About
 
@@ -21,73 +21,6 @@ We are working on a new version of DataLoom that will use Svelte instead of Reac
 ## Screenshots
 
 ![](/readme/app.png)
-
-## Features
-
--   View types
-
-    -   [x] Table
-
--   Cell types
-
-    -   [x] Text
-    -   [x] Number
-        -   [x] Currency
-    -   [x] Checkbox
-    -   [x] Embed
-    -   [x] File
-    -   [x] Date
-    -   [x] Tag
-    -   [x] Multi-tag
-    -   [x] Last edited time
-    -   [x] Creation time
-    -   [x] Source
-    -   [x] Source file
-
--   Columns
-
-    -   [x] Toggle visibility
-    -   [x] Change name
-    -   [x] Change type
-    -   [x] Sort ascending or descending
-    -   [x] Reorder columns
-    -   [ ] Insert left
-    -   [ ] Insert right
-
--   Rows
-
-    -   [x] Filter by conditions
-    -   [x] Search by text
-    -   [x] Insert above
-    -   [x] Insert below
-    -   [x] Reorder rows
-
--   Import
-
-    -   [x] CSV
-    -   [x] Markdown
-
--   Export
-
-    -   [x] CSV
-    -   [x] Markdown
-    -   [ ] PDF
-
--   Color scheme
-
-    -   [x] Light
-    -   [x] Dark
-
--   Sources
-
-    -   [x] Folder
-    -   [x] Frontmatter
-
--   [x] Undo/redo
-
--   [x] Embed loom files into an Obsidian note
-
--   [x] Mobile support
 
 ## Issues
 
