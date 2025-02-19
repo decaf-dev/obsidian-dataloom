@@ -11,7 +11,6 @@ As of **2025-02-19**, we are working on a new version that will use Svelte inste
 ## About
 
 -   [Screenshots](#screenshots)
--   [Features](#features)
 -   [Issues](#issues)
 -   [Contributing](#contributing)
 -   [Network Usage](#network-usage)
