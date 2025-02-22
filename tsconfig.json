@@ -1,14 +1,16 @@
 {
+		"extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
+	    "types": ["svelte", "node"],
     "baseUrl": "./",
     "target": "ES6",
     "lib": ["ES2021", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+	"verbatimModuleSyntax": false,
 
     /* Source maps */
-    "inlineSourceMap": true,
-		"inlineSources": true,
+	"inlineSources": true,
 
     /* Bundler mode */
     "moduleResolution": "node",
@@ -24,5 +26,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*.tsx", "src/**/*.ts"],
+  "include": ["src/**/*.tsx", "src/**/*.ts", 	"src/**/*.svelte",],
 }
