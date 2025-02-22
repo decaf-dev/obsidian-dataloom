@@ -133,17 +133,22 @@ export default class DataLoomPlugin extends Plugin {
 
 		const tableExtension = EditorView.updateListener.of((update) => {
 			if (update.docChanged || update.viewportChanged) {
-				update.view.dom.querySelectorAll("table").forEach((tableEl) => {
-					const container = document.createElement("div");
-					mount(SvelteApp, {
-						target: container,
-						props: {
-							mode: "editing",
-							data: parseTableToObject(tableEl),
-						},
+				update.view.dom
+					.querySelectorAll(".table-wrapper")
+					.forEach((wrapperEl) => {
+						const tableEl = wrapperEl.querySelector("table");
+						if (!tableEl) return;
+
+						const container = document.createElement("div");
+						mount(SvelteApp, {
+							target: container,
+							props: {
+								mode: "editing",
+								data: parseTableToObject(tableEl),
+							},
+						});
+						wrapperEl.replaceWith(container);
 					});
-					tableEl.replaceWith(container);
-				});
 			}
 		});
 
