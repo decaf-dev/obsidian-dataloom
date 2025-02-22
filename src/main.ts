@@ -9,7 +9,6 @@ import {
 
 import DataLoomSettingsTab from "./obsidian/dataloom-settings-tab";
 import DataLoomView, { DATA_LOOM_VIEW } from "./obsidian/dataloom-view";
-import EditingViewPlugin from "./obsidian/editing-view-plugin";
 import WelcomeModal from "./obsidian/modal/welcome-modal";
 
 import { EditorView } from "codemirror";
@@ -18,10 +17,6 @@ import { createLoomFile } from "src/data/loom-file";
 import { mount } from "svelte";
 import { LOOM_EXTENSION } from "./data/constants";
 import { handleFileRename } from "./data/main-utils";
-import {
-	loadPreviewModeApps,
-	purgeEmbeddedLoomApps,
-} from "./obsidian/embedded/embedded-app-manager";
 import {
 	setDarkMode,
 	setPluginVersion,
@@ -103,10 +98,6 @@ export default class DataLoomPlugin extends Plugin {
 		});
 
 		this.addSettingTab(new DataLoomSettingsTab(this.app, this));
-
-		this.registerEditorExtension(
-			EditingViewPlugin(this.app, this.manifest.version)
-		);
 
 		this.setModalDisplay();
 
@@ -295,31 +286,6 @@ export default class DataLoomPlugin extends Plugin {
 				);
 				const isDark = hasDarkTheme();
 				store.dispatch(setDarkMode(isDark));
-			})
-		);
-
-		//This event is fired whenever a leaf is opened, close, moved,
-		//or the user switches between editing and preview mode
-		this.registerEvent(
-			this.app.workspace.on("layout-change", () => {
-				Logger.trace(
-					"main.ts",
-					"registerEvent",
-					"layout-change event called"
-				);
-				const leaves = this.app.workspace.getLeavesOfType("markdown");
-				purgeEmbeddedLoomApps(leaves);
-
-				//TODO find a better way to do this
-				//Wait for the DOM to update before loading the preview mode apps
-				//2ms should be enough time
-				setTimeout(() => {
-					loadPreviewModeApps(
-						this.app,
-						leaves,
-						this.manifest.version
-					);
-				}, 2);
 			})
 		);
 
