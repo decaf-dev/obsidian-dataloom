@@ -2,7 +2,7 @@ import Input from "src/react/shared/input";
 import Stack from "src/react/shared/stack";
 import Switch from "src/react/shared/switch";
 
-import { AddSourceError } from "./types";
+import { type AddSourceError } from "./types";
 
 interface Props {
 	pathInputId: string;

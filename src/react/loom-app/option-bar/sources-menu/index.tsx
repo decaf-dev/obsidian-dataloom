@@ -5,14 +5,14 @@ import Padding from "src/react/shared/padding";
 import AddSourceSubmenu from "./add-source-submenu";
 import BaseContent from "./base-content";
 
-import { LoomMenuPosition } from "src/react/shared/menu/types";
-import { SourcesMenuSubmenu } from "./constants";
-import {
+import { type LoomMenuPosition } from "src/react/shared/menu/types";
+import type {
 	Column,
 	FilterCondition,
 	Source,
 } from "src/shared/loom-state/types/loom-state";
-import { SourceAddHandler } from "../../app/hooks/use-source/types";
+import { type SourceAddHandler } from "../../app/hooks/use-source/types";
+import { SourcesMenuSubmenu } from "./constants";
 
 interface Props {
 	id: string;

@@ -1,8 +1,8 @@
 import { cloneDeep } from "lodash";
-import { LoomState } from "../types";
-import { CellType, Source } from "../types/loom-state";
-import LoomStateCommand from "./loom-state-command";
+import type { LoomState } from "../types";
+import { CellType, type Source } from "../types/loom-state";
 import { columnAddExecute } from "./column-add-command/utils";
+import LoomStateCommand from "./loom-state-command";
 
 export default class SourceAddCommand extends LoomStateCommand {
 	private newSource: Source;

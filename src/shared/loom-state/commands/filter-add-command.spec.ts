@@ -1,6 +1,6 @@
 import { createLoomState, createTextFilter } from "../loom-state-factory";
+import { type TextFilter } from "../types/loom-state";
 import FilterAddCommand from "./filter-add-command";
-import { TextFilter } from "../types/loom-state";
 
 describe("filter-add-command", () => {
 	it("should add a filter to the model", () => {

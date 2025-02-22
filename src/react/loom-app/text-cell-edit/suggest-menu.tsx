@@ -1,7 +1,7 @@
-import Menu from "src/react/shared/menu";
-import { SuggestList } from "../../shared/suggest-list";
 import { TFile } from "obsidian";
-import { LoomMenuPosition } from "src/react/shared/menu/types";
+import Menu from "src/react/shared/menu";
+import { type LoomMenuPosition } from "src/react/shared/menu/types";
+import { SuggestList } from "../../shared/suggest-list";
 
 interface Props {
 	id: string;

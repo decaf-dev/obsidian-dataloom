@@ -1,6 +1,6 @@
 import {
-	ObsidianFolderSource,
-	Source,
+	type ObsidianFolderSource,
+	type Source,
 	SourceType,
 } from "../loom-state/types/loom-state";
 

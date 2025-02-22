@@ -2,31 +2,31 @@ import Text from "../../shared/text";
 import CalculationMenu from "./calculation-menu";
 
 import {
-	Cell,
-	Row,
-	GeneralCalculation,
-	CalculationType,
 	CellType,
 	CurrencyType,
 	DateFormat,
-	Tag,
-	NumberFormat,
-	Source,
 	DateFormatSeparator,
-	NumberCell,
+	GeneralCalculation,
+	NumberFormat,
+	type CalculationType,
+	type Cell,
+	type NumberCell,
+	type Row,
+	type Source,
+	type Tag,
 } from "src/shared/loom-state/types/loom-state";
 import Stack from "../../shared/stack";
 
 import MenuTrigger from "src/react/shared/menu-trigger";
-import { isNumberCalcuation } from "src/shared/match";
 import { getShortDisplayNameForCalculationType } from "src/shared/loom-state/type-display-names";
+import { isNumberCalcuation } from "src/shared/match";
+import type { ColumnChangeHandler } from "../app/hooks/use-column/types";
 import { getGeneralCalculationContent } from "./general-calculation";
 import { getNumberCalculationContent } from "./number-calculation";
-import { ColumnChangeHandler } from "../app/hooks/use-column/types";
 
-import "./styles.css";
-import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
 import { useMenu } from "src/react/shared/menu-provider/hooks";
+import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
+import "./styles.css";
 
 interface Props {
 	sources: Source[];

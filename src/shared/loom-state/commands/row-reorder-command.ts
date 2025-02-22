@@ -1,4 +1,4 @@
-import { LoomState } from "../types";
+import type { LoomState } from "../types";
 import { SortDir } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
 

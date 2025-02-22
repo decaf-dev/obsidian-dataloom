@@ -1,26 +1,26 @@
-import Stack from "../../shared/stack";
-import SearchBar from "./search-bar";
-import ActiveFilterBubble from "./active-filter-bubble";
-import Padding from "src/react/shared/padding";
 import Icon from "src/react/shared/icon";
 import MenuButton from "src/react/shared/menu-button";
-import MoreMenu from "./more-menu";
+import Padding from "src/react/shared/padding";
+import Stack from "../../shared/stack";
+import ActiveFilterBubble from "./active-filter-bubble";
 import FilterMenu from "./filter-menu";
+import MoreMenu from "./more-menu";
+import SearchBar from "./search-bar";
 import SortBubbleList from "./sort-bubble-list";
 import SourcesMenu from "./sources-menu";
 
+import { useMenu } from "src/react/shared/menu-provider/hooks";
+import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
 import {
 	SortDir,
-	Column,
-	Filter,
-	Source,
-	FilterCondition,
+	type Column,
+	type Filter,
+	type FilterCondition,
+	type Source,
 } from "src/shared/loom-state/types/loom-state";
 import { isSmallScreenSize } from "src/shared/render/utils";
-import { ColumnChangeHandler } from "../app/hooks/use-column/types";
-import { SourceAddHandler } from "../app/hooks/use-source/types";
-import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
-import { useMenu } from "src/react/shared/menu-provider/hooks";
+import type { ColumnChangeHandler } from "../app/hooks/use-column/types";
+import type { SourceAddHandler } from "../app/hooks/use-source/types";
 
 import "./styles.css";
 

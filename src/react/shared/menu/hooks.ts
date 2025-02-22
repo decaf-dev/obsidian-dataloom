@@ -2,9 +2,9 @@ import React from "react";
 
 import _ from "lodash";
 
-import { getPositionFromEl } from "../menu-provider/utils";
-import { PositionUpdateHandler } from "../menu-provider/types";
 import { findAncestorsUntilClassName } from "src/shared/dom-utils";
+import { type PositionUpdateHandler } from "../menu-provider/types";
+import { getPositionFromEl } from "../menu-provider/utils";
 
 export const useMenuPosition = (
 	isOpen: boolean,

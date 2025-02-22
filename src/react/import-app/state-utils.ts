@@ -1,34 +1,34 @@
-import {
-	createRow,
-	createColumn,
-	createTag,
-	createTextCell,
-	createDateCell,
-	createMultiTagCell,
-	createTagCell,
-	createCheckboxCell,
-	createLastEditedTimeCell,
-	createCreationTimeCell,
-	createSourceCell,
-	createSourceFileCell,
-	createFileCell,
-	createEmbedCell,
-	createNumberCell,
-} from "src/shared/loom-state/loom-state-factory";
-import {
-	Cell,
-	CellType,
-	Column,
-	DateFormat,
-	DateFormatSeparator,
-	LoomState,
-	Row,
-	Tag,
-} from "src/shared/loom-state/types/loom-state";
-import { ColumnMatch, ImportData } from "./types";
-import { NEW_COLUMN_ID } from "./constants";
 import { dateStringToDateTime } from "src/shared/date/date-string-conversion";
 import { isValidDateString } from "src/shared/date/date-validation";
+import {
+	createCheckboxCell,
+	createColumn,
+	createCreationTimeCell,
+	createDateCell,
+	createEmbedCell,
+	createFileCell,
+	createLastEditedTimeCell,
+	createMultiTagCell,
+	createNumberCell,
+	createRow,
+	createSourceCell,
+	createSourceFileCell,
+	createTag,
+	createTagCell,
+	createTextCell,
+} from "src/shared/loom-state/loom-state-factory";
+import {
+	type Cell,
+	CellType,
+	type Column,
+	DateFormat,
+	DateFormatSeparator,
+	type LoomState,
+	type Row,
+	type Tag,
+} from "src/shared/loom-state/types/loom-state";
+import { NEW_COLUMN_ID } from "./constants";
+import type { ColumnMatch, ImportData } from "./types";
 
 export const addImportData = (
 	prevState: LoomState,

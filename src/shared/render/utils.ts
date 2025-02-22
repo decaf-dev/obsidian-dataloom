@@ -1,4 +1,4 @@
-import { DynamicSize } from "../spacing/types";
+import { type DynamicSize } from "../spacing/types";
 
 export const replaceNewLinesWithBr = (content: string) => {
 	const lines = content.split("\n");

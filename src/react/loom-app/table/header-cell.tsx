@@ -1,9 +1,9 @@
 import React from "react";
 
-import { useDragContext } from "src/shared/dragging/drag-context";
-import { useStickyOffset } from "./hooks";
 import { numToPx } from "src/shared/conversion";
-import { ColumnReorderHandler } from "../app/hooks/use-column/types";
+import { useDragContext } from "src/shared/dragging/drag-context";
+import type { ColumnReorderHandler } from "../app/hooks/use-column/types";
+import { useStickyOffset } from "./hooks";
 
 interface Props {
 	columnId?: string;

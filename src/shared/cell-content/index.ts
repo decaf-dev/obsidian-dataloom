@@ -1,29 +1,29 @@
 import { App } from "obsidian";
+import TagNotFoundError from "../error/tag-not-found-error";
 import {
-	Cell,
-	Row,
 	CellType,
-	Column,
-	Source,
-	SourceFileCell,
-	DateCell,
-	CheckboxCell,
-	NumberCell,
-	MultiTagCell,
-	TagCell,
-	TextCell,
-	FileCell,
-	EmbedCell,
+	type Cell,
+	type CheckboxCell,
+	type Column,
+	type DateCell,
+	type EmbedCell,
+	type FileCell,
+	type MultiTagCell,
+	type NumberCell,
+	type Row,
+	type Source,
+	type SourceFileCell,
+	type TagCell,
+	type TextCell,
 } from "../loom-state/types/loom-state";
 import { getCheckboxCellContent } from "./checkbox-cell-content";
 import { getDateCellContent } from "./date-cell-content";
 import { getEmbedCellContent } from "./embed-cell-content";
 import { getNumberCellContent } from "./number-cell-content";
-import { getTextCellContent } from "./text-cell-content";
-import { getTimeCellContent } from "./time-content";
 import { getSourceCellContent } from "./source-cell-content";
 import { getSourceFileContent } from "./source-file-content";
-import TagNotFoundError from "../error/tag-not-found-error";
+import { getTextCellContent } from "./text-cell-content";
+import { getTimeCellContent } from "./time-content";
 
 const getTagCellContent = (column: Column, cell: TagCell) => {
 	const { tagId } = cell;

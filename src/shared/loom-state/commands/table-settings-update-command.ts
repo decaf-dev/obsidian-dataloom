@@ -1,5 +1,5 @@
+import type { LoomState, TableSettings } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
-import { LoomState, TableSettings } from "../types/loom-state";
 
 export default class TableSettingsUpdateCommand<
 	K extends keyof TableSettings

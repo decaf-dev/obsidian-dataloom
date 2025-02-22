@@ -1,7 +1,7 @@
-import LoomStateCommand from "./loom-state-command";
-import { Cell, LoomState, Row } from "../types/loom-state";
-import RowNotFoundError from "src/shared/error/row-not-found-error";
 import { getCurrentDateTime } from "src/shared/date/utils";
+import RowNotFoundError from "src/shared/error/row-not-found-error";
+import type { Cell, LoomState, Row } from "../types/loom-state";
+import LoomStateCommand from "./loom-state-command";
 
 export default class CellBodyUpdateCommand extends LoomStateCommand {
 	private id: string;

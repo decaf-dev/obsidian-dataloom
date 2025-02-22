@@ -2,8 +2,8 @@ import {
 	createCellForType,
 	createRow,
 } from "src/shared/loom-state/loom-state-factory";
+import type { LoomState, Row } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
-import { Row, LoomState } from "../types/loom-state";
 
 export default class RowAddCommand extends LoomStateCommand {
 	private addedRow: Row;

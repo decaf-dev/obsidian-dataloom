@@ -1,8 +1,8 @@
+import jsondiffpatch from "jsondiffpatch";
 import { cloneDeep } from "lodash";
-import { LoomState } from "../types/loom-state";
+import { type LoomState } from "../types/loom-state";
 import CommandRedoError from "./error/command-redo-error";
 import CommandUndoError from "./error/command-undo-error";
-import jsondiffpatch from "jsondiffpatch";
 
 abstract class LoomStateCommand {
 	hasExecuteBeenCalled = false;

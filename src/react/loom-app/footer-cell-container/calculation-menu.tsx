@@ -1,6 +1,6 @@
 import Menu from "src/react/shared/menu";
 import MenuItem from "src/react/shared/menu-item";
-import { LoomMenuPosition } from "src/react/shared/menu/types";
+import type { LoomMenuPosition } from "src/react/shared/menu/types";
 import {
 	getAriaLabelForCalculation,
 	getAriaLabelForNumberCalculation,
@@ -8,10 +8,10 @@ import {
 	getDisplayNameForNumberCalculation,
 } from "src/shared/loom-state/type-display-names";
 import {
-	GeneralCalculation,
-	CalculationType,
 	CellType,
+	GeneralCalculation,
 	NumberCalculation,
+	type CalculationType,
 } from "src/shared/loom-state/types/loom-state";
 
 interface Props {

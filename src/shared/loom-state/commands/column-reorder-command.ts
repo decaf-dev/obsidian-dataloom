@@ -1,6 +1,6 @@
-import { LoomState } from "../types";
+import { type LoomState } from "../types";
+import { type Column, type Row } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
-import { Column, Row } from "../types/loom-state";
 
 export default class ColumnReorderCommand extends LoomStateCommand {
 	private dragId: string;

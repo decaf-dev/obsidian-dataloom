@@ -1,5 +1,5 @@
+import type { Column, LoomState, Tag } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
-import { Column, LoomState, Tag } from "../types/loom-state";
 
 export default class TagUpdateCommand extends LoomStateCommand {
 	private columnId: string;

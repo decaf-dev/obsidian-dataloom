@@ -1,10 +1,10 @@
-import { Filter } from "src/shared/loom-state/types/loom-state";
-import { filterByFilters } from "../filter-by-filters";
-import { useLoomState } from "../../loom-state-provider";
-import FilterUpdateCommand from "src/shared/loom-state/commands/filter-update-command";
+import Logger from "js-logger";
 import FilterAddCommand from "src/shared/loom-state/commands/filter-add-command";
 import FilterDeleteCommand from "src/shared/loom-state/commands/filter-delete-command";
-import Logger from "js-logger";
+import FilterUpdateCommand from "src/shared/loom-state/commands/filter-update-command";
+import type { Filter } from "src/shared/loom-state/types/loom-state";
+import { useLoomState } from "../../loom-state-provider";
+import { filterByFilters } from "../filter-by-filters";
 
 export const useFilter = () => {
 	const { doCommand } = useLoomState();

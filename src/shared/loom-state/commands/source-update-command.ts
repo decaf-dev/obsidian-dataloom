@@ -1,5 +1,5 @@
+import { type LoomState, type Source } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
-import { LoomState, Source } from "../types/loom-state";
 
 export default class SourceUpdateCommand<
 	T extends Source

@@ -1,7 +1,7 @@
-import { AlignItems, JustifyContent } from "src/shared/render/types";
+import type { AlignItems, JustifyContent } from "src/shared/render/types";
 import { getDynamicSize } from "src/shared/render/utils";
 import { getSpacing } from "src/shared/spacing";
-import { DynamicSize, SpacingSize } from "src/shared/spacing/types";
+import type { DynamicSize, SpacingSize } from "src/shared/spacing/types";
 
 import "./styles.css";
 

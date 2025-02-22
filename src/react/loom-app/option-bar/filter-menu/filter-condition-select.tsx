@@ -1,6 +1,6 @@
 import Select from "src/react/shared/select";
 import { getDisplayNameForFilterCondition } from "src/shared/loom-state/type-display-names";
-import { FilterCondition } from "src/shared/loom-state/types/loom-state";
+import { type FilterCondition } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	id: string;

@@ -1,9 +1,9 @@
 import Stack from "src/react/shared/stack";
 
-import { AddSourceError } from "./types";
 import Select from "src/react/shared/select";
-import { ObsidianPropertyType } from "src/shared/frontmatter/types";
 import FrontmatterCache from "src/shared/frontmatter/frontmatter-cache";
+import { ObsidianPropertyType } from "src/shared/frontmatter/types";
+import { type AddSourceError } from "./types";
 
 interface Props {
 	propertyKeySelectId: string;

@@ -5,29 +5,29 @@ import {
 	createSourceFileCell,
 } from "./loom-state-factory";
 import {
-	Cell,
+	type Cell,
 	CellType,
-	Column,
+	type Column,
 	DateFilterOption,
-	FilterCondition,
-	ObsidianFolderSource,
-	ObsidianFrontmatterSource,
-	Row,
-	Source,
+	type FilterCondition,
+	type ObsidianFolderSource,
+	type ObsidianFrontmatterSource,
+	type Row,
+	type Source,
 	SourceType,
 	TextFilterCondition,
 } from "./types/loom-state";
 
-import { deserializeFrontmatterForCell } from "../frontmatter";
 import { cloneDeep } from "lodash";
 import { getDateTimeFromUnixTime } from "../date/utils";
-import { ObsidianPropertyType } from "../frontmatter/types";
 import {
 	doesBooleanMatchFilter,
 	doesDateMatchFilter,
 	doesNumberMatchFilter,
 	doesTextMatchFilter,
 } from "../filter/filter-match";
+import { deserializeFrontmatterForCell } from "../frontmatter";
+import { ObsidianPropertyType } from "../frontmatter/types";
 
 export default function updateStateFromSources(
 	app: App,

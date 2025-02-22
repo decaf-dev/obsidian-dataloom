@@ -1,4 +1,4 @@
-import { CellType, LoomState } from "../../types/loom-state";
+import type { CellType, LoomState } from "../../types/loom-state";
 import LoomStateCommand from "../loom-state-command";
 import { columnAddExecute } from "./utils";
 

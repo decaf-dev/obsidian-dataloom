@@ -1,5 +1,5 @@
 import { createCellForType, createColumn } from "../../loom-state-factory";
-import { CellType, Column, Row } from "../../types/loom-state";
+import { CellType, type Column, type Row } from "../../types/loom-state";
 
 export const columnAddExecute = (
 	prevColumns: Column[],

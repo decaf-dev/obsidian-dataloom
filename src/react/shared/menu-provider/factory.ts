@@ -1,11 +1,11 @@
 import { generateUuid } from "src/shared/uuid";
+import type { LoomMenuPosition } from "../menu/types";
 import {
 	LoomMenuLevel,
-	LoomMenu,
-	LoomMenuCloseRequest,
-	LoomMenuCloseRequestType,
+	type LoomMenu,
+	type LoomMenuCloseRequest,
+	type LoomMenuCloseRequestType,
 } from "./types";
-import { LoomMenuPosition } from "../menu/types";
 
 export const createMenu = (
 	parentComponentId: string,

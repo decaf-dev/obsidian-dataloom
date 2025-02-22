@@ -1,8 +1,8 @@
 import React from "react";
 
 import { numToPx } from "src/shared/conversion";
-import { LoomMenuOpenDirection, LoomMenuPosition } from "../menu/types";
 import { isOnMobile } from "src/shared/render-utils";
+import type { LoomMenuOpenDirection, LoomMenuPosition } from "../menu/types";
 
 export const useShiftMenu = (
 	isModalMenu: boolean,

@@ -1,7 +1,12 @@
-import { Row, Column, LoomState, Source } from "../loom-state/types/loom-state";
+import { App } from "obsidian";
 import { getCellContent } from "../cell-content";
 import ColumnNotFoundError from "../error/column-not-found-error";
-import { App } from "obsidian";
+import type {
+	Column,
+	LoomState,
+	Row,
+	Source,
+} from "../loom-state/types/loom-state";
 
 const serializeColumns = (columns: Column[]): string[] => {
 	return columns.map((column) => column.content);

@@ -1,16 +1,13 @@
 import { App as ObsidianApp, TFile, WorkspaceLeaf } from "obsidian";
 
-import { Provider } from "react-redux";
-import { Store } from "@reduxjs/toolkit";
-
-import LoomStateProvider from "./loom-state-provider";
-import AppMountProvider from "./app-mount-provider";
 import App from "./app";
+import AppMountProvider from "./app-mount-provider";
+import LoomStateProvider from "./loom-state-provider";
 
 import DragProvider from "src/shared/dragging/drag-context";
-import { LoomState } from "src/shared/loom-state/types/loom-state";
-import MenuProvider from "../shared/menu-provider";
+import { type LoomState } from "src/shared/loom-state/types/loom-state";
 import ErrorBoundary from "../shared/error-boundary";
+import MenuProvider from "../shared/menu-provider";
 
 interface Props {
 	app: ObsidianApp;
@@ -18,7 +15,6 @@ interface Props {
 	mountLeaf: WorkspaceLeaf;
 	isMarkdownView: boolean;
 	loomFile: TFile;
-	store: Store;
 	loomState: LoomState;
 	onSaveState: (
 		appId: string,
@@ -32,7 +28,6 @@ export default function LoomApp({
 	reactAppId,
 	mountLeaf,
 	isMarkdownView,
-	store,
 	loomFile,
 	loomState,
 	onSaveState,
@@ -46,18 +41,16 @@ export default function LoomApp({
 				isMarkdownView={isMarkdownView}
 				loomFile={loomFile}
 			>
-				<Provider store={store}>
-					<LoomStateProvider
-						initialState={loomState}
-						onSaveState={onSaveState}
-					>
-						<DragProvider>
-							<MenuProvider>
-								<App />
-							</MenuProvider>
-						</DragProvider>
-					</LoomStateProvider>
-				</Provider>
+				<LoomStateProvider
+					initialState={loomState}
+					onSaveState={onSaveState}
+				>
+					<DragProvider>
+						<MenuProvider>
+							<App />
+						</MenuProvider>
+					</DragProvider>
+				</LoomStateProvider>
 			</AppMountProvider>
 		</ErrorBoundary>
 	);

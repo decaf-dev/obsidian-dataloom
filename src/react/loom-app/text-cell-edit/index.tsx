@@ -14,21 +14,21 @@ import {
 	removeClosingBracket,
 } from "./utils";
 
-import "./styles.css";
+import Logger from "js-logger";
+import { useMenu } from "src/react/shared/menu-provider/hooks";
+import {
+	type LoomMenuCloseRequest,
+	LoomMenuLevel,
+} from "src/react/shared/menu-provider/types";
 import {
 	isInsertLineAltDown,
 	isInsertLineDown,
 } from "src/shared/keyboard-event";
 import {
-	LoomMenuCloseRequest,
-	LoomMenuLevel,
-} from "src/react/shared/menu-provider/types";
-import { useMenu } from "src/react/shared/menu-provider/hooks";
-import {
 	isMarkdownFile,
 	stripFileExtension,
 } from "src/shared/link-and-path/file-path-utils";
-import Logger from "js-logger";
+import "./styles.css";
 
 interface Props {
 	cellId: string;

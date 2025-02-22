@@ -1,5 +1,5 @@
+import type { Filter, LoomState } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
-import { Filter, LoomState } from "../types/loom-state";
 
 export default class FilterUpdateCommand<
 	T extends Filter
