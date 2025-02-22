@@ -1,79 +1,64 @@
 <script lang="ts">
+	import { ParsedTableData } from "./utils";
 
 interface AppProps {
+	data: ParsedTableData;
 	mode: 'reading' | 'editing';
 }
-const { mode}: AppProps = $props();
+
+const { mode, data}: AppProps = $props();
 </script>
 
 {#if mode == 'reading'}
 <table>
+	{#if data.head.length > 0}
 	<thead>
 		<tr>
+			{#each data.head as header}
 			<th>
-				Header 1
+			 {header}
 			</th>
-			<th>
-				Header 2
-			</th>
-			<th>
-				Header 3
-			</th>
+			{/each}
 		</tr>
 	</thead>
+	{/if}
 	<tbody>
+		{#each data.body as row}
 		<tr>
+			{#each row as cell}
 			<td>
-				Cell 1
+				{cell}
 			</td>
-			<td>
-				Cell 2
-			</td>
-			<td>
-				Cell 3
-			</td>
+			{/each}
 		</tr>
+		{/each}
 	</tbody>
 </table>
 {:else}
 <table>
 	<thead>
 		<tr>
+			{#each data.head as header}
 			<th>
-				<div class="table-cell-wrapper">
-				Header 1
-				</div>
+								<div class="table-cell-wrapper">
+			 {header}
+			 </div>
 			</th>
-			<th>
-							<div class="table-cell-wrapper">
-				Header 2
-							</div>
-			</th>
-			<th>
-							<div class="table-cell-wrapper">
-				Header 3
-				</div>
-			</th>
+			{/each}
 		</tr>
 	</thead>
 	<tbody>
+		{#each data.body as row}
 		<tr>
+			{#each row as cell}
 			<td>
 							<div class="table-cell-wrapper">
-				Cell 1
+				{cell}
 				</div>
 			</td>
-			<td>
-							<div class="table-cell-wrapper">
-				Cell 2
-							</div>
-			</td>
-			<td>
-							<div class="table-cell-wrapper">
-				Cell 3
-							</div>
-			</td>
+			{/each}
 		</tr>
+		{/each}
 	</tbody>
 </table>
 {/if}

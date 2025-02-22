@@ -37,6 +37,7 @@ import { formatMessageForLogger, stringToLogLevel } from "./shared/logger";
 import { LOG_LEVEL_OFF } from "./shared/logger/constants";
 import { hasDarkTheme } from "./shared/render/utils";
 import SvelteApp from "./svelte/App.svelte";
+import { parseTableToObject } from "./svelte/utils";
 
 export interface DataLoomSettings {
 	logLevel: string;
@@ -123,6 +124,7 @@ export default class DataLoomPlugin extends Plugin {
 					target: container,
 					props: {
 						mode: "reading",
+						data: parseTableToObject(table),
 					},
 				});
 				table.replaceWith(container);
@@ -131,18 +133,17 @@ export default class DataLoomPlugin extends Plugin {
 
 		const tableExtension = EditorView.updateListener.of((update) => {
 			if (update.docChanged || update.viewportChanged) {
-				update.view.dom
-					.querySelectorAll(".table-wrapper")
-					.forEach((wrapperEl) => {
-						const container = document.createElement("div");
-						mount(SvelteApp, {
-							target: container,
-							props: {
-								mode: "editing",
-							},
-						});
-						wrapperEl.replaceWith(container);
+				update.view.dom.querySelectorAll("table").forEach((tableEl) => {
+					const container = document.createElement("div");
+					mount(SvelteApp, {
+						target: container,
+						props: {
+							mode: "editing",
+							data: parseTableToObject(tableEl),
+						},
 					});
+					tableEl.replaceWith(container);
+				});
 			}
 		});
 
