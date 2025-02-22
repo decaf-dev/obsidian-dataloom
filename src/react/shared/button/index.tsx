@@ -1,10 +1,10 @@
 import React from "react";
 
 import Stack from "../stack";
-import { ButtonSize, ButtonVariant } from "./types";
+import type { ButtonSize, ButtonVariant } from "./types";
 
-import "./styles.css";
 import Logger from "js-logger";
+import "./styles.css";
 
 interface ButtonProps {
 	isDisabled?: boolean;

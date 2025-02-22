@@ -1,14 +1,14 @@
 import React from "react";
 
-import { Source } from "src/shared/loom-state/types/loom-state";
+import Logger from "js-logger";
+import { useAppMount } from "src/react/loom-app/app-mount-provider";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
+import EventManager from "src/shared/event/event-manager";
 import SourceAddCommand from "src/shared/loom-state/commands/source-add-command";
 import SourceDeleteCommand from "src/shared/loom-state/commands/source-delete-command";
-import updateStateFromSources from "src/shared/loom-state/update-state-from-sources";
-import { useAppMount } from "src/react/loom-app/app-mount-provider";
-import EventManager from "src/shared/event/event-manager";
 import SourceUpdateCommand from "src/shared/loom-state/commands/source-update-command";
-import Logger from "js-logger";
+import { type Source } from "src/shared/loom-state/types/loom-state";
+import updateStateFromSources from "src/shared/loom-state/update-state-from-sources";
 
 const HOOK_NAME = "useSource";
 
@@ -18,7 +18,9 @@ export const useSource = () => {
 
 	const { sources, columns } = loomState.model;
 
-	const frontmatterKeyHash = JSON.stringify(columns.map((column) => column.frontmatterKey));
+	const frontmatterKeyHash = JSON.stringify(
+		columns.map((column) => column.frontmatterKey)
+	);
 	const sourcesHash = JSON.stringify(sources);
 
 	const updateRowsFromSources = React.useCallback(
@@ -27,7 +29,11 @@ export const useSource = () => {
 			setLoomState((prevState) => {
 				if (fromObsidianEvent) {
 					if (Date.now() - prevState.time < 1000) {
-						Logger.trace(HOOK_NAME, "updateRowsFromSource", "event ignored because it was called in the last 1000ms.")
+						Logger.trace(
+							HOOK_NAME,
+							"updateRowsFromSource",
+							"event ignored because it was called in the last 1000ms."
+						);
 						return prevState;
 					}
 				}

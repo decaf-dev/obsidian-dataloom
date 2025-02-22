@@ -1,5 +1,5 @@
 import Logger from "js-logger";
-import { DataLoomEvent, EventCallback } from "./types";
+import type { DataLoomEvent, EventCallback } from "./types";
 
 const CLASS_NAME = "EventManager";
 

@@ -1,9 +1,15 @@
 import { cloneDeep } from "lodash";
-import { LoomState } from "../types";
-import { CellType, Column, Filter, Row, Source } from "../types/loom-state";
-import LoomStateCommand from "./loom-state-command";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
+import type { LoomState } from "../types";
+import {
+	CellType,
+	type Column,
+	type Filter,
+	type Row,
+	type Source,
+} from "../types/loom-state";
 import { columnDeleteExecute } from "./column-delete-command/utils";
+import LoomStateCommand from "./loom-state-command";
 
 export default class SourceDeleteCommand extends LoomStateCommand {
 	private id: string;

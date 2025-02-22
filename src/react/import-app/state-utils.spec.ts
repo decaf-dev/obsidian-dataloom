@@ -6,16 +6,16 @@ import {
 	createTag,
 	createTextCell,
 } from "src/shared/loom-state/loom-state-factory";
-import { ColumnMatch, ImportData } from "./types";
-import { addImportData } from "./state-utils";
-import { NEW_COLUMN_ID } from "./constants";
 import {
 	CellType,
-	Column,
-	MultiTagCell,
-	Row,
-	TextCell,
+	type Column,
+	type MultiTagCell,
+	type Row,
+	type TextCell,
 } from "src/shared/loom-state/types/loom-state";
+import { NEW_COLUMN_ID } from "./constants";
+import { addImportData } from "./state-utils";
+import { type ColumnMatch, type ImportData } from "./types";
 
 describe("addImportData", () => {
 	it("imports data into a table of the same size", () => {

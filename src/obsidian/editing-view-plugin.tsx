@@ -1,7 +1,7 @@
-import { PluginValue, ViewPlugin, ViewUpdate } from "@codemirror/view";
+import { type PluginValue, ViewPlugin, ViewUpdate } from "@codemirror/view";
 
-import { loadEmbeddedLoomApps } from "./embedded/embedded-app-manager";
 import { App } from "obsidian";
+import { loadEmbeddedLoomApps } from "./embedded/embedded-app-manager";
 
 export default function EditingViewPlugin(app: App, pluginVersion: string) {
 	return ViewPlugin.fromClass(

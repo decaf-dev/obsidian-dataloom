@@ -1,44 +1,47 @@
-import {
-	Cell,
-	Row,
-	CellType,
-	Filter,
-	FilterCondition,
-	LoomState,
-	Tag,
-	TextFilter,
-	TagFilter,
-	MultiTagFilter,
-	FileFilter,
-	TextFilterCondition,
-	EmbedFilter,
-	DateFilter,
-	NumberFilter,
-	CreationTimeFilter,
-	LastEditedTimeFilter,
-	Column,
-	SourceFileFilter,
-	TextCell,
-	FileCell,
-	CheckboxCell,
-	TagCell,
-	MultiTagCell,
-	NumberCell,
-	DateCell,
-	SourceFileCell,
-	EmbedCell,
-	CheckboxFilter,
-} from "src/shared/loom-state/types/loom-state";
-import { Expression, evaluateWithPrecedence } from "./evaluate-with-precedence";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
-import { getFileName } from "src/shared/link-and-path/file-path-utils";
-import { isRelativePath } from "src/shared/link-and-path/link-predicates";
 import {
 	doesBooleanMatchFilter,
 	doesDateMatchFilter,
 	doesNumberMatchFilter,
 	doesTextMatchFilter,
 } from "src/shared/filter/filter-match";
+import { getFileName } from "src/shared/link-and-path/file-path-utils";
+import { isRelativePath } from "src/shared/link-and-path/link-predicates";
+import {
+	type Cell,
+	CellType,
+	type CheckboxCell,
+	type CheckboxFilter,
+	type Column,
+	type CreationTimeFilter,
+	type DateCell,
+	type DateFilter,
+	type EmbedCell,
+	type EmbedFilter,
+	type FileCell,
+	type FileFilter,
+	type Filter,
+	type FilterCondition,
+	type LastEditedTimeFilter,
+	type LoomState,
+	type MultiTagCell,
+	type MultiTagFilter,
+	type NumberCell,
+	type NumberFilter,
+	type Row,
+	type SourceFileCell,
+	type SourceFileFilter,
+	type Tag,
+	type TagCell,
+	type TagFilter,
+	type TextCell,
+	type TextFilter,
+	TextFilterCondition,
+} from "src/shared/loom-state/types/loom-state";
+import {
+	type Expression,
+	evaluateWithPrecedence,
+} from "./evaluate-with-precedence";
 
 /**
  * Filters body rows by the filters array

@@ -1,16 +1,16 @@
 import { App as ObsidianApp, TFile, WorkspaceLeaf } from "obsidian";
 
+import { type Store } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
-import { Store } from "@reduxjs/toolkit";
 
-import LoomStateProvider from "./loom-state-provider";
-import AppMountProvider from "./app-mount-provider";
 import App from "./app";
+import AppMountProvider from "./app-mount-provider";
+import LoomStateProvider from "./loom-state-provider";
 
 import DragProvider from "src/shared/dragging/drag-context";
-import { LoomState } from "src/shared/loom-state/types/loom-state";
-import MenuProvider from "../shared/menu-provider";
+import { type LoomState } from "src/shared/loom-state/types/loom-state";
 import ErrorBoundary from "../shared/error-boundary";
+import MenuProvider from "../shared/menu-provider";
 
 interface Props {
 	app: ObsidianApp;

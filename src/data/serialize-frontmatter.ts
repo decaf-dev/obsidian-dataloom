@@ -1,22 +1,22 @@
 import { App, TFile } from "obsidian";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
-import { LoomState } from "src/shared/loom-state/types";
-import {
-	CellType,
-	CheckboxCell,
-	DateCell,
-	EmbedCell,
-	FileCell,
-	MultiTagCell,
-	NumberCell,
-	SourceFileCell,
-	TagCell,
-	TextCell,
-} from "src/shared/loom-state/types/loom-state";
-import { dateTimeToObsidianDateTime } from "./date-utils";
+import TagNotFoundError from "src/shared/error/tag-not-found-error";
 import { updateObsidianPropertyType } from "src/shared/frontmatter/obsidian-utils";
 import { ObsidianPropertyType } from "src/shared/frontmatter/types";
-import TagNotFoundError from "src/shared/error/tag-not-found-error";
+import type { LoomState } from "src/shared/loom-state/types";
+import {
+	CellType,
+	type CheckboxCell,
+	type DateCell,
+	type EmbedCell,
+	type FileCell,
+	type MultiTagCell,
+	type NumberCell,
+	type SourceFileCell,
+	type TagCell,
+	type TextCell,
+} from "src/shared/loom-state/types/loom-state";
+import { dateTimeToObsidianDateTime } from "./date-utils";
 
 export const serializeFrontmatter = async (app: App, state: LoomState) => {
 	// console.log("serializing frontmatter...");

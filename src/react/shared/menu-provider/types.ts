@@ -1,4 +1,4 @@
-import { LoomMenuPosition } from "../menu/types";
+import { type LoomMenuPosition } from "../menu/types";
 
 export enum LoomMenuLevel {
 	ONE = 1,

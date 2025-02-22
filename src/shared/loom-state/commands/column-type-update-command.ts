@@ -1,3 +1,7 @@
+import { cloneDeep } from "lodash";
+import { dateTimeToDateString } from "src/shared/date/date-time-conversion";
+import { parseDateTime } from "src/shared/date/date-validation";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import {
 	createCellForType,
 	createCheckboxCell,
@@ -10,27 +14,23 @@ import {
 	createTagCell,
 	createTextCell,
 } from "src/shared/loom-state/loom-state-factory";
-import ColumnNotFoundError from "src/shared/error/column-not-found-error";
-import LoomStateCommand from "./loom-state-command";
+import { isNumber } from "src/shared/match";
 import {
 	CellType,
-	CheckboxCell,
-	Column,
-	DateCell,
-	EmbedCell,
-	FileCell,
-	Filter,
-	LoomState,
-	MultiTagCell,
-	NumberCell,
-	Tag,
-	TagCell,
-	TextCell,
+	type CheckboxCell,
+	type Column,
+	type DateCell,
+	type EmbedCell,
+	type FileCell,
+	type Filter,
+	type LoomState,
+	type MultiTagCell,
+	type NumberCell,
+	type Tag,
+	type TagCell,
+	type TextCell,
 } from "../types/loom-state";
-import { dateTimeToDateString } from "src/shared/date/date-time-conversion";
-import { isNumber } from "src/shared/match";
-import { parseDateTime } from "src/shared/date/date-validation";
-import { cloneDeep } from "lodash";
+import LoomStateCommand from "./loom-state-command";
 
 export default class ColumnTypeUpdateCommand extends LoomStateCommand {
 	private targetColumnId: string;

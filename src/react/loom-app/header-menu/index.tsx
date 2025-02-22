@@ -1,34 +1,34 @@
 import React from "react";
 
 import Menu from "src/react/shared/menu";
-import OptionSubmenu from "./option-submenu";
-import TypeSubmenu from "./type-submenu";
-import NumberFormatSubmenu from "./number-format-submenu";
-import TextInputSubmenu from "./text-input-submenu";
-import DateFormatSubmenu from "./date-format-submenu";
 import AspectRatioSubmenu from "./aspect-ratio-submenu";
-import PaddingSubmenu from "./padding-submenu";
-import FrontmatterKeySubmenu from "./frontmatter-key-submenu";
 import BaseSubmenu from "./base-submenu";
 import DateFormatSeparatorSubmenu from "./date-format-separator-submenu";
-import TimeFormatSubmenu from "./time-format-submenu";
+import DateFormatSubmenu from "./date-format-submenu";
+import FrontmatterKeySubmenu from "./frontmatter-key-submenu";
 import MultiTagSortDirSubmenu from "./multitag-sort-dir-submenu";
+import NumberFormatSubmenu from "./number-format-submenu";
+import OptionSubmenu from "./option-submenu";
+import PaddingSubmenu from "./padding-submenu";
+import TextInputSubmenu from "./text-input-submenu";
+import TimeFormatSubmenu from "./time-format-submenu";
+import TypeSubmenu from "./type-submenu";
 
+import type { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
 import {
 	AspectRatio,
 	CellType,
 	CurrencyType,
 	DateFormat,
-	SortDir,
-	PaddingSize,
-	NumberFormat,
-	Column,
 	DateFormatSeparator,
+	NumberFormat,
+	PaddingSize,
+	SortDir,
+	type Column,
 } from "src/shared/loom-state/types/loom-state";
+import type { LoomMenuPosition } from "../../shared/menu/types";
+import type { ColumnChangeHandler } from "../app/hooks/use-column/types";
 import { SubmenuType } from "./types";
-import { LoomMenuPosition } from "../../shared/menu/types";
-import { ColumnChangeHandler } from "../app/hooks/use-column/types";
-import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
 
 import "./styles.css";
 

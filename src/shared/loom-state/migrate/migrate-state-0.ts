@@ -1,10 +1,10 @@
-import MigrateState from "./migrate-state";
-import { LoomState0 } from "../types/loom-state-0";
+import type { LoomState0 } from "../types/loom-state-0";
 import {
-	LoomState1,
 	CurrencyType as CurrencyType1,
-	Column as Column1,
+	type Column as Column1,
+	type LoomState1,
 } from "../types/loom-state-1";
+import MigrateState from "./migrate-state";
 
 /**
  * Migrates to 6.1.0

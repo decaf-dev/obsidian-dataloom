@@ -1,6 +1,6 @@
+import { type LoomState11 } from "../types/loom-state-11";
+import { type LoomState12 } from "../types/loom-state-12";
 import MigrateState from "./migrate-state";
-import { LoomState11 } from "../types/loom-state-11";
-import { LoomState12 } from "../types/loom-state-12";
 
 /**
  * Migrates to 8.2.0

@@ -2,7 +2,7 @@ import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import { useDragContext } from "src/shared/dragging/drag-context";
 import { getRowId } from "src/shared/dragging/utils";
 import { confirmSortOrderChange } from "src/shared/sort-utils";
-import { RowReorderHandler } from "../app/hooks/use-row/types";
+import type { RowReorderHandler } from "../app/hooks/use-row/types";
 
 interface Props {
 	style?: React.CSSProperties;

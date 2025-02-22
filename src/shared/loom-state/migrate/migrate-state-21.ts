@@ -1,6 +1,6 @@
+import { type LoomState20, type LoomState21 } from "../types";
+import { type Row } from "../types/loom-state";
 import MigrateState from "./migrate-state";
-import { LoomState20, LoomState21 } from "../types";
-import { Row } from "../types/loom-state";
 
 /**
  * Migrates to 8.15.6

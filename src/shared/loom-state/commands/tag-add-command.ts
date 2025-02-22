@@ -1,18 +1,18 @@
-import { createTag } from "src/shared/loom-state/loom-state-factory";
-import LoomStateCommand from "./loom-state-command";
-import {
-	Cell,
-	CellType,
-	Column,
-	LoomState,
-	MultiTagCell,
-	Row,
-} from "../types/loom-state";
-import { Color } from "../types/loom-state";
-import RowNotFoundError from "src/shared/error/row-not-found-error";
 import { getCurrentDateTime } from "src/shared/date/utils";
-import { mapCellsToColumn } from "../utils/column-utils";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
+import RowNotFoundError from "src/shared/error/row-not-found-error";
+import { createTag } from "src/shared/loom-state/loom-state-factory";
+import {
+	type Cell,
+	CellType,
+	Color,
+	type Column,
+	type LoomState,
+	type MultiTagCell,
+	type Row,
+} from "../types/loom-state";
+import { mapCellsToColumn } from "../utils/column-utils";
+import LoomStateCommand from "./loom-state-command";
 
 /**
  * Adds a tag to a cell

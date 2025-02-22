@@ -1,6 +1,6 @@
 import Menu from "src/react/shared/menu";
 import MenuItem from "src/react/shared/menu-item";
-import { LoomMenuPosition } from "src/react/shared/menu/types";
+import { type LoomMenuPosition } from "src/react/shared/menu/types";
 
 import { getDisplayNameForDateFormat } from "src/shared/loom-state/type-display-names";
 import { DateFormat } from "src/shared/loom-state/types/loom-state";

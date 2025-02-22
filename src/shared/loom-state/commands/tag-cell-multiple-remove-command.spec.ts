@@ -7,8 +7,13 @@ import {
 } from "src/shared/loom-state/loom-state-factory";
 
 import { advanceBy, clear } from "jest-date-mock";
+import {
+	CellType,
+	type Column,
+	type MultiTagCell,
+	type Row,
+} from "../types/loom-state";
 import TagCellMultipleRemoveCommand from "./tag-cell-multiple-remove-command";
-import { CellType, Column, MultiTagCell, Row } from "../types/loom-state";
 
 describe("tag-cell-multiple-remove-command", () => {
 	const initialState = () => {

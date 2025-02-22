@@ -1,11 +1,11 @@
-import MigrateState from "./migrate-state";
-import { LoomState8 } from "../types/loom-state-8";
+import { type LoomState8 } from "../types/loom-state-8";
 import {
-	LoomState9,
 	AspectRatio as AspectRatio9,
 	PaddingSize as PaddingSize9,
-	Column as Column9,
+	type Column as Column9,
+	type LoomState9,
 } from "../types/loom-state-9";
+import MigrateState from "./migrate-state";
 
 /**
  * Migrates to 6.17.0

@@ -1,10 +1,10 @@
 import { App, Modal, TFile } from "obsidian";
-import { Root, createRoot } from "react-dom/client";
-import { ExportApp } from "src/react/export-app";
+import { type Root, createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
+import { ExportApp } from "src/react/export-app";
 import { store } from "src/redux/store";
+import type { LoomState } from "src/shared/loom-state/types/loom-state";
 import { renderDivider, setModalTitle } from "../shared";
-import { LoomState } from "src/shared/loom-state/types/loom-state";
 
 export default class ExportModal extends Modal {
 	root: Root;

@@ -1,21 +1,21 @@
 import { App, Notice, TFile } from "obsidian";
-import EventManager from "src/shared/event/event-manager";
-import { LOOM_EXTENSION, WIKI_LINK_REGEX } from "./constants";
-import { deserializeState, serializeState } from "./serialize-state";
-import {
-	CellType,
-	EmbedCell,
-	FileCell,
-	LoomState,
-	TextCell,
-} from "src/shared/loom-state/types/loom-state";
-import { mapCellsToColumn } from "src/shared/loom-state/utils/column-utils";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
+import EventManager from "src/shared/event/event-manager";
 import {
 	isMarkdownFile,
 	stripFileExtension,
 } from "src/shared/link-and-path/file-path-utils";
 import { componentsToWikiLink } from "src/shared/link-and-path/markdown-link-utils";
+import {
+	CellType,
+	type EmbedCell,
+	type FileCell,
+	type LoomState,
+	type TextCell,
+} from "src/shared/loom-state/types/loom-state";
+import { mapCellsToColumn } from "src/shared/loom-state/utils/column-utils";
+import { LOOM_EXTENSION, WIKI_LINK_REGEX } from "./constants";
+import { deserializeState, serializeState } from "./serialize-state";
 
 //TODO test
 
@@ -62,7 +62,8 @@ export const handleFileRename = async (
 	}
 	if (totalLinksUpdated > 0) {
 		new Notice(
-			`Updated ${totalLinksUpdated} link${totalLinksUpdated > 1 ? "s" : ""
+			`Updated ${totalLinksUpdated} link${
+				totalLinksUpdated > 1 ? "s" : ""
 			} in ${numFilesUpdated} loom file${numFilesUpdated > 1 ? "s" : ""}.`
 		);
 	}

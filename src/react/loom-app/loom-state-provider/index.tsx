@@ -1,13 +1,13 @@
 import React from "react";
 
-import { LoomState } from "src/shared/loom-state/types/loom-state";
-import LoomStateCommand from "src/shared/loom-state/commands/loom-state-command";
-import { sortRows } from "src/shared/loom-state/sort-rows";
-import { useAppMount } from "src/react/loom-app/app-mount-provider";
-import EventManager from "src/shared/event/event-manager";
+import Logger from "js-logger";
 import { TFile } from "obsidian";
 import { deserializeState } from "src/data/serialize-state";
-import Logger from "js-logger";
+import { useAppMount } from "src/react/loom-app/app-mount-provider";
+import EventManager from "src/shared/event/event-manager";
+import LoomStateCommand from "src/shared/loom-state/commands/loom-state-command";
+import { sortRows } from "src/shared/loom-state/sort-rows";
+import { type LoomState } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	initialState: LoomState;

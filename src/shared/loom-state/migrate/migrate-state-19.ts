@@ -1,9 +1,12 @@
-import MigrateState from "./migrate-state";
 import {
-	LoomState18,
+	type LoomState18,
 	SourceType as SourceType18,
 } from "../types/loom-state-18";
-import { LoomState19, ObsidianFolderSource } from "../types/loom-state-19";
+import {
+	type LoomState19,
+	type ObsidianFolderSource,
+} from "../types/loom-state-19";
+import MigrateState from "./migrate-state";
 
 /**
  * Migrates to 8.15.0

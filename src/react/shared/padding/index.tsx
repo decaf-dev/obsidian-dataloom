@@ -1,5 +1,5 @@
 import { getSpacing } from "src/shared/spacing";
-import { SpacingSize } from "src/shared/spacing/types";
+import type { SpacingSize } from "src/shared/spacing/types";
 
 interface Props {
 	className?: string;

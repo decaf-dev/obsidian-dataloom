@@ -1,10 +1,10 @@
-import MigrateState from "./migrate-state";
-import { LoomState5 } from "../types/loom-state-5";
+import { type LoomState5 } from "../types/loom-state-5";
 import {
-	LoomState6,
-	FunctionType as FunctionType6,
-	FooterCell as FooterCell6,
+	type FooterCell as FooterCell6,
+	type FunctionType as FunctionType6,
+	type LoomState6,
 } from "../types/loom-state-6";
+import MigrateState from "./migrate-state";
 
 /**
  * Migrates to 6.9.1

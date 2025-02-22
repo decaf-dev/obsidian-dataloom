@@ -10,17 +10,17 @@ import {
 	createTextCell,
 	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
-import ColumnTypeUpdateCommand from "./column-type-update-command";
 import {
 	CellType,
-	CheckboxCell,
-	Column,
-	Filter,
-	MultiTagCell,
-	Row,
-	TagCell,
-	TextCell,
+	type CheckboxCell,
+	type Column,
+	type Filter,
+	type MultiTagCell,
+	type Row,
+	type TagCell,
+	type TextCell,
 } from "../types/loom-state";
+import ColumnTypeUpdateCommand from "./column-type-update-command";
 
 describe("column-type-update-command", () => {
 	const generateStateWithTextColumn = () => {

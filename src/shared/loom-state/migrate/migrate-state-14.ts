@@ -1,10 +1,10 @@
-import MigrateState from "./migrate-state";
+import { type LoomState14 } from "../types/loom-state-14";
 import {
-	Column as Column15,
-	LoomState15,
-	Row as Row15,
+	type Column as Column15,
+	type LoomState15,
+	type Row as Row15,
 } from "../types/loom-state-15";
-import { LoomState14 } from "../types/loom-state-14";
+import MigrateState from "./migrate-state";
 
 /**
  * Migrates to 8.7.0

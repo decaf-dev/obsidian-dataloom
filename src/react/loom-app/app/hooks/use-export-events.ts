@@ -1,17 +1,17 @@
 import React from "react";
+import { useAppSelector } from "src/redux/hooks";
+import EventManager from "src/shared/event/event-manager";
 import { isEventForThisApp } from "src/shared/event/utils";
 import {
-	getExportFileName,
-	getBlobTypeForExportType,
 	downloadFile,
+	getBlobTypeForExportType,
+	getExportFileName,
 } from "src/shared/export/download-utils";
 import { exportToCSV } from "src/shared/export/export-to-csv";
 import { exportToMarkdown } from "src/shared/export/export-to-markdown";
 import { ExportType } from "src/shared/export/types";
-import { LoomState } from "src/shared/loom-state/types/loom-state";
+import type { LoomState } from "src/shared/loom-state/types/loom-state";
 import { useAppMount } from "../../app-mount-provider";
-import { useAppSelector } from "src/redux/hooks";
-import EventManager from "src/shared/event/event-manager";
 
 export const useExportEvents = (state: LoomState) => {
 	const { reactAppId, loomFile, app } = useAppMount();

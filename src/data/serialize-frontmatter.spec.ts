@@ -1,3 +1,4 @@
+import { App, TFile } from "obsidian";
 import {
 	createColumn,
 	// createDateCell,
@@ -13,12 +14,11 @@ import {
 } from "src/shared/loom-state/loom-state-factory";
 import {
 	CellType,
-	Column,
-	Row,
-	Source,
+	type Column,
+	type Row,
+	type Source,
 } from "src/shared/loom-state/types/loom-state";
 import { serializeFrontmatter } from "./serialize-frontmatter";
-import { App, TFile } from "obsidian";
 
 describe("serializeFrontmatter", () => {
 	let frontmatterTest1 = {};

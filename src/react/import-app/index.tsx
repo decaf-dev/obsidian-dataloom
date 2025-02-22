@@ -2,38 +2,38 @@ import React from "react";
 
 import Papa from "papaparse";
 
-import DataTypeSelect from "./data-type-select";
 import Stepper from "../shared/stepper";
 import DataSourceSelect from "./data-source-select";
+import DataTypeSelect from "./data-type-select";
 import UploadData from "./upload-data";
 
 import {
 	CellType,
 	DateFormat,
 	DateFormatSeparator,
-	LoomState,
+	type LoomState,
 } from "src/shared/loom-state/types/loom-state";
-import { Step } from "../shared/stepper/types";
+import type { Step } from "../shared/stepper/types";
 import {
 	DataSource,
 	DataType,
 	StepType,
-	ColumnMatch,
-	ImportData,
+	type ColumnMatch,
+	type ImportData,
 } from "./types";
 
 import MatchColumns from "./match-columns";
 
+import "./styles.css";
 import {
 	parseMarkdownTableIntoTokens,
 	tableTokensToArr,
 	validateMarkdownTable,
 } from "./table-utils";
-import "./styles.css";
 
-import { addImportData } from "./state-utils";
 import { useMenuOperations } from "../shared/menu-provider/hooks";
 import FinalizeImport from "./finalize-import";
+import { addImportData } from "./state-utils";
 
 interface Props {
 	state: LoomState;

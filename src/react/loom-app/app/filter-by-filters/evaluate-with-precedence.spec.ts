@@ -1,4 +1,7 @@
-import { evaluateWithPrecedence, Expression } from "./evaluate-with-precedence";
+import {
+	evaluateWithPrecedence,
+	type Expression,
+} from "./evaluate-with-precedence";
 
 describe("evaluateByPrecedance", () => {
 	it("true && true === true", () => {

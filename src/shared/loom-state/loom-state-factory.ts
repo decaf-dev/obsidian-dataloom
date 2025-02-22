@@ -1,70 +1,70 @@
 import { randomColor } from "src/shared/color";
 import {
 	AspectRatio,
-	Cell,
-	Row,
-	GeneralCalculation,
+	type BaseFilter,
+	type Cell,
 	CellType,
-	Column,
+	type CheckboxCell,
+	type CheckboxCondition,
+	type CheckboxFilter,
+	type Column,
+	type CreationTimeCell,
+	type CreationTimeCondition,
+	type CreationTimeFilter,
 	CurrencyType,
-	DateFormat,
-	PaddingSize,
-	SortDir,
-	LoomState,
-	Tag,
-	TextFilter,
-	MultiTagFilter,
-	TagFilter,
-	CheckboxFilter,
-	FileFilter,
-	TextFilterCondition,
-	BaseFilter,
+	type DateCell,
+	type DateCondition,
+	type DateFilter,
 	DateFilterCondition,
-	DateFilter,
-	CreationTimeFilter,
-	LastEditedTimeFilter,
-	EmbedFilter,
-	NumberFilter,
-	NumberFilterCondition,
-	TextCondition,
-	FileCondition,
-	CheckboxCondition,
-	TagCondition,
-	MultiTagCondition,
-	EmbedCondition,
-	NumberCondition,
-	DateCondition,
-	CreationTimeCondition,
-	LastEditedTimeCondition,
 	DateFilterOption,
-	NumberFormat,
-	Source,
-	SourceType,
-	Filter,
-	SourceFileFilter,
-	ObsidianFolderSource,
-	ExternalRowOrder,
+	DateFormat,
 	DateFormatSeparator,
-	TextCell,
-	NumberCell,
-	DateCell,
-	CreationTimeCell,
-	EmbedCell,
-	LastEditedTimeCell,
-	SourceCell,
-	SourceFileCell,
-	CheckboxCell,
-	FileCell,
-	TagCell,
-	MultiTagCell,
-	FilterCondition,
+	type EmbedCell,
+	type EmbedCondition,
+	type EmbedFilter,
+	type ExternalRowOrder,
+	type FileCell,
+	type FileCondition,
+	type FileFilter,
+	type Filter,
+	type FilterCondition,
+	GeneralCalculation,
+	type LastEditedTimeCell,
+	type LastEditedTimeCondition,
+	type LastEditedTimeFilter,
+	type LoomState,
+	type MultiTagCell,
+	type MultiTagCondition,
+	type MultiTagFilter,
+	type NumberCell,
+	type NumberCondition,
+	type NumberFilter,
+	NumberFilterCondition,
+	NumberFormat,
+	type ObsidianFolderSource,
+	PaddingSize,
+	type Row,
+	SortDir,
+	type Source,
+	type SourceCell,
+	type SourceFileCell,
+	type SourceFileFilter,
+	SourceType,
+	type Tag,
+	type TagCell,
+	type TagCondition,
+	type TagFilter,
+	type TextCell,
+	type TextCondition,
+	type TextFilter,
+	TextFilterCondition,
 } from "./types/loom-state";
 
+import { getFilterConditionsForPropertyType } from "src/react/loom-app/option-bar/sources-menu/add-source-submenu/utils";
 import { Color } from "src/shared/loom-state/types/loom-state";
-import { generateUuid } from "../uuid";
 import { getCurrentDateTime } from "../date/utils";
 import { ObsidianPropertyType } from "../frontmatter/types";
-import { getFilterConditionsForPropertyType } from "src/react/loom-app/option-bar/sources-menu/add-source-submenu/utils";
+import { generateUuid } from "../uuid";
 
 export const createFolderSource = (
 	path: string,
@@ -152,7 +152,7 @@ export const createColumn = (options?: {
 		horizontalPadding: PaddingSize.UNSET,
 		verticalPadding: PaddingSize.UNSET,
 		frontmatterKey,
-		multiTagSortDir: SortDir.NONE
+		multiTagSortDir: SortDir.NONE,
 	};
 };
 
@@ -359,13 +359,17 @@ export const createMultiTagCell = (
 		multiTagSortDir?: SortDir;
 	}
 ): MultiTagCell => {
-	const { tagIds = [], hasValidFrontmatter = null, multiTagSortDir = SortDir.NONE } = options || {};
+	const {
+		tagIds = [],
+		hasValidFrontmatter = null,
+		multiTagSortDir = SortDir.NONE,
+	} = options || {};
 	return {
 		id: generateUuid(),
 		columnId,
 		tagIds,
 		hasValidFrontmatter,
-		multiTagSortDir
+		multiTagSortDir,
 	};
 };
 

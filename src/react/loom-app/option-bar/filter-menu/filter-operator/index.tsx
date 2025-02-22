@@ -1,5 +1,5 @@
-import { FilterOperator as FilterOperatorType } from "src/shared/loom-state/types/loom-state";
 import Select from "src/react/shared/select";
+import type { FilterOperator as FilterOperatorType } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	id: string;

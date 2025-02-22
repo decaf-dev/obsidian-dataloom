@@ -1,17 +1,17 @@
 import React from "react";
 
-import { LoomMenuPosition } from "../menu/types";
+import Logger from "js-logger";
+import EventManager from "src/shared/event/event-manager";
+import { type LoomMenuPosition } from "../menu/types";
 import { createCloseRequest, createMenu } from "./factory";
 import {
-	FocusedMenuTrigger,
-	LoomMenu,
-	LoomMenuCloseRequest,
-	LoomMenuCloseRequestType,
+	type FocusedMenuTrigger,
+	type LoomMenu,
+	type LoomMenuCloseRequest,
+	type LoomMenuCloseRequestType,
 	LoomMenuLevel,
 } from "./types";
 import { getPositionFromEl } from "./utils";
-import EventManager from "src/shared/event/event-manager";
-import Logger from "js-logger";
 
 interface ContextProps {
 	topMenu: LoomMenu | null;

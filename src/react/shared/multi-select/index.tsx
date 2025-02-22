@@ -1,12 +1,12 @@
+import Icon from "../icon";
 import Stack from "../stack";
 import Text from "../text";
-import Icon from "../icon";
 
-import MultiSelectMenu from "./multi-select-menu";
 import { useMenu } from "../menu-provider/hooks";
 import { LoomMenuLevel } from "../menu-provider/types";
 import MenuTrigger from "../menu-trigger";
-import { MultiSelectOptionType } from "./types";
+import MultiSelectMenu from "./multi-select-menu";
+import type { MultiSelectOptionType } from "./types";
 
 import "./styles.css";
 

@@ -1,4 +1,4 @@
-import { Cell } from "src/shared/loom-state/types/loom-state";
+import { type Cell } from "src/shared/loom-state/types/loom-state";
 
 export type CellChangeHandler = (
 	id: string,

@@ -1,7 +1,7 @@
-import MigrateState from "./migrate-state";
+import type { LoomState15, LoomState16 } from "../types";
 import { SourceType } from "../types/loom-state-15";
-import { Source } from "../types/loom-state-16";
-import { LoomState15, LoomState16 } from "../types";
+import { type Source } from "../types/loom-state-16";
+import MigrateState from "./migrate-state";
 
 /**
  * Migrates to 8.11.0

@@ -1,3 +1,4 @@
+import { advanceBy, clear } from "jest-date-mock";
 import {
 	createColumn,
 	createGenericLoomState,
@@ -5,9 +6,8 @@ import {
 	createTag,
 	createTagCell,
 } from "src/shared/loom-state/loom-state-factory";
+import { CellType, type TagCell } from "../types/loom-state";
 import TagCellRemoveCommand from "./tag-cell-remove-command";
-import { advanceBy, clear } from "jest-date-mock";
-import { CellType, TagCell } from "../types/loom-state";
 
 //TODO add multi tag cell tests
 describe("tag-cell-remove-command", () => {

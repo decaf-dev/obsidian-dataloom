@@ -1,6 +1,6 @@
 <script lang="ts">
-	import HolySmokes from "./components/text/index.svelte";
-	import { ParsedTableData } from "./utils";
+	import TestComp from "./components/text/index.svelte";
+	import type { ParsedTableData } from "./utils";
 
 	interface AppProps {
 		data: ParsedTableData;
@@ -39,7 +39,7 @@
 			{/each}
 			<tr>
 				{#each Array.from({ length: numColumns })}
-					<HolySmokes value="Calculate" />
+					<TestComp value="Calculate"></TestComp>
 				{/each}
 			</tr>
 		</tbody>
@@ -73,7 +73,7 @@
 				{#each Array.from({ length: numColumns })}
 					<td
 						><div class="table-cell-wrapper">
-							<HolySmokes value="Calculate" />
+							<TestComp value="Calculate"></TestComp>
 						</div></td
 					>
 				{/each}

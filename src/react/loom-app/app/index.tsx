@@ -1,24 +1,24 @@
 import React from "react";
 
-import { VirtuosoHandle } from "react-virtuoso";
+import { type VirtuosoHandle } from "react-virtuoso";
 
-import Table from "../table";
-import OptionBar from "../option-bar";
 import BottomBar from "../bottom-bar";
+import OptionBar from "../option-bar";
+import Table from "../table";
 
-import { useLoomState } from "../loom-state-provider";
-import { useFilter } from "./hooks/use-filter";
-import { filterRowsBySearch } from "./filter-by-search";
-import { useColumn } from "./hooks/use-column";
-import { useRow } from "./hooks/use-row";
-import { useCell } from "./hooks/use-cell";
-import { useTag } from "./hooks/use-tag";
-import { useAppMount } from "../app-mount-provider";
+import { useColumnEvents } from "src/react/loom-app/app/hooks/use-column-events";
 import { useExportEvents } from "src/react/loom-app/app/hooks/use-export-events";
 import { useRowEvents } from "src/react/loom-app/app/hooks/use-row-events";
-import { useColumnEvents } from "src/react/loom-app/app/hooks/use-column-events";
-import { useTableSettings } from "./hooks/use-table-settings";
+import { useAppMount } from "../app-mount-provider";
+import { useLoomState } from "../loom-state-provider";
+import { filterRowsBySearch } from "./filter-by-search";
+import { useCell } from "./hooks/use-cell";
+import { useColumn } from "./hooks/use-column";
+import { useFilter } from "./hooks/use-filter";
 import useFocus from "./hooks/use-focus";
+import { useRow } from "./hooks/use-row";
+import { useTableSettings } from "./hooks/use-table-settings";
+import { useTag } from "./hooks/use-tag";
 
 import {
 	isMacRedoDown,
@@ -28,11 +28,11 @@ import {
 } from "src/shared/keyboard-event";
 import { useSource } from "./hooks/use-source";
 
+import Logger from "js-logger";
 import "src/react/global.css";
-import "./styles.css";
 import { useAppEvents } from "./hooks/use-app-events";
 import { useMenuEvents } from "./hooks/use-menu-events";
-import Logger from "js-logger";
+import "./styles.css";
 
 export default function App() {
 	const { reactAppId, isMarkdownView } = useAppMount();

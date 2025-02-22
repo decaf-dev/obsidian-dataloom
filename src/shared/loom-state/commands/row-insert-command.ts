@@ -1,10 +1,10 @@
+import RowNotFoundError from "src/shared/error/row-not-found-error";
 import {
 	createCellForType,
 	createRow,
 } from "src/shared/loom-state/loom-state-factory";
+import { type LoomState, SortDir } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
-import { LoomState, SortDir } from "../types/loom-state";
-import RowNotFoundError from "src/shared/error/row-not-found-error";
 
 export type RowInsert = "above" | "below";
 

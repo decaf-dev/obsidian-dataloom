@@ -1,14 +1,14 @@
-import Submenu from "../../shared/submenu";
-import Stack from "src/react/shared/stack";
-import Padding from "src/react/shared/padding";
-import { ObsidianPropertyType } from "src/shared/frontmatter/types";
 import React from "react";
-import Select from "src/react/shared/select";
-import { getAcceptedFrontmatterTypes } from "src/shared/frontmatter/utils";
-import Input from "src/react/shared/input";
-import { CellType } from "src/shared/loom-state/types/loom-state";
-import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
 import Button from "src/react/shared/button";
+import Input from "src/react/shared/input";
+import { type LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
+import Padding from "src/react/shared/padding";
+import Select from "src/react/shared/select";
+import Stack from "src/react/shared/stack";
+import { ObsidianPropertyType } from "src/shared/frontmatter/types";
+import { getAcceptedFrontmatterTypes } from "src/shared/frontmatter/utils";
+import { CellType } from "src/shared/loom-state/types/loom-state";
+import Submenu from "../../shared/submenu";
 
 interface Props {
 	title: string;

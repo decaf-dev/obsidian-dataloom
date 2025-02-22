@@ -1,12 +1,12 @@
 import {
-	getDateFromDateFilterOption,
 	getDateAtMidnight,
+	getDateFromDateFilterOption,
 	getDateJustBeforeMidnight,
 } from "src/react/loom-app/app/filter-by-filters/utils";
 import {
 	DateFilterCondition,
 	DateFilterOption,
-	FilterCondition,
+	type FilterCondition,
 	NumberFilterCondition,
 	TextFilterCondition,
 } from "../loom-state/types/loom-state";

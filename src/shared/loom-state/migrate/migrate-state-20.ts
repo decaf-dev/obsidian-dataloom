@@ -1,7 +1,7 @@
-import MigrateState from "./migrate-state";
-import { LoomState20 } from "../types";
-import { LoomState19, SourceType } from "../types/loom-state-19";
 import { getFilterConditionsForPropertyType } from "src/react/loom-app/option-bar/sources-menu/add-source-submenu/utils";
+import { type LoomState20 } from "../types";
+import { type LoomState19, SourceType } from "../types/loom-state-19";
+import MigrateState from "./migrate-state";
 
 /**
  * Migrates to 8.15.1

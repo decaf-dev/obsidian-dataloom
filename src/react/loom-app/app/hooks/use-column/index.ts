@@ -1,12 +1,12 @@
-import { CellType, Column } from "src/shared/loom-state/types/loom-state";
-import { useLoomState } from "../../../loom-state-provider";
+import Logger from "js-logger";
+import React from "react";
 import ColumnAddCommand from "src/shared/loom-state/commands/column-add-command";
 import ColumnDeleteCommand from "src/shared/loom-state/commands/column-delete-command";
-import ColumnUpdateCommand from "src/shared/loom-state/commands/column-update-command";
-import ColumnTypeUpdateCommand from "src/shared/loom-state/commands/column-type-update-command";
 import ColumnReorderCommand from "src/shared/loom-state/commands/column-reorder-command";
-import React from "react";
-import Logger from "js-logger";
+import ColumnTypeUpdateCommand from "src/shared/loom-state/commands/column-type-update-command";
+import ColumnUpdateCommand from "src/shared/loom-state/commands/column-update-command";
+import { CellType, type Column } from "src/shared/loom-state/types/loom-state";
+import { useLoomState } from "../../../loom-state-provider";
 
 export const useColumn = () => {
 	const { doCommand } = useLoomState();

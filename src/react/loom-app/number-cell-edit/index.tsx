@@ -3,7 +3,7 @@ import React from "react";
 import { usePlaceCursorAtEnd } from "src/shared/hooks";
 
 import Input from "src/react/shared/input";
-import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
+import { type LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
 
 interface Props {
 	closeRequest: LoomMenuCloseRequest | null;

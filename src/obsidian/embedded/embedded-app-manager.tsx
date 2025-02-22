@@ -1,24 +1,24 @@
 import { App, MarkdownView, TFile, WorkspaceLeaf } from "obsidian";
 
+import _ from "lodash";
+import { type Root, createRoot } from "react-dom/client";
+import DeserializationError from "src/data/deserialization-error";
+import { serializeFrontmatter } from "src/data/serialize-frontmatter";
+import { deserializeState, serializeState } from "src/data/serialize-state";
+import ErrorApp from "src/react/error-app";
+import LoomAppWrapper from "src/react/loom-app";
+import { store } from "src/redux/store";
+import EventManager from "src/shared/event/event-manager";
+import LastSavedManager from "src/shared/last-saved-manager";
+import { type LoomState } from "src/shared/loom-state/types/loom-state";
+import { createAppId } from "../utils";
 import {
 	findEmbeddedLoomFile,
 	getEmbeddedLoomLinkEls,
-	getLinkWidth,
 	getLinkHeight,
+	getLinkWidth,
 	hasLoadedEmbeddedLoom,
 } from "./embed-utils";
-import { Root, createRoot } from "react-dom/client";
-import { store } from "src/redux/store";
-import { deserializeState, serializeState } from "src/data/serialize-state";
-import { LoomState } from "src/shared/loom-state/types/loom-state";
-import _ from "lodash";
-import LoomAppWrapper from "src/react/loom-app";
-import { createAppId } from "../utils";
-import ErrorApp from "src/react/error-app";
-import DeserializationError from "src/data/deserialization-error";
-import { serializeFrontmatter } from "src/data/serialize-frontmatter";
-import EventManager from "src/shared/event/event-manager";
-import LastSavedManager from "src/shared/last-saved-manager";
 
 interface EmbeddedApp {
 	id: string;

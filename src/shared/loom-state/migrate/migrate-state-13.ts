@@ -1,13 +1,16 @@
-import MigrateState from "./migrate-state";
-import { Tag } from "../types/loom-state";
-import { LoomState13, BodyCell as BodyCell13 } from "../types/loom-state-13";
+import { type Tag } from "../types/loom-state";
 import {
-	LoomState14,
-	TableSettings as Settings14,
-	Column as Column14,
-	Row as Row14,
-	Cell as Cell14,
+	type BodyCell as BodyCell13,
+	type LoomState13,
+} from "../types/loom-state-13";
+import {
+	type Cell as Cell14,
+	type Column as Column14,
+	type LoomState14,
+	type Row as Row14,
+	type TableSettings as Settings14,
 } from "../types/loom-state-14";
+import MigrateState from "./migrate-state";
 
 /**
  * Migrates to 8.6.0

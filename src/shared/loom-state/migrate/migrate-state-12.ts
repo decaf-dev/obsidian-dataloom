@@ -1,32 +1,32 @@
-import MigrateState from "./migrate-state";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import {
-	CalculationType as CalculationType13,
+	type LoomState12,
+	CellType as CellType12,
+	CurrencyType as CurrencyType12,
+	FilterType as FilterType12,
+} from "../types/loom-state-12";
+import type { LoomState13 } from "../types/loom-state-13";
+import {
+	type BaseFilter as BaseFilter13,
+	type CalculationType as CalculationType13,
+	type CheckboxCondition as CheckboxCondition13,
+	type CheckboxFilter as CheckboxFilter13,
+	type Column as Column13,
+	type FileCondition as FileCondition13,
+	type FileFilter as FileFilter13,
+	type Filter as FilterType13,
+	type MultiTagCondition as MultiTagCondition13,
+	type MultiTagFilter as MultiTagFilter13,
+	type TagCondition as TagCondition13,
+	type TagFilter as TagFilter13,
+	type TextCondition as TextCondition13,
+	type TextFilter as TextFilter13,
 	CellType as CellType13,
 	CurrencyType as CurrencyType13,
 	NumberFormat as NumberFormat13,
 	TextFilterCondition as TextFilterCondition13,
-	TextFilter as TextFilter13,
-	MultiTagFilter as MultiTagFilter13,
-	BaseFilter as BaseFilter13,
-	TagFilter as TagFilter13,
-	CheckboxFilter as CheckboxFilter13,
-	FileFilter as FileFilter13,
-	Filter as FilterType13,
-	Column as Column13,
-	TextCondition as TextCondition13,
-	FileCondition as FileCondition13,
-	CheckboxCondition as CheckboxCondition13,
-	TagCondition as TagCondition13,
-	MultiTagCondition as MultiTagCondition13,
 } from "../types/loom-state-13";
-import {
-	LoomState12,
-	FilterType as FilterType12,
-	CellType as CellType12,
-	CurrencyType as CurrencyType12,
-} from "../types/loom-state-12";
-import { LoomState13 } from "../types/loom-state-13";
+import MigrateState from "./migrate-state";
 
 import { generateUuid } from "src/shared/uuid";
 

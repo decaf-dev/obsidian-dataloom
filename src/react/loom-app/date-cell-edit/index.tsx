@@ -1,10 +1,10 @@
 import React from "react";
 
-import MenuItem from "src/react/shared/menu-item";
-import Stack from "src/react/shared/stack";
-import Padding from "src/react/shared/padding";
-import MenuTrigger from "src/react/shared/menu-trigger";
 import Input from "src/react/shared/input";
+import MenuItem from "src/react/shared/menu-item";
+import MenuTrigger from "src/react/shared/menu-trigger";
+import Padding from "src/react/shared/padding";
+import Stack from "src/react/shared/stack";
 
 import {
 	DateFormat,
@@ -12,17 +12,12 @@ import {
 } from "src/shared/loom-state/types/loom-state";
 import DateFormatMenu from "./date-format-menu";
 
+import { useMenu } from "src/react/shared/menu-provider/hooks";
 import {
-	getDisplayNameForDateFormat,
-	getDisplayNameForDateFormatSeparator,
-} from "src/shared/loom-state/type-display-names";
-import {
-	LoomMenuCloseRequest,
+	type LoomMenuCloseRequest,
 	LoomMenuLevel,
 } from "src/react/shared/menu-provider/types";
-import { useMenu } from "src/react/shared/menu-provider/hooks";
 import Switch from "src/react/shared/switch";
-import DateFormatSeparatorMenu from "./date-format-separator-menu";
 import {
 	dateTimeToDateString,
 	dateTimeToTimeString,
@@ -31,11 +26,16 @@ import {
 	isValidDateString,
 	isValidTimeString,
 } from "src/shared/date/date-validation";
+import {
+	getDisplayNameForDateFormat,
+	getDisplayNameForDateFormatSeparator,
+} from "src/shared/loom-state/type-display-names";
+import DateFormatSeparatorMenu from "./date-format-separator-menu";
 import TimeFormatMenu from "./time-format.menu";
 
-import "./styles.css";
 import { dateStringToDateTime } from "src/shared/date/date-string-conversion";
 import { getCurrentDateTime } from "src/shared/date/utils";
+import "./styles.css";
 
 interface Props {
 	cellId: string;

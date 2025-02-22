@@ -1,15 +1,15 @@
-import LoomStateCommand from "./loom-state-command";
-import {
-	Cell,
-	CellType,
-	Column,
-	LoomState,
-	MultiTagCell,
-	Row,
-	TagCell,
-} from "../types/loom-state";
-import TagNotFoundError from "src/shared/error/tag-not-found-error";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
+import TagNotFoundError from "src/shared/error/tag-not-found-error";
+import {
+	type Cell,
+	CellType,
+	type Column,
+	type LoomState,
+	type MultiTagCell,
+	type Row,
+	type TagCell,
+} from "../types/loom-state";
+import LoomStateCommand from "./loom-state-command";
 
 export default class TagDeleteCommand extends LoomStateCommand {
 	private tagId: string;

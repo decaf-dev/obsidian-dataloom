@@ -1,12 +1,12 @@
-import MigrateState from "./migrate-state";
+import { cloneDeep } from "lodash";
 import { SortDir } from "../types/loom-state";
 import {
-	LoomState10,
-	Column as Column10,
-	BodyRow as BodyRow10,
+	type BodyRow as BodyRow10,
+	type Column as Column10,
+	type LoomState10,
 } from "../types/loom-state-10";
-import { LoomState9 } from "../types/loom-state-9";
-import { cloneDeep } from "lodash";
+import { type LoomState9 } from "../types/loom-state-9";
+import MigrateState from "./migrate-state";
 
 /**
  * Migrates to 6.18.6

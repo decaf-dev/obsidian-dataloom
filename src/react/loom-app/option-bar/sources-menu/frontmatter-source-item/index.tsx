@@ -1,22 +1,22 @@
 import Bubble from "src/react/shared/bubble";
 import Button from "src/react/shared/button";
+import Flex from "src/react/shared/flex";
 import Icon from "src/react/shared/icon";
 import Select from "src/react/shared/select";
+import Wrap from "src/react/shared/wrap";
 import FilterInput from "../add-source-submenu/filter-input";
 import SourceItem from "../source-item";
-import Wrap from "src/react/shared/wrap";
-import Flex from "src/react/shared/flex";
 
 import { getIconIdForSourceType } from "src/react/shared/icon/utils";
+import { ObsidianPropertyType } from "src/shared/frontmatter/types";
+import { getDisplayNameForFilterCondition } from "src/shared/loom-state/type-display-names";
 import {
 	DateFilterCondition,
-	FilterCondition,
+	type FilterCondition,
 	NumberFilterCondition,
 	SourceType,
 	TextFilterCondition,
 } from "src/shared/loom-state/types/loom-state";
-import { getDisplayNameForFilterCondition } from "src/shared/loom-state/type-display-names";
-import { ObsidianPropertyType } from "src/shared/frontmatter/types";
 
 interface Props {
 	id: string;

@@ -1,10 +1,10 @@
 import React from "react";
 
-import { LoomMenuOpenDirection, LoomMenuPosition } from "../menu/types";
 import { useShiftMenu } from "../base-menu/utils";
+import type { LoomMenuOpenDirection, LoomMenuPosition } from "../menu/types";
 
-import { useModalMount } from "../modal-mount-provider";
 import BaseMenu from "../base-menu";
+import { useModalMount } from "../modal-mount-provider";
 
 interface Props {
 	id: string;

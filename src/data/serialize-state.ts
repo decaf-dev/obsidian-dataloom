@@ -3,18 +3,10 @@ import {
 	legacyVersionToString,
 } from "src/shared/versioning";
 
-import {
+import type {
 	LoomState,
 	LoomState0,
 	LoomState1,
-	LoomState2,
-	LoomState3,
-	LoomState4,
-	LoomState5,
-	LoomState6,
-	LoomState7,
-	LoomState8,
-	LoomState9,
 	LoomState10,
 	LoomState11,
 	LoomState12,
@@ -25,21 +17,21 @@ import {
 	LoomState17,
 	LoomState18,
 	LoomState19,
+	LoomState2,
 	LoomState20,
 	LoomState21,
+	LoomState3,
+	LoomState4,
+	LoomState5,
+	LoomState6,
+	LoomState7,
+	LoomState8,
+	LoomState9,
 } from "src/shared/loom-state/types";
 
 import {
 	MigrateState0,
 	MigrateState1,
-	MigrateState2,
-	MigrateState3,
-	MigrateState4,
-	MigrateState5,
-	MigrateState6,
-	MigrateState7,
-	MigrateState8,
-	MigrateState9,
 	MigrateState10,
 	MigrateState11,
 	MigrateState12,
@@ -50,9 +42,17 @@ import {
 	MigrateState17,
 	MigrateState18,
 	MigrateState19,
+	MigrateState2,
 	MigrateState20,
 	MigrateState21,
 	MigrateState22,
+	MigrateState3,
+	MigrateState4,
+	MigrateState5,
+	MigrateState6,
+	MigrateState7,
+	MigrateState8,
+	MigrateState9,
 } from "src/shared/loom-state/migrate";
 import { LoomStateObject } from "src/shared/loom-state/validate-state";
 import DeserializationError from "./deserialization-error";

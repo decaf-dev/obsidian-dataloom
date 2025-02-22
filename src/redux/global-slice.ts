@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { DEFAULT_SETTINGS, DataLoomSettings } from "src/main";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { DEFAULT_SETTINGS, type DataLoomSettings } from "src/main";
 
 interface GlobalState {
 	settings: DataLoomSettings;

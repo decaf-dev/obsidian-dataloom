@@ -1,5 +1,5 @@
 import React from "react";
-import { DragData } from "./types";
+import { type DragData } from "./types";
 
 type DropZone = {
 	id: string;

@@ -1,18 +1,18 @@
-import MigrateState from "./migrate-state";
-import {
-	Column as Column17,
-	DateFormatSeparator as DateFormatSeparator17,
-	DateFormat as DateFormat17,
-	Row as Row17,
-	Filter as Filter17,
-	CellType as CellType17,
-	LoomState17,
-} from "../types/loom-state-17";
-import {
-	LoomState16,
-	DateFormat as DateFormat16,
-} from "../types/loom-state-16";
 import { getDateTimeFromUnixTime } from "src/shared/date/utils";
+import {
+	DateFormat as DateFormat16,
+	type LoomState16,
+} from "../types/loom-state-16";
+import {
+	CellType as CellType17,
+	type Column as Column17,
+	DateFormat as DateFormat17,
+	DateFormatSeparator as DateFormatSeparator17,
+	type Filter as Filter17,
+	type LoomState17,
+	type Row as Row17,
+} from "../types/loom-state-17";
+import MigrateState from "./migrate-state";
 
 /**
  * Migrates to 8.12.0

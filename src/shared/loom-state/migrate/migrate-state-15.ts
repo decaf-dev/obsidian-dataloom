@@ -1,5 +1,5 @@
+import { type LoomState15 } from "../types";
 import MigrateState from "./migrate-state";
-import { LoomState15 } from "../types";
 
 /**
  * Migrates to 8.8.0

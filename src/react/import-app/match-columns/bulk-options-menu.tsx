@@ -1,5 +1,5 @@
+import { type LoomMenuPosition } from "src/react/shared/menu/types";
 import ModalMenu from "src/react/shared/model-menu";
-import { LoomMenuPosition } from "src/react/shared/menu/types";
 
 import MenuItem from "src/react/shared/menu-item";
 import { NEW_COLUMN_ID } from "../constants";

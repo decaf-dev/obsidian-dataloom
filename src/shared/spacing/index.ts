@@ -1,4 +1,4 @@
-import { SpacingSize } from "./types";
+import { type SpacingSize } from "./types";
 
 export const getSpacing = (size: SpacingSize) => {
 	let spacing = "";

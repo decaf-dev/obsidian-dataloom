@@ -1,17 +1,17 @@
-import MigrateState from "./migrate-state";
-import { LoomState3 } from "../types/loom-state-3";
-import {
-	LoomState4,
-	HeaderRow as HeaderRow4,
-	FooterRow as FooterRow4,
-	GeneralFunction as GeneralFunction4,
-	Column as Column4,
-	HeaderCell as HeaderCell4,
-	BodyRow as BodyRow4,
-	BodyCell as BodyCell4,
-	FooterCell as FooterCell4,
-} from "../types/loom-state-4";
 import { generateUuid } from "src/shared/uuid";
+import type { LoomState3 } from "../types/loom-state-3";
+import {
+	GeneralFunction as GeneralFunction4,
+	type BodyCell as BodyCell4,
+	type BodyRow as BodyRow4,
+	type Column as Column4,
+	type FooterCell as FooterCell4,
+	type FooterRow as FooterRow4,
+	type HeaderCell as HeaderCell4,
+	type HeaderRow as HeaderRow4,
+	type LoomState4,
+} from "../types/loom-state-4";
+import MigrateState from "./migrate-state";
 
 /**
  * Migrates to 6.4.0

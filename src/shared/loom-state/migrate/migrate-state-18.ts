@@ -1,25 +1,25 @@
-import MigrateState from "./migrate-state";
-import { LoomState17 } from "../types/loom-state-17";
-import { LoomState18 } from "../types/loom-state-18";
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
-import {
-	CellType,
-	CheckboxCell,
-	CreationTimeCell,
-	DateCell,
-	EmbedCell,
-	FileCell,
-	Filter,
-	LastEditedTimeCell,
-	MultiTagCell,
-	NumberCell,
-	SourceCell,
-	SourceFileCell,
-	TagCell,
-	TextCell,
-} from "../types/loom-state-19";
 import { isUrlLink } from "src/shared/link-and-path/link-predicates";
 import { extractWikiLinkComponents } from "src/shared/link-and-path/markdown-link-utils";
+import type { LoomState17 } from "../types/loom-state-17";
+import type { LoomState18 } from "../types/loom-state-18";
+import {
+	CellType,
+	type CheckboxCell,
+	type CreationTimeCell,
+	type DateCell,
+	type EmbedCell,
+	type FileCell,
+	type Filter,
+	type LastEditedTimeCell,
+	type MultiTagCell,
+	type NumberCell,
+	type SourceCell,
+	type SourceFileCell,
+	type TagCell,
+	type TextCell,
+} from "../types/loom-state-19";
+import MigrateState from "./migrate-state";
 
 /**
  * Migrates to 8.13.0

@@ -1,6 +1,6 @@
 import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import RowNotFoundError from "../../error/row-not-found-error";
-import { Cell, Column, Row } from "../types/loom-state";
+import type { Cell, Column, Row } from "../types/loom-state";
 
 export const getColumnCells = (rows: Row[], columnId: string): Cell[] => {
 	return rows.map((row) => {

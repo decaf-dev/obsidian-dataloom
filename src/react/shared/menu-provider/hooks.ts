@@ -1,8 +1,8 @@
 import React from "react";
 import { useMenuContext } from ".";
 import { useMenuPosition } from "../menu/hooks";
+import { type LoomMenuPosition } from "../menu/types";
 import { LoomMenuLevel } from "./types";
-import { LoomMenuPosition } from "../menu/types";
 
 export const useMenu = (
 	parentComponentId: string,

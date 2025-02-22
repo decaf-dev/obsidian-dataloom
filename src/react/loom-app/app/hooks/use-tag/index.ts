@@ -1,13 +1,13 @@
-import { Color, Tag } from "src/shared/loom-state/types/loom-state";
-import TagDeleteCommand from "src/shared/loom-state/commands/tag-delete-command";
-import { useLoomState } from "../../../loom-state-provider";
-import TagUpdateCommand from "src/shared/loom-state/commands/tag-update-command";
+import Logger from "js-logger";
+import React from "react";
 import TagAddCommand from "src/shared/loom-state/commands/tag-add-command";
-import TagCellRemoveCommand from "src/shared/loom-state/commands/tag-cell-remove-command";
 import TagCellAddCommand from "src/shared/loom-state/commands/tag-cell-add-command";
 import TagCellMultipleRemoveCommand from "src/shared/loom-state/commands/tag-cell-multiple-remove-command";
-import React from "react";
-import Logger from "js-logger";
+import TagCellRemoveCommand from "src/shared/loom-state/commands/tag-cell-remove-command";
+import TagDeleteCommand from "src/shared/loom-state/commands/tag-delete-command";
+import TagUpdateCommand from "src/shared/loom-state/commands/tag-update-command";
+import { Color, type Tag } from "src/shared/loom-state/types/loom-state";
+import { useLoomState } from "../../../loom-state-provider";
 
 export const useTag = () => {
 	const { doCommand } = useLoomState();

@@ -1,5 +1,5 @@
-import { LoomState } from "../types";
-import { Filter } from "../types/loom-state";
+import type { LoomState } from "../types";
+import type { Filter } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
 
 export default class FilterDeleteCommand extends LoomStateCommand {

@@ -1,12 +1,12 @@
-import MigrateState from "./migrate-state";
-import { LoomState2, Column as Column2 } from "../types/loom-state-2";
-import {
-	LoomState3,
-	Row as Row3,
-	Column as Column3,
-	Cell as Cell3,
-} from "../types/loom-state-3";
 import { cloneDeep } from "lodash";
+import { type Column as Column2, type LoomState2 } from "../types/loom-state-2";
+import {
+	type Cell as Cell3,
+	type Column as Column3,
+	type LoomState3,
+	type Row as Row3,
+} from "../types/loom-state-3";
+import MigrateState from "./migrate-state";
 
 /**
  * Migrates to 6.3.0

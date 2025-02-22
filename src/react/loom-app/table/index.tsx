@@ -1,58 +1,62 @@
 import React from "react";
 
-import { TableComponents, TableVirtuoso, VirtuosoHandle } from "react-virtuoso";
 import _ from "lodash";
+import {
+	type TableComponents,
+	TableVirtuoso,
+	type VirtuosoHandle,
+} from "react-virtuoso";
 
+import BodyCellContainer from "../body-cell-container";
 import FooterCellContainer from "../footer-cell-container";
 import HeaderCellContainer from "../header-cell-container";
-import BodyRow from "./body-row";
-import HeaderCell from "./header-cell";
-import BodyCell from "./body-cell";
-import FooterCell from "./footer-cell";
 import NewColumnButton from "../new-column-button";
 import RowOptions from "../row-options";
-import BodyCellContainer from "../body-cell-container";
+import BodyCell from "./body-cell";
+import BodyRow from "./body-row";
+import FooterCell from "./footer-cell";
+import HeaderCell from "./header-cell";
 
 import { usePrevious } from "src/shared/hooks";
-import {
+import type {
 	ColumnAddClickHandler,
 	ColumnChangeHandler,
 	ColumnDeleteClickHandler,
 	ColumnReorderHandler,
 	ColumnTypeClickHandler,
 } from "../app/hooks/use-column/types";
-import { RowReorderHandler } from "../app/hooks/use-row/types";
+import { type RowReorderHandler } from "../app/hooks/use-row/types";
 
-import {
-	Column,
-	Source,
-	Row,
-	Cell,
-	CellType,
-	TextCell,
-	NumberCell,
-	TagCell,
-	MultiTagCell,
-	SourceFileCell,
-	DateCell,
-	CheckboxCell,
-	EmbedCell,
-	FileCell,
-} from "src/shared/loom-state/types/loom-state";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
-import { CellChangeHandler } from "../app/hooks/use-cell/types";
 import {
+	type Cell,
+	CellType,
+	type CheckboxCell,
+	type Column,
+	type DateCell,
+	type EmbedCell,
+	type FileCell,
+	type MultiTagCell,
+	type NumberCell,
+	type Row,
+	type Source,
+	type SourceFileCell,
+	type TagCell,
+	type TextCell,
+} from "src/shared/loom-state/types/loom-state";
+import { type CellChangeHandler } from "../app/hooks/use-cell/types";
+import type {
 	TagAddHandler,
 	TagCellAddHandler,
-	TagCellRemoveHandler,
 	TagCellMultipleRemoveHandler,
+	TagCellRemoveHandler,
 	TagChangeHandler,
 	TagDeleteHandler,
 } from "../app/hooks/use-tag/types";
 
-import "./styles.css";
-import { getAcceptedFrontmatterTypes } from "src/shared/frontmatter/utils";
 import FrontmatterCache from "src/shared/frontmatter/frontmatter-cache";
+import { getAcceptedFrontmatterTypes } from "src/shared/frontmatter/utils";
+import "./styles.css";
 
 interface Props {
 	showCalculationRow: boolean;
@@ -358,7 +362,7 @@ const Table = React.forwardRef<VirtuosoHandle, Props>(function Table(
 							horizontalPadding,
 							aspectRatio,
 							frontmatterKey,
-							multiTagSortDir
+							multiTagSortDir,
 						} = column;
 
 						const cell = row.cells.find(

@@ -1,9 +1,8 @@
-
+import Logger from "js-logger";
+import React from "react";
 import { useLoomState } from "src/react/loom-app/loom-state-provider";
 import CellBodyUpdateCommand from "src/shared/loom-state/commands/cell-body-update-command";
-import { Cell } from "src/shared/loom-state/types/loom-state";
-import React from "react";
-import Logger from "js-logger";
+import { type Cell } from "src/shared/loom-state/types/loom-state";
 
 export const useCell = () => {
 	const { doCommand } = useLoomState();

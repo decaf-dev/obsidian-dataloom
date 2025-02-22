@@ -1,48 +1,17 @@
+import Button from "src/react/shared/button";
+import Icon from "src/react/shared/icon";
 import Menu from "src/react/shared/menu";
 import Padding from "src/react/shared/padding";
 import Stack from "src/react/shared/stack";
-import Icon from "src/react/shared/icon";
 import FilterRow from "./filter-row";
-import Button from "src/react/shared/button";
 
-import ColumnNotFoundError from "src/shared/error/column-not-found-error";
-import {
-	CellType,
-	FilterCondition,
-	TextFilter,
-	CheckboxFilter,
-	TagFilter,
-	MultiTagFilter,
-	Filter,
-	FileFilter,
-	FilterOperator,
-	TextFilterCondition,
-	NumberFilterCondition,
-	DateFilterCondition,
-	MultiTagCondition,
-	TagCondition,
-	CheckboxCondition,
-	FileCondition,
-	TextCondition,
-	NumberCondition,
-	DateCondition,
-	EmbedCondition,
-	LastEditedTimeCondition,
-	CreationTimeCondition,
-	NumberFilter,
-	DateFilter,
-	CreationTimeFilter,
-	LastEditedTimeFilter,
-	DateFilterOption,
-	Column,
-	SourceFileFilter,
-	SourceFileCondition,
-} from "src/shared/loom-state/types/loom-state";
-import { isSmallScreenSize } from "src/shared/render/utils";
-import { LoomMenuPosition } from "src/react/shared/menu/types";
+import CheckboxFilterSelect from "src/react/shared/checkbox-filter-select";
 import Input from "src/react/shared/input";
-import Select from "src/react/shared/select";
+import type { LoomMenuPosition } from "src/react/shared/menu/types";
 import MultiSelect from "src/react/shared/multi-select";
+import Select from "src/react/shared/select";
+import Tag from "src/react/shared/tag";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import {
 	createCheckboxFilter,
 	createCreationTimeFilter,
@@ -56,9 +25,40 @@ import {
 	createTagFilter,
 	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
+import {
+	CellType,
+	DateFilterCondition,
+	DateFilterOption,
+	NumberFilterCondition,
+	TextFilterCondition,
+	type CheckboxCondition,
+	type CheckboxFilter,
+	type Column,
+	type CreationTimeCondition,
+	type CreationTimeFilter,
+	type DateCondition,
+	type DateFilter,
+	type EmbedCondition,
+	type FileCondition,
+	type FileFilter,
+	type Filter,
+	type FilterCondition,
+	type FilterOperator,
+	type LastEditedTimeCondition,
+	type LastEditedTimeFilter,
+	type MultiTagCondition,
+	type MultiTagFilter,
+	type NumberCondition,
+	type NumberFilter,
+	type SourceFileCondition,
+	type SourceFileFilter,
+	type TagCondition,
+	type TagFilter,
+	type TextCondition,
+	type TextFilter,
+} from "src/shared/loom-state/types/loom-state";
+import { isSmallScreenSize } from "src/shared/render/utils";
 import DateFilterSelect from "../../../shared/date-filter-select";
-import Tag from "src/react/shared/tag";
-import CheckboxFilterSelect from "src/react/shared/checkbox-filter-select";
 
 interface Props {
 	id: string;

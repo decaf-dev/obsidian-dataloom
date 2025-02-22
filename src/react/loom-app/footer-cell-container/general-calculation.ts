@@ -1,30 +1,30 @@
-import {
-	Cell,
-	Row,
-	GeneralCalculation,
-	CalculationType,
-	CellType,
-	DateFormat,
-	Tag,
-	Source,
-	DateFormatSeparator,
-	CheckboxCell,
-	TextCell,
-	EmbedCell,
-	NumberCell,
-	FileCell,
-	DateCell,
-	TagCell,
-	MultiTagCell,
-	SourceFileCell,
-} from "src/shared/loom-state/types/loom-state";
-import { hashString, round2Digits } from "./utils";
+import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
+import { dateTimeToDateString } from "src/shared/date/date-time-conversion";
 import RowNotFoundError from "src/shared/error/row-not-found-error";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
-import { dateTimeToDateString } from "src/shared/date/date-time-conversion";
-import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
-import { getColumnCells } from "src/shared/loom-state/utils/column-utils";
 import { getFileName } from "src/shared/link-and-path/file-path-utils";
+import {
+	CellType,
+	DateFormat,
+	DateFormatSeparator,
+	GeneralCalculation,
+	type CalculationType,
+	type Cell,
+	type CheckboxCell,
+	type DateCell,
+	type EmbedCell,
+	type FileCell,
+	type MultiTagCell,
+	type NumberCell,
+	type Row,
+	type Source,
+	type SourceFileCell,
+	type Tag,
+	type TagCell,
+	type TextCell,
+} from "src/shared/loom-state/types/loom-state";
+import { getColumnCells } from "src/shared/loom-state/utils/column-utils";
+import { hashString, round2Digits } from "./utils";
 
 export const getGeneralCalculationContent = (
 	columnId: string,

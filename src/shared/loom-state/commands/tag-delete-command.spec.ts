@@ -5,8 +5,8 @@ import {
 	createTag,
 	createTagCell,
 } from "src/shared/loom-state/loom-state-factory";
+import { CellType, type TagCell } from "../types/loom-state";
 import TagDeleteCommand from "./tag-delete-command";
-import { CellType, TagCell } from "../types/loom-state";
 
 describe("tag-delete-command", () => {
 	const generateStateWithTagColumn = () => {

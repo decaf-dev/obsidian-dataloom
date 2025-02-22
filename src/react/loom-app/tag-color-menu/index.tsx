@@ -2,18 +2,18 @@ import React from "react";
 
 import { useAppSelector } from "src/redux/hooks";
 
-import Menu from "src/react/shared/menu";
-import ColorItem from "./components/color-item";
-import Text from "src/react/shared/text";
 import Divider from "src/react/shared/divider";
-import Stack from "src/react/shared/stack";
+import Input from "src/react/shared/input";
+import Menu from "src/react/shared/menu";
 import MenuItem from "src/react/shared/menu-item";
 import Padding from "src/react/shared/padding";
-import Input from "src/react/shared/input";
+import Stack from "src/react/shared/stack";
+import Text from "src/react/shared/text";
+import ColorItem from "./components/color-item";
 
+import type { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
+import type { LoomMenuPosition } from "src/react/shared/menu/types";
 import { Color } from "src/shared/loom-state/types/loom-state";
-import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
-import { LoomMenuPosition } from "src/react/shared/menu/types";
 
 import "./styles.css";
 

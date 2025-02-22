@@ -3,11 +3,11 @@ import React from "react";
 import ExternalEmbedInput from "./external-embed-input";
 import InternalEmbedSuggest from "./internal-embed-suggest";
 
-import Switch from "src/react/shared/switch";
-import Stack from "src/react/shared/stack";
-import Padding from "src/react/shared/padding";
 import Divider from "src/react/shared/divider";
-import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
+import { type LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
+import Padding from "src/react/shared/padding";
+import Stack from "src/react/shared/stack";
+import Switch from "src/react/shared/switch";
 
 interface Props {
 	closeRequest: LoomMenuCloseRequest | null;

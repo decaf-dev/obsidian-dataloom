@@ -2,9 +2,9 @@ import React from "react";
 
 import BaseMenu from "../base-menu";
 
-import { LoomMenuOpenDirection, LoomMenuPosition } from "./types";
-import { useShiftMenu } from "../base-menu/utils";
 import { useAppMount } from "src/react/loom-app/app-mount-provider";
+import { useShiftMenu } from "../base-menu/utils";
+import type { LoomMenuOpenDirection, LoomMenuPosition } from "./types";
 
 interface Props {
 	id: string;

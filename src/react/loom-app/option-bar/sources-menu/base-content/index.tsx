@@ -1,16 +1,16 @@
+import Stack from "src/react/shared/stack";
 import {
-	FilterCondition,
-	Source,
+	type FilterCondition,
+	type Source,
 	SourceType,
 } from "src/shared/loom-state/types/loom-state";
-import Stack from "src/react/shared/stack";
 
-import "./styles.css";
 import Button from "src/react/shared/button";
 import Icon from "src/react/shared/icon";
 import { getFilterConditionsForPropertyType } from "../add-source-submenu/utils";
 import FolderSourceItem from "../folder-source-item";
 import FrontmatterSourceItem from "../frontmatter-source-item";
+import "./styles.css";
 
 interface Props {
 	sources: Source[];

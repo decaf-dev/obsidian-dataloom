@@ -115,7 +115,7 @@ export default class DataLoomPlugin extends Plugin {
 		this.registerDOMEvents();
 
 		// Register a Markdown post-processor
-		this.registerMarkdownPostProcessor((element, context) => {
+		this.registerMarkdownPostProcessor((element) => {
 			// Find all <table> elements rendered by Obsidian from Markdown
 			const tables = element.querySelectorAll("table");
 			tables.forEach((table) => {

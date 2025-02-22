@@ -1,4 +1,7 @@
 import { App } from "obsidian";
+import { parseDateTime } from "../date/date-validation";
+import { isExternalLink, isUrlLink } from "../link-and-path/link-predicates";
+import { extractWikiLinkComponents } from "../link-and-path/markdown-link-utils";
 import {
 	createCheckboxCell,
 	createDateCell,
@@ -10,12 +13,14 @@ import {
 	createTagCell,
 	createTextCell,
 } from "../loom-state/loom-state-factory";
-import { Cell, CellType, Column, Tag } from "../loom-state/types/loom-state";
+import {
+	type Cell,
+	CellType,
+	type Column,
+	type Tag,
+} from "../loom-state/types/loom-state";
 import { getAssignedPropertyType } from "./obsidian-utils";
 import { ObsidianPropertyType } from "./types";
-import { isExternalLink, isUrlLink } from "../link-and-path/link-predicates";
-import { extractWikiLinkComponents } from "../link-and-path/markdown-link-utils";
-import { parseDateTime } from "../date/date-validation";
 
 export const deserializeFrontmatterForCell = (
 	app: App,
@@ -213,7 +218,7 @@ export const deserializeFrontmatterForCell = (
 				return {
 					newCell: createMultiTagCell(id, {
 						hasValidFrontmatter: false,
-						multiTagSortDir: column.multiTagSortDir
+						multiTagSortDir: column.multiTagSortDir,
 					}),
 				};
 			}
@@ -239,7 +244,7 @@ export const deserializeFrontmatterForCell = (
 			const newCell = createMultiTagCell(id, {
 				tagIds: cellTagIds,
 				hasValidFrontmatter: true,
-				multiTagSortDir: column.multiTagSortDir
+				multiTagSortDir: column.multiTagSortDir,
 			});
 			const nextTags = [...column.tags, ...newTags];
 			return {

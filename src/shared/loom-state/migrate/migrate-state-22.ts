@@ -1,7 +1,7 @@
+import type { LoomState } from "../types";
+import { SortDir, type Column } from "../types/loom-state";
+import type { LoomState21 } from "../types/loom-state-21";
 import MigrateState from "./migrate-state";
-import { LoomState } from "../types";
-import { SortDir, Column } from "../types/loom-state";
-import { LoomState21 } from "../types/loom-state-21";
 
 /**
  * Migrates to 8.16.0

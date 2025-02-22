@@ -1,23 +1,23 @@
 import React from "react";
 
 import Stack from "../shared/stack";
-import ExportTypeSelect from "./export-type-select";
 import ContentTextArea from "./content-textarea";
+import ExportTypeSelect from "./export-type-select";
 
-import { LoomState } from "src/shared/loom-state/types/loom-state";
-import { ExportType } from "../../shared/export/types";
-import { exportToMarkdown } from "src/shared/export/export-to-markdown";
 import { App, Notice } from "obsidian";
+import { useAppSelector } from "src/redux/hooks";
+import { exportToCSV } from "src/shared/export/export-to-csv";
+import { exportToMarkdown } from "src/shared/export/export-to-markdown";
+import { type LoomState } from "src/shared/loom-state/types/loom-state";
 import {
 	downloadFile,
 	getBlobTypeForExportType,
 	getExportFileName,
 } from "../../shared/export/download-utils";
-import { exportToCSV } from "src/shared/export/export-to-csv";
-import { useAppSelector } from "src/redux/hooks";
+import { ExportType } from "../../shared/export/types";
 
-import "./styles.css";
 import Switch from "../shared/switch";
+import "./styles.css";
 
 interface Props {
 	app: App;

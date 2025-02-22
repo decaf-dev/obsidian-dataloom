@@ -66,11 +66,11 @@ const context = await esbuild.context({
 	treeShaking: true,
 	outdir: "dist",
 	plugins: [
-		rebuildPlugin,
 		esbuildSvelte({
 			compilerOptions: { css: "injected" },
 			preprocess: sveltePreprocess(),
 		}),
+		rebuildPlugin,
 	],
 });
 

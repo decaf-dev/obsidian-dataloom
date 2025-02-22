@@ -1,12 +1,12 @@
 import React from "react";
 
 import Menu from "src/react/shared/menu";
-import { MoreMenuSubmenu } from "./constants";
+import { type LoomMenuPosition } from "src/react/shared/menu/types";
+import { type Column } from "src/shared/loom-state/types/loom-state";
 import BaseContent from "./base-content";
-import { LoomMenuPosition } from "src/react/shared/menu/types";
+import { MoreMenuSubmenu } from "./constants";
 import SettingsSubmenu from "./settings-submenu";
 import ToggleColumnSubmenu from "./toggle-column-submenu";
-import { Column } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	id: string;

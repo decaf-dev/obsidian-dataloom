@@ -1,22 +1,22 @@
 import React from "react";
 
+import MenuButton from "src/react/shared/menu-button";
+import Padding from "src/react/shared/padding";
+import Stack from "src/react/shared/stack";
 import Text from "src/react/shared/text";
 import BodyCell from "./body-cell";
 import HeaderCell from "./header-cell";
-import Padding from "src/react/shared/padding";
-import Stack from "src/react/shared/stack";
-import MenuButton from "src/react/shared/menu-button";
 
-import { Column } from "src/shared/loom-state/types/loom-state";
-import { ColumnMatch } from "../types";
 import {
 	useMenu,
 	useMenuOperations,
 } from "src/react/shared/menu-provider/hooks";
 import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
+import type { Column } from "src/shared/loom-state/types/loom-state";
+import type { ColumnMatch } from "../types";
 
-import "./styles.css";
 import BulkOptionsMenu from "./bulk-options-menu";
+import "./styles.css";
 
 interface Props {
 	columns: Column[];
