@@ -1,5 +1,5 @@
 <script lang="ts">
-	import TestComp from "./components/text/index.svelte";
+	import Text from "./components/text/index.svelte";
 	import type { ParsedTableData } from "./utils";
 
 	interface AppProps {
@@ -39,7 +39,7 @@
 			{/each}
 			<tr>
 				{#each Array.from({ length: numColumns })}
-					<TestComp value="Calculate"></TestComp>
+					<Text value="Calculate" variant="faint"></Text>
 				{/each}
 			</tr>
 		</tbody>
@@ -73,7 +73,7 @@
 				{#each Array.from({ length: numColumns })}
 					<td
 						><div class="table-cell-wrapper">
-							<TestComp value="Calculate"></TestComp>
+							<Text value="Calculate" variant="faint"></Text>
 						</div></td
 					>
 				{/each}
