@@ -1,4 +1,4 @@
-import { MarkdownView, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
+import { MarkdownView, Plugin, TAbstractFile, TFile } from "obsidian";
 
 import DataLoomSettingsTab from "./obsidian/dataloom-settings-tab";
 import DataLoomView, { DATA_LOOM_VIEW } from "./obsidian/dataloom-view";
@@ -6,7 +6,6 @@ import WelcomeModal from "./obsidian/modal/welcome-modal";
 
 import { EditorView } from "codemirror";
 import Logger from "js-logger";
-import { createLoomFile } from "src/data/loom-file";
 import { mount } from "svelte";
 import { LOOM_EXTENSION } from "./data/constants";
 import { handleFileRename } from "./data/main-utils";
@@ -78,10 +77,6 @@ export default class DataLoomPlugin extends Plugin {
 				new DataLoomView(leaf, this.manifest.id, this.manifest.version)
 		);
 		this.registerExtensions([LOOM_EXTENSION], DATA_LOOM_VIEW);
-
-		this.addRibbonIcon("table", "Create loom", async () => {
-			await this.newLoomFile(null);
-		});
 
 		this.addSettingTab(new DataLoomSettingsTab(this.app, this));
 
@@ -185,29 +180,6 @@ export default class DataLoomPlugin extends Plugin {
 		this.displayModalsOnLoomOpen = false;
 	}
 
-	private async newLoomFile(
-		contextMenuFolderPath: string | null,
-		embedded?: boolean
-	) {
-		const file = await createLoomFile(
-			this.app,
-			this.manifest.version,
-			this.settings.defaultFrozenColumnCount,
-			{
-				contextMenuFolderPath,
-				createAtAttachmentsFolder:
-					this.settings.createAtObsidianAttachmentFolder,
-				customFolderForNewFiles: this.settings.customFolderForNewFiles,
-			}
-		);
-
-		//If the file is embedded, we don't need to open it
-		if (embedded) return file.path;
-
-		//Open the file in a new tab
-		await this.app.workspace.getLeaf(true).openFile(file);
-	}
-
 	private registerDOMEvents() {
 		//This event is guaranteed to fire after our React synthetic event handlers
 		this.registerDomEvent(document, "click", () => {
@@ -234,25 +206,6 @@ export default class DataLoomPlugin extends Plugin {
 				);
 				const isDark = hasDarkTheme();
 				store.dispatch(setDarkMode(isDark));
-			})
-		);
-
-		this.registerEvent(
-			this.app.workspace.on("file-menu", (menu, file) => {
-				Logger.trace(
-					FILE_NAME,
-					"registerEvent",
-					"file-menu event called"
-				);
-				if (file instanceof TFolder) {
-					menu.addItem((item) => {
-						item.setTitle("New loom")
-							.setIcon("document")
-							.onClick(async () => {
-								await this.newLoomFile(file.path);
-							});
-					});
-				}
 			})
 		);
 
@@ -428,15 +381,6 @@ export default class DataLoomPlugin extends Plugin {
 	}
 
 	registerCommands() {
-		this.addCommand({
-			id: "create",
-			name: "Create loom",
-			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
-			callback: async () => {
-				await this.newLoomFile(null);
-			},
-		});
-
 		this.addCommand({
 			id: "add-column",
 			name: "Add column",
