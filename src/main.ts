@@ -27,7 +27,6 @@ import EventManager from "./shared/event/event-manager";
 import FrontmatterCache from "./shared/frontmatter/frontmatter-cache";
 import { getAssignedPropertyType } from "./shared/frontmatter/obsidian-utils";
 import LastSavedManager from "./shared/last-saved-manager";
-import { getBasename } from "./shared/link-and-path/file-path-utils";
 import { formatMessageForLogger, stringToLogLevel } from "./shared/logger";
 import { LOG_LEVEL_OFF } from "./shared/logger/constants";
 import { hasDarkTheme } from "./shared/render/utils";
@@ -486,32 +485,6 @@ export default class DataLoomPlugin extends Plugin {
 			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "=" }],
 			callback: async () => {
 				await this.newLoomFile(null);
-			},
-		});
-
-		this.addCommand({
-			id: "create-and-embed",
-			name: "Create loom and embed it into current file",
-			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "+" }],
-			editorCallback: async (editor) => {
-				const filePath = await this.newLoomFile(null, true);
-				if (!filePath) return;
-
-				const useMarkdownLinks = (this.app.vault as any).getConfig(
-					"useMarkdownLinks"
-				);
-
-				// Use basename rather than whole name when using Markdownlink like ![abcd](abcd.loom) instead of ![abcd.loom](abcd.loom)
-				// It will replace `.loom` to "" in abcd.loom
-				const linkText = useMarkdownLinks
-					? `![${getBasename(filePath)}](${encodeURI(filePath)})`
-					: `![[${filePath}]]`;
-
-				editor.replaceRange(linkText, editor.getCursor());
-				editor.setCursor(
-					editor.getCursor().line,
-					editor.getCursor().ch + linkText.length
-				);
 			},
 		});
 
