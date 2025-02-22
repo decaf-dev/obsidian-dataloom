@@ -13,10 +13,7 @@ import {
 import DateFormatMenu from "./date-format-menu";
 
 import { useMenu } from "src/react/shared/menu-provider/hooks";
-import {
-	type LoomMenuCloseRequest,
-	LoomMenuLevel,
-} from "src/react/shared/menu-provider/types";
+import { type LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
 import Switch from "src/react/shared/switch";
 import {
 	dateTimeToDateString,

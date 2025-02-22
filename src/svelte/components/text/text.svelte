@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { useOverflow } from "src/shared/spacing/hooks";
-	import "./styles.css";
 
 	interface TextProps {
 		variant?:
@@ -66,7 +65,37 @@
 
 <p
 	class={className}
-	style="font-size: var({fontSize}); max-width: {maxWidth}; white-space: {whiteSpace};"
+	style:font-size={fontSize ? `var(${fontSize})` : undefined}
+	style:max-width={maxWidth}
+	style:white-space={whiteSpace}
 >
 	{value}
 </p>
+
+<style>
+	.dataloom-text {
+		white-space: nowrap;
+		margin: 0;
+		color: var(--text-normal);
+	}
+
+	.dataloom-text--muted {
+		color: var(--text-muted);
+	}
+
+	.dataloom-text--faint {
+		color: var(--text-faint);
+	}
+
+	.dataloom-text--semibold {
+		font-weight: var(--font-semibold);
+	}
+
+	.dataloom-text--on-accent {
+		color: var(--text-on-accent);
+	}
+
+	.dataloom-text--error {
+		color: var(--text-error);
+	}
+</style>

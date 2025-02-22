@@ -58,6 +58,7 @@
 		"typescript": "^5.7.3"
 	},
 	"dependencies": {
+		"clsx": "^2.1.1",
 		"codemirror": "^6.0.1",
 		"dayjs": "^1.11.10",
 		"fuzzysort": "^2.0.4",
