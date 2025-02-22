@@ -1,11 +1,4 @@
-import {
-	MarkdownView,
-	Notice,
-	Plugin,
-	TAbstractFile,
-	TFile,
-	TFolder,
-} from "obsidian";
+import { MarkdownView, Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
 
 import DataLoomSettingsTab from "./obsidian/dataloom-settings-tab";
 import DataLoomView, { DATA_LOOM_VIEW } from "./obsidian/dataloom-view";
@@ -38,9 +31,6 @@ export interface DataLoomSettings {
 	createAtObsidianAttachmentFolder: boolean;
 	customFolderForNewFiles: string;
 	removeMarkdownOnExport: boolean;
-	defaultEmbedWidth: string;
-	defaultEmbedHeight: string;
-	hasMigratedTo800: boolean;
 	showWelcomeModal: boolean;
 	defaultFrozenColumnCount: number;
 	pluginVersion: string;
@@ -51,9 +41,6 @@ export const DEFAULT_SETTINGS: DataLoomSettings = {
 	createAtObsidianAttachmentFolder: false,
 	customFolderForNewFiles: "",
 	removeMarkdownOnExport: true,
-	defaultEmbedWidth: "100%",
-	defaultEmbedHeight: "340px",
-	hasMigratedTo800: false,
 	showWelcomeModal: true,
 	defaultFrozenColumnCount: 1,
 	pluginVersion: "",
@@ -155,8 +142,6 @@ export default class DataLoomPlugin extends Plugin {
 			const isDark = hasDarkTheme();
 			store.dispatch(setDarkMode(isDark));
 
-			await this.migrateLoomFiles();
-
 			//If there are any views open with a loom, they will load before onLayoutReady
 			//is called. To make sure that the looms get the loaded properties, we need to
 			//emit an event to update them
@@ -198,42 +183,6 @@ export default class DataLoomPlugin extends Plugin {
 			}
 		}
 		this.displayModalsOnLoomOpen = false;
-	}
-
-	//TODO remove this in future versions
-	private async migrateLoomFiles() {
-		if (!this.settings.hasMigratedTo800) {
-			Logger.info(FILE_NAME, "migrateLoomFiles", "migrating to 8.0.0");
-			const loomFiles = this.app.vault
-				.getFiles()
-				.filter(
-					(file) =>
-						file.extension === "dashboard" ||
-						file.extension === "table"
-				);
-
-			for (let i = 0; i < loomFiles.length; i++) {
-				const file = loomFiles[i];
-				const data = await this.app.vault.read(file);
-				const parsedState = JSON.parse(data);
-				if (!parsedState.model) return;
-
-				const newFilePath = file.path.replace(
-					`.${file.extension}`,
-					`.${LOOM_EXTENSION}`
-				);
-				try {
-					await this.app.vault.rename(file, newFilePath);
-				} catch (err) {
-					new Notice(
-						`Failed renaming ${file.path} to ${newFilePath}`
-					);
-					new Notice("Please rename this file manually");
-				}
-			}
-			this.settings.hasMigratedTo800 = true;
-			await this.saveSettings();
-		}
 	}
 
 	private async newLoomFile(

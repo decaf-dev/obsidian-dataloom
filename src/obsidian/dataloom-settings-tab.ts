@@ -1,9 +1,15 @@
-import { PluginSettingTab, App } from "obsidian";
-import { Setting } from "obsidian";
-import DataLoomPlugin from "../main";
 import Logger from "js-logger";
-import { LOG_LEVEL_DEBUG, LOG_LEVEL_ERROR, LOG_LEVEL_INFO, LOG_LEVEL_OFF, LOG_LEVEL_TRACE, LOG_LEVEL_WARN } from "src/shared/logger/constants";
+import { App, PluginSettingTab, Setting } from "obsidian";
 import { stringToLogLevel } from "src/shared/logger";
+import {
+	LOG_LEVEL_DEBUG,
+	LOG_LEVEL_ERROR,
+	LOG_LEVEL_INFO,
+	LOG_LEVEL_OFF,
+	LOG_LEVEL_TRACE,
+	LOG_LEVEL_WARN,
+} from "src/shared/logger/constants";
+import DataLoomPlugin from "../main";
 
 export default class DataLoomSettingsTab extends PluginSettingTab {
 	plugin: DataLoomPlugin;
@@ -21,7 +27,6 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 		this.renderFileSettings(containerEl);
 		this.renderTableSettings(containerEl);
 		this.renderExportSettings(containerEl);
-		this.renderEmbeddedLoomSettings(containerEl);
 		this.renderDebugSettings(containerEl);
 	}
 
@@ -129,52 +134,6 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 			});
 	}
 
-	private renderEmbeddedLoomSettings(containerEl: HTMLElement) {
-		new Setting(containerEl).setName("Embedded looms").setHeading();
-
-		const defaultEmbedWidthDesc = new DocumentFragment();
-		defaultEmbedWidthDesc.createSpan({
-			text: "The default embedded loom width. Accepts valid HTML width values. Like 100px, 50%, etc.",
-		});
-		defaultEmbedWidthDesc.createDiv({
-			text: "Please close and reopen your embedded looms for this setting to take effect",
-			cls: "dataloom-modal-text--emphasize",
-		});
-
-		new Setting(containerEl)
-			.setName("Default embedded loom width")
-			.setDesc(defaultEmbedWidthDesc)
-			.addText((cb) => {
-				cb.setValue(this.plugin.settings.defaultEmbedWidth).onChange(
-					async (value) => {
-						this.plugin.settings.defaultEmbedWidth = value;
-						await this.plugin.saveSettings();
-					}
-				);
-			});
-
-		const defaultEmbedHeightDesc = new DocumentFragment();
-		defaultEmbedHeightDesc.createSpan({
-			text: "The default embedded loom height. Accepts valid HTML width values. Like 100px, 50%, etc.",
-		});
-		defaultEmbedHeightDesc.createDiv({
-			text: "Please close and reopen your embedded looms for this setting to take effect",
-			cls: "dataloom-modal-text--emphasize",
-		});
-
-		new Setting(containerEl)
-			.setName("Default embedded loom height")
-			.setDesc(defaultEmbedHeightDesc)
-			.addText((cb) => {
-				cb.setValue(this.plugin.settings.defaultEmbedHeight).onChange(
-					async (value) => {
-						this.plugin.settings.defaultEmbedHeight = value;
-						await this.plugin.saveSettings();
-					}
-				);
-			});
-	}
-
 	private renderDebugSettings(containerEl: HTMLElement) {
 		new Setting(containerEl).setName("Debugging").setHeading();
 		new Setting(containerEl)
@@ -189,8 +148,8 @@ export default class DataLoomSettingsTab extends PluginSettingTab {
 					[LOG_LEVEL_WARN]: "Warn",
 					[LOG_LEVEL_INFO]: "Info",
 					[LOG_LEVEL_DEBUG]: "Debug",
-					[LOG_LEVEL_TRACE]: "Trace"
-				})
+					[LOG_LEVEL_TRACE]: "Trace",
+				});
 				cb.setValue(this.plugin.settings.logLevel).onChange(
 					async (value) => {
 						this.plugin.settings.logLevel = value;
