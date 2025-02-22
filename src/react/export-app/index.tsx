@@ -5,7 +5,6 @@ import ContentTextArea from "./content-textarea";
 import ExportTypeSelect from "./export-type-select";
 
 import { App, Notice } from "obsidian";
-import { useAppSelector } from "src/redux/hooks";
 import { exportToCSV } from "src/shared/export/export-to-csv";
 import { exportToMarkdown } from "src/shared/export/export-to-markdown";
 import { type LoomState } from "src/shared/loom-state/types/loom-state";
@@ -29,12 +28,8 @@ export function ExportApp({ app, loomState, loomFilePath }: Props) {
 	const [exportType, setExportType] = React.useState<ExportType>(
 		ExportType.UNSELECTED
 	);
-	const { removeMarkdownOnExport } = useAppSelector(
-		(state) => state.global.settings
-	);
-	const [shouldRemoveMarkdown, setRemoveMarkdown] = React.useState<boolean>(
-		removeMarkdownOnExport
-	);
+	const [shouldRemoveMarkdown, setRemoveMarkdown] =
+		React.useState<boolean>(true);
 
 	async function handleCopyClick(value: string) {
 		await navigator.clipboard.writeText(value);

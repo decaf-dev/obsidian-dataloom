@@ -6,7 +6,6 @@ import { serializeFrontmatter } from "src/data/serialize-frontmatter";
 import { deserializeState, serializeState } from "src/data/serialize-state";
 import ErrorApp from "src/react/error-app";
 import LoomAppWrapper from "src/react/loom-app";
-import { store } from "src/redux/store";
 import EventManager from "src/shared/event/event-manager";
 import LastSavedManager from "src/shared/last-saved-manager";
 import type { LoomState } from "src/shared/loom-state/types/loom-state";
@@ -135,7 +134,6 @@ export default class DataLoomView extends TextFileView {
 					reactAppId={appId}
 					loomFile={this.file}
 					isMarkdownView={false}
-					store={store}
 					loomState={state}
 					onSaveState={this.handleSaveLoomState}
 				/>

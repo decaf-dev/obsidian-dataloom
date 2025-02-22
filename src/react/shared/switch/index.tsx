@@ -1,4 +1,3 @@
-import { useAppSelector } from "src/redux/hooks";
 import "./styles.css";
 
 interface Props {
@@ -9,7 +8,7 @@ interface Props {
 }
 
 export default function Switch({ id, value, ariaLabel, onToggle }: Props) {
-	const { isDarkMode } = useAppSelector((state) => state.global);
+	const isDarkMode = false;
 
 	function handleKeyDown(e: React.KeyboardEvent) {
 		if (e.key === "Enter") {

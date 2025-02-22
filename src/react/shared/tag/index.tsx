@@ -1,11 +1,10 @@
-import Icon from "../icon";
-import Stack from "../stack";
 import Button from "../button";
+import Icon from "../icon";
 import Padding from "../padding";
+import Stack from "../stack";
 
-import { Color } from "src/shared/loom-state/types/loom-state";
 import { findColorClassName } from "src/shared/color";
-import { useAppSelector } from "src/redux/hooks";
+import { Color } from "src/shared/loom-state/types/loom-state";
 
 import "./styles.css";
 
@@ -27,8 +26,7 @@ export default function Tag({
 	showRemoveButton,
 	onRemoveClick,
 }: Props) {
-	const { isDarkMode } = useAppSelector((state) => state.global);
-
+	const isDarkMode = false;
 	let tagClassName = "dataloom-tag";
 	tagClassName += " " + findColorClassName(isDarkMode, color);
 

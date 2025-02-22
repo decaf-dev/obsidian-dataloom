@@ -1,5 +1,4 @@
 import React from "react";
-import { useAppSelector } from "src/redux/hooks";
 import EventManager from "src/shared/event/event-manager";
 import { isEventForThisApp } from "src/shared/event/utils";
 import {
@@ -15,9 +14,6 @@ import { useAppMount } from "../../app-mount-provider";
 
 export const useExportEvents = (state: LoomState) => {
 	const { reactAppId, loomFile, app } = useAppMount();
-	const { removeMarkdownOnExport } = useAppSelector(
-		(state) => state.global.settings
-	);
 	const filePath = loomFile.path;
 
 	React.useEffect(() => {
@@ -28,7 +24,7 @@ export const useExportEvents = (state: LoomState) => {
 					const data = exportToCSV(
 						app,
 						state,
-						removeMarkdownOnExport
+						true //TODO update
 					);
 					const exportFileName = getExportFileName(filePath);
 					const blobType = getBlobTypeForExportType(ExportType.CSV);
@@ -44,7 +40,7 @@ export const useExportEvents = (state: LoomState) => {
 					const data = exportToMarkdown(
 						app,
 						state,
-						removeMarkdownOnExport
+						true //TODO update
 					);
 					const exportFileName = getExportFileName(filePath);
 					const blobType = getBlobTypeForExportType(
@@ -68,5 +64,5 @@ export const useExportEvents = (state: LoomState) => {
 				handleDownloadMarkdown
 			);
 		};
-	}, [filePath, state, reactAppId, removeMarkdownOnExport, app]);
+	}, [filePath, state, reactAppId, app]);
 };

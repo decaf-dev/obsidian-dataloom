@@ -1,14 +1,12 @@
 import { App, Modal, Notice, TFile } from "obsidian";
 
 import { type Root, createRoot } from "react-dom/client";
-import { Provider } from "react-redux";
 
 import ImportApp from "../../react/import-app";
 
 import { serializeState } from "src/data/serialize-state";
 import MenuProvider from "src/react/shared/menu-provider";
 import ModalMountProvider from "src/react/shared/modal-mount-provider";
-import { store } from "src/redux/store";
 import EventManager from "src/shared/event/event-manager";
 import type { LoomState } from "src/shared/loom-state/types/loom-state";
 import { renderDivider, setModalTitle } from "../shared";
@@ -40,16 +38,14 @@ export default class ImportModal extends Modal {
 
 		this.root = createRoot(contentEl);
 		this.root.render(
-			<Provider store={store}>
-				<ModalMountProvider obsidianApp={this.app} modalEl={modalEl}>
-					<MenuProvider>
-						<ImportApp
-							state={this.loomState}
-							onStateChange={this.handleStateChange}
-						/>
-					</MenuProvider>
-				</ModalMountProvider>
-			</Provider>
+			<ModalMountProvider obsidianApp={this.app} modalEl={modalEl}>
+				<MenuProvider>
+					<ImportApp
+						state={this.loomState}
+						onStateChange={this.handleStateChange}
+					/>
+				</MenuProvider>
+			</ModalMountProvider>
 		);
 	}
 

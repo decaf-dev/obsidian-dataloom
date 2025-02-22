@@ -9,19 +9,12 @@ import Logger from "js-logger";
 import { mount } from "svelte";
 import { LOOM_EXTENSION } from "./data/constants";
 import { handleFileRename } from "./data/main-utils";
-import {
-	setDarkMode,
-	setPluginVersion,
-	setSettings,
-} from "./redux/global-slice";
-import { store } from "./redux/store";
 import EventManager from "./shared/event/event-manager";
 import FrontmatterCache from "./shared/frontmatter/frontmatter-cache";
 import { getAssignedPropertyType } from "./shared/frontmatter/obsidian-utils";
 import LastSavedManager from "./shared/last-saved-manager";
 import { formatMessageForLogger, stringToLogLevel } from "./shared/logger";
 import { LOG_LEVEL_OFF } from "./shared/logger/constants";
-import { hasDarkTheme } from "./shared/render/utils";
 import SvelteApp from "./svelte/App.svelte";
 import { parseTableToObject } from "./svelte/utils";
 
@@ -134,8 +127,8 @@ export default class DataLoomPlugin extends Plugin {
 				"workspace layout is ready"
 			);
 
-			const isDark = hasDarkTheme();
-			store.dispatch(setDarkMode(isDark));
+			//TODO add a check to see if the user has dark mode enabled
+			//const isDark = hasDarkTheme();
 
 			//If there are any views open with a loom, they will load before onLayoutReady
 			//is called. To make sure that the looms get the loaded properties, we need to
@@ -167,7 +160,7 @@ export default class DataLoomPlugin extends Plugin {
 
 		this.settings.pluginVersion = this.manifest.version;
 		await this.saveSettings();
-		store.dispatch(setPluginVersion(this.manifest.version));
+		//TODO set plugin version in store
 	}
 
 	private setModalDisplay() {
@@ -204,8 +197,8 @@ export default class DataLoomPlugin extends Plugin {
 					"registerEvent",
 					"css-change event called"
 				);
-				const isDark = hasDarkTheme();
-				store.dispatch(setDarkMode(isDark));
+				//TODO dispatch dark mode
+				//const isDark = hasDarkTheme();
 			})
 		);
 
@@ -499,13 +492,13 @@ export default class DataLoomPlugin extends Plugin {
 			DEFAULT_SETTINGS,
 			await this.loadData()
 		);
-		store.dispatch(setSettings({ ...this.settings }));
+		//TODO set settings
 	}
 
 	async saveSettings() {
 		Logger.trace(FILE_NAME, "saveSettings", "called");
 		await this.saveData(this.settings);
-		store.dispatch(setSettings({ ...this.settings }));
+		//TODO set settings
 	}
 
 	/**

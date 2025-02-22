@@ -1,7 +1,5 @@
 import React from "react";
 
-import { useAppSelector } from "src/redux/hooks";
-
 import Divider from "src/react/shared/divider";
 import Input from "src/react/shared/input";
 import Menu from "src/react/shared/menu";
@@ -42,7 +40,6 @@ export default function TagColorMenu({
 	onTagContentChange,
 	onClose,
 }: Props) {
-	const { isDarkMode } = useAppSelector((state) => state.global);
 	const [localValue, setLocalValue] = React.useState(content);
 
 	React.useEffect(
@@ -79,7 +76,7 @@ export default function TagColorMenu({
 					<div className="dataloom-tag-color-menu__color-container">
 						{Object.values(Color).map((color) => (
 							<ColorItem
-								isDarkMode={isDarkMode}
+								isDarkMode={false}
 								key={color}
 								color={color}
 								onColorClick={onColorClick}
