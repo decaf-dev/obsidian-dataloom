@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Component, MarkdownRenderer } from "obsidian";
+	import { getObsidianAppContext } from "src/svelte/App.svelte";
 	import Input from "../input/input.svelte";
 	import { MenuContent, MenuRoot, MenuTrigger } from "../menu";
 
@@ -10,19 +12,29 @@
 
 	const { cellId, value, onCellInput }: BodyContentProps = $props();
 
-	let isEditing = $state(false);
+	let valueRef: HTMLElement | undefined = $state(undefined);
 
-	function handleKeyDown(event: KeyboardEvent) {
-		if (event.key === "Enter") {
-			isEditing = false;
+	$effect(() => {
+		if (!valueRef) return;
+		if (value) {
+			valueRef.replaceChildren();
+			MarkdownRenderer.render(
+				obsidianApp,
+				value,
+				valueRef,
+				"",
+				new Component(),
+			);
 		}
-	}
+	});
+
+	const obsidianApp = getObsidianAppContext();
 </script>
 
 <div class="dataloom-body-content">
 	<MenuRoot>
 		<MenuTrigger class="dataloom-cell-menu-trigger">
-			{value}
+			<div class="dataloom-cell-content" bind:this={valueRef}></div>
 		</MenuTrigger>
 		<MenuContent>
 			<div class="dataloom-cell-menu-input-container">
@@ -33,7 +45,6 @@
 					autoFocus
 					{value}
 					onInput={(value) => onCellInput(cellId, value)}
-					onKeyDown={handleKeyDown}
 				/>
 			</div>
 		</MenuContent>
@@ -55,10 +66,17 @@
 		width: 100%;
 		height: 100%;
 		padding: var(--dataloom-cell-spacing-x) var(--dataloom-cell-spacing-y);
+
+		&:hover {
+			background-color: transparent !important;
+		}
 	}
 
-	:global(.dataloom-cell-menu-trigger:hover) {
-		background-color: transparent !important;
+	.dataloom-cell-content {
+		overflow: hidden;
+		:global(p) {
+			margin-block: 0;
+		}
 	}
 
 	.dataloom-cell-menu-input-container {

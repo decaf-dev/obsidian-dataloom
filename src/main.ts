@@ -88,6 +88,7 @@ export default class DataLoomPlugin extends Plugin {
 				mount(SvelteApp, {
 					target: container,
 					props: {
+						obsidianApp: this.app,
 						mode: "reading",
 						data: parseTableToObject(table),
 					},
@@ -108,6 +109,7 @@ export default class DataLoomPlugin extends Plugin {
 						mount(SvelteApp, {
 							target: container,
 							props: {
+								obsidianApp: this.app,
 								mode: "editing",
 								data: parseTableToObject(tableEl),
 							},

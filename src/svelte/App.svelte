@@ -2,13 +2,18 @@
 	import { getContext, setContext } from "svelte";
 
 	const LOOM_STATE_KEY = "loom-state";
+	const OBSIDIAN_APP_KEY = "obsidian-app";
 
 	export const getLoomStateContext = () =>
 		getContext(LOOM_STATE_KEY) as { loomState: NewLoomState };
+
+	export const getObsidianAppContext = () =>
+		getContext(OBSIDIAN_APP_KEY) as ObsidianApp;
 </script>
 
 <script lang="ts">
 	import { cloneDeep } from "lodash";
+	import { App as ObsidianApp } from "obsidian";
 	import { createCellForType } from "./cell-factory";
 	import AddColumnButton, {
 		default as AddRowButton,
@@ -33,6 +38,7 @@
 	import { CellType, type CalculationType, type NewLoomState } from "./types";
 
 	interface AppProps {
+		obsidianApp: ObsidianApp;
 		data: ParsedTableData;
 		mode: "reading" | "editing";
 	}
@@ -41,6 +47,7 @@
 
 	const loomState = createLoomState(data);
 	setContext(LOOM_STATE_KEY, loomState);
+	setContext(OBSIDIAN_APP_KEY, ObsidianApp);
 
 	const menuStore = MenuStore.getInstance();
 	const openMenus = menuStore.openMenus;
