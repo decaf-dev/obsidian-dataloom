@@ -9,7 +9,7 @@
 </script>
 
 <MenuRoot>
-	<MenuTrigger class="row-menu-trigger">
+	<MenuTrigger class="row-menu-trigger" direction="bottom-right">
 		<Icon lucideId="grip-vertical" />
 	</MenuTrigger>
 	<MenuContent>

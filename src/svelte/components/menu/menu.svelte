@@ -8,7 +8,16 @@
 
 	export interface MenuState {
 		position: MenuPosition;
+		direction: MenuOpenDirection;
 	}
+
+	export type MenuOpenDirection =
+		| "normal"
+		| "bottom-left"
+		| "bottom-right"
+		| "bottom"
+		| "left"
+		| "right";
 
 	const MENU_ID_KEY = "menu-id";
 	const MENU_STATE_KEY = "menu-state";

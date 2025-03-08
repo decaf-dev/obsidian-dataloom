@@ -3,10 +3,15 @@
 	import Logger from "js-logger";
 	import { onMount, type Snippet } from "svelte";
 	import MenuStore, { type MenuLevel } from "./menu-store.js";
-	import { getMenuIdContext, getMenuStateContext } from "./menu.svelte";
+	import {
+		getMenuIdContext,
+		getMenuStateContext,
+		type MenuOpenDirection,
+	} from "./menu.svelte";
 
 	interface MenuTriggerProps {
 		class?: string;
+		direction?: MenuOpenDirection;
 		ariaLabel?: string;
 		isDisabled?: boolean;
 		level?: MenuLevel;
@@ -15,6 +20,7 @@
 
 	let {
 		class: className,
+		direction = "normal",
 		ariaLabel,
 		isDisabled,
 		level = 1,
@@ -91,6 +97,7 @@
 			// const tag = (e.target as HTMLElement).tagName;
 			// if (tag === "A") return;
 
+			menuState.direction = direction;
 			menuStore.open({
 				id: menuId,
 				level,

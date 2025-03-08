@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { type Snippet } from "svelte";
 	import MenuStore from "./menu-store";
+	import { shiftMenuByDirection, shiftMenuIntoView } from "./menu-utils";
 	import { getMenuIdContext, getMenuStateContext } from "./menu.svelte";
 
 	interface MenuContentProps {
@@ -22,6 +23,11 @@
 	const menuState = getMenuStateContext();
 
 	let position = $derived(menuState.position);
+	let positionWithDirection = $derived(
+		shiftMenuByDirection(position, 0, 0, menuState.direction),
+	);
+	let shiftedPosition = $derived(shiftMenuIntoView(positionWithDirection));
+
 	let isOpen = $derived($openMenus.find((menu) => menu.id === id));
 
 	function portal(node: HTMLElement, { target = document.body } = {}) {
@@ -40,8 +46,8 @@
 	<div
 		class="dataloom-menu-content"
 		data-id={id}
-		style:left="{position.left}px"
-		style:top="{position.top}px"
+		style:left="{shiftedPosition.left}px"
+		style:top="{shiftedPosition.top}px"
 		style:width
 		style:height
 		use:portal

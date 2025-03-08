@@ -1,4 +1,4 @@
-import type { MenuPosition } from "./menu.svelte";
+import type { MenuOpenDirection, MenuPosition } from "./menu.svelte";
 
 export function createMenuState() {
 	let position: MenuPosition = $state({
@@ -7,6 +7,7 @@ export function createMenuState() {
 		width: 0,
 		height: 0,
 	});
+	let direction: MenuOpenDirection = $state("normal");
 
 	return {
 		get position() {
@@ -14,6 +15,12 @@ export function createMenuState() {
 		},
 		set position(value: MenuPosition) {
 			position = value;
+		},
+		get direction() {
+			return direction;
+		},
+		set direction(value: MenuOpenDirection) {
+			direction = value;
 		},
 	};
 }
