@@ -4,10 +4,16 @@
 	import { getMenuIdContext, getMenuStateContext } from "./menu.svelte";
 
 	interface MenuContentProps {
+		width?: string;
+		height?: string;
 		children: Snippet;
 	}
 
-	const { children }: MenuContentProps = $props();
+	const {
+		width = "fit-content",
+		height = "fit-content",
+		children,
+	}: MenuContentProps = $props();
 
 	const menuStore = MenuStore.getInstance();
 	const openMenus = menuStore.openMenus;
@@ -36,8 +42,8 @@
 		data-id={id}
 		style:left="{position.left}px"
 		style:top="{position.top}px"
-		style:width="{position.width}px"
-		style:height="{position.height}px"
+		style:width
+		style:height
 		use:portal
 	>
 		{@render children()}

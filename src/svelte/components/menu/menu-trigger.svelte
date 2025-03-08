@@ -106,6 +106,10 @@
 			updatePosition();
 		});
 
+		if (ref) {
+			resizeObserver.observe(ref);
+		}
+
 		return () => {
 			resizeObserver.disconnect();
 		};
