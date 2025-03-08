@@ -118,6 +118,23 @@
 		});
 
 		if (ref) {
+			const viewContentEl = findParentElement(ref, ["view-content"]);
+			if (viewContentEl) {
+				resizeObserver.observe(viewContentEl);
+			}
+		}
+
+		return () => {
+			resizeObserver.disconnect();
+		};
+	});
+
+	$effect(() => {
+		const resizeObserver = new ResizeObserver(() => {
+			updatePosition();
+		});
+
+		if (ref) {
 			resizeObserver.observe(ref);
 		}
 
