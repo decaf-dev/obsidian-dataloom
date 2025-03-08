@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { type Snippet } from "svelte";
 	import Input from "../input/input.svelte";
 	import { MenuContent, MenuRoot, MenuTrigger } from "../menu";
 	import MenuItem from "../menu-item/menu-item.svelte";
@@ -10,7 +9,6 @@
 	interface HeaderMenuProps {
 		columnId: string;
 		columnName: string;
-		children: Snippet;
 		onDeleteClick: (columnId: string) => void;
 		onColumnNameChange: (columnId: string, value: string) => void;
 	}
@@ -18,7 +16,6 @@
 	const {
 		columnId,
 		columnName,
-		children,
 		onColumnNameChange,
 		onDeleteClick,
 	}: HeaderMenuProps = $props();
@@ -42,9 +39,9 @@
 
 <MenuRoot>
 	<MenuTrigger class="dataloom-header-menu-trigger">
-		{@render children()}
+		{columnName}
 	</MenuTrigger>
-	<MenuContent>
+	<MenuContent width="fit-content" height="fit-content">
 		<Stack spacing="sm" width="100%">
 			<Padding px="md" py="sm">
 				<Input

@@ -191,6 +191,24 @@
 		};
 		loomState.loomState = newState;
 	}
+
+	function handleCellInput(cellId: string, value: string) {
+		const prevState = cloneDeep(loomState.loomState);
+		const newRows = prevState.model.rows.map((row) => {
+			return {
+				...row,
+				cells: row.cells.map((cell) =>
+					cell.id === cellId ? { ...cell, content: value } : cell,
+				),
+			};
+		});
+
+		const newState: NewLoomState = {
+			...prevState,
+			model: { ...prevState.model, rows: newRows },
+		};
+		loomState.loomState = newState;
+	}
 </script>
 
 <TableRoot>
@@ -204,9 +222,7 @@
 						columnName={header.content}
 						onColumnNameChange={handleColumnNameChange}
 						onDeleteClick={handleDeleteColumnClick}
-					>
-						{header.content}
-					</HeaderMenu>
+					/>
 				</TableTh>
 			{/each}
 			<TableTh variant="add-column">
@@ -225,9 +241,11 @@
 				</TableTd>
 				{#each row.cells as cell (cell.id)}
 					<TableTd>
-						<BodyContent>
-							{cell.content}
-						</BodyContent>
+						<BodyContent
+							cellId={cell.id}
+							value={cell.content}
+							onCellInput={handleCellInput}
+						/>
 					</TableTd>
 				{/each}
 				<TableTd />

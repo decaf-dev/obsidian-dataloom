@@ -10,11 +10,7 @@
 		children: Snippet;
 	}
 
-	const {
-		width = "fit-content",
-		height = "fit-content",
-		children,
-	}: MenuContentProps = $props();
+	const { width, height, children }: MenuContentProps = $props();
 
 	const menuStore = MenuStore.getInstance();
 	const openMenus = menuStore.openMenus;
@@ -48,8 +44,8 @@
 		data-id={id}
 		style:left="{shiftedPosition.left}px"
 		style:top="{shiftedPosition.top}px"
-		style:width
-		style:height
+		style:width={width ? width : `${position.width}px`}
+		style:height={height ? height : `${position.height}px`}
 		use:portal
 	>
 		{@render children()}
@@ -60,6 +56,7 @@
 	.dataloom-menu-content {
 		position: absolute;
 		z-index: var(--layer-menu);
+		overflow: hidden;
 		background-color: var(--background-primary);
 		font-weight: 400;
 		box-shadow: 0px 0px 0px 2px var(--background-modifier-border);

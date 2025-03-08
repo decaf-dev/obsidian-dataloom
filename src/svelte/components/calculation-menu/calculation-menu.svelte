@@ -34,7 +34,7 @@
 			{/if}
 		{/if}
 	</MenuTrigger>
-	<MenuContent>
+	<MenuContent width="fit-content" height="fit-content">
 		{#each Object.values(GeneralCalculation) as value}
 			{@const option = calculationOptions.find(
 				(option) => option.value === value,

@@ -1,11 +1,12 @@
 <script lang="ts">
+	import clsx from "clsx";
 	import { onMount } from "svelte";
 
 	interface InputProps {
 		id?: string;
-		isTransparent?: boolean;
+		class?: string;
+		variant?: "unstyled" | "default";
 		isDisabled?: boolean;
-		showBorder?: boolean;
 		focusOutline?: "default" | "accent" | "none";
 		hasError?: boolean;
 		autoFocus?: boolean;
@@ -19,8 +20,8 @@
 
 	let {
 		id,
-		isTransparent,
-		showBorder,
+		class: customClassName,
+		variant,
 		hasError,
 		value,
 		isDisabled = false,
@@ -45,11 +46,10 @@
 
 	let className = $derived.by(() => {
 		let className = "dataloom-input dataloom-focusable";
-		if (isTransparent) {
-			className += " dataloom-input--transparent";
-		} else if (showBorder) {
-			className += " dataloom-input--border";
+		if (variant === "unstyled") {
+			className += " dataloom-input--unstyled";
 		}
+
 		if (isNumeric) className += " dataloom-input--numeric";
 
 		if (focusOutline === "default") {
@@ -66,7 +66,7 @@
 <input
 	{id}
 	bind:this={ref}
-	class={className}
+	class={clsx(className, customClassName)}
 	{placeholder}
 	disabled={isDisabled}
 	type="text"
@@ -87,11 +87,12 @@
 		padding: 4px;
 	}
 
-	.dataloom-input--transparent {
+	.dataloom-input--unstyled {
+		width: 100%;
 		background-color: transparent;
 		border: 0;
 		border-radius: 0;
-		padding: var(--dataloom-spacing--sm) var(--dataloom-spacing--lg);
+		padding: 0;
 	}
 
 	.dataloom-input--border {

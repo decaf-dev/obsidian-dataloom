@@ -2,16 +2,12 @@
 	import type { Snippet } from "svelte";
 	import Stack from "../stack/stack.svelte";
 
-	import Logger from "js-logger";
 	import Icon from "../icon/icon.svelte";
-
-	type ButtonVariant = "default" | "link" | "text";
-	type ButtonSize = "sm" | "md" | "lg";
 
 	interface ButtonProps {
 		isDisabled?: boolean;
-		variant?: ButtonVariant;
-		size?: ButtonSize;
+		variant?: "default" | "link" | "text" | "unstyled";
+		size?: "sm" | "md" | "lg";
 		isFullWidth?: boolean;
 		isFocusable?: boolean;
 		invertFocusColor?: boolean;
@@ -20,6 +16,7 @@
 		children?: Snippet;
 		onClick?: () => void;
 		onMouseDown?: (event: MouseEvent) => void;
+		onKeyDown?: (event: KeyboardEvent) => void;
 	}
 
 	const {
@@ -34,10 +31,13 @@
 		lucideId,
 		onClick,
 		onMouseDown,
+		onKeyDown,
 	}: ButtonProps = $props();
 
 	let className = $derived.by(() => {
 		let className = "dataloom-button";
+
+		if (variant == "unstyled") className += " dataloom-button--unstyled";
 
 		if (isFocusable) {
 			className += " dataloom-focusable";
@@ -54,19 +54,6 @@
 		if (isFullWidth) className += " dataloom-button--full-width";
 		return className;
 	});
-
-	function handleKeyDown(event: KeyboardEvent) {
-		Logger.trace("Button handleKeyDown");
-		if (event.key === "Enter") {
-			//Stop click event
-			event.preventDefault();
-
-			//Stop propagation so the the menu doesn't close when pressing enter
-			event.stopPropagation();
-
-			onClick?.();
-		}
-	}
 </script>
 
 <div
@@ -74,7 +61,7 @@
 	tabindex={isFocusable ? 0 : -1}
 	class={className}
 	aria-label={ariaLabel}
-	onkeydown={handleKeyDown}
+	onkeydown={onKeyDown}
 	onmousedown={onMouseDown}
 	onclick={isDisabled ? undefined : onClick}
 >
@@ -107,6 +94,14 @@
 		background-color: transparent;
 		box-shadow: none;
 		border: none;
+	}
+
+	.dataloom-button--unstyled {
+		background-color: transparent;
+		box-shadow: none;
+		border: none;
+		width: 100%;
+		height: 100%;
 	}
 
 	.dataloom-button--link:hover {

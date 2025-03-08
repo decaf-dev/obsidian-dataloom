@@ -1,62 +1,61 @@
-.dataloom-button {
-    display: flex;
-    align-items: center;
-    width: max-content !important;
-    height: max-content;
-    white-space: nowrap;
-    color: var(--text-normal);
-    font-size: var(--font-size-normal); /* Clear default Obsidian style */
-    margin-right: 0;
-    cursor: pointer;
+.dataloom-button-old {
+	display: flex;
+	align-items: center;
+	width: max-content !important;
+	height: max-content;
+	white-space: nowrap;
+	color: var(--text-normal);
+	font-size: var(--font-size-normal); /* Clear default Obsidian style */
+	margin-right: 0;
+	cursor: pointer;
 }
 
-.dataloom-button:focus-visible {
-    box-shadow: none !important;
+.dataloom-button-old:focus-visible {
+	box-shadow: none !important;
 }
 
-.dataloom-button--link {
-    color: var(--link-color);
-    text-decoration-line: var(--link-decoration);
-    cursor: var(--cursor-link);
-    background-color: transparent !important;
-    box-shadow: none !important;
-    border: none !important;
+.dataloom-button-old--link {
+	color: var(--link-color);
+	text-decoration-line: var(--link-decoration);
+	cursor: var(--cursor-link);
+	background-color: transparent !important;
+	box-shadow: none !important;
+	border: none !important;
 }
 
-.dataloom-button--link:hover{
-    box-shadow: var(--input-shadow) !important;
+.dataloom-button-old--link:hover {
+	box-shadow: var(--input-shadow) !important;
 }
 
-.dataloom-button--sm {
-    padding: 2px !important;
+.dataloom-button-old--sm {
+	padding: 2px !important;
 }
 
-.dataloom-button--md {
+.dataloom-button-old--md {
 	padding: 6px !important;
 }
 
-.dataloom-button--lg {
+.dataloom-button-old--lg {
 	padding: 10px !important;
 }
 
-.dataloom-button--full-width {
-    display: flex;
-    justify-content: flex-start;
-    width: 100% !important;
-    border-radius: 0px;
+.dataloom-button-old--full-width {
+	display: flex;
+	justify-content: flex-start;
+	width: 100% !important;
+	border-radius: 0px;
 }
 
-.dataloom-button--text {
-    background-color: transparent !important;
-    box-shadow: none !important;
+.dataloom-button-old--text {
+	background-color: transparent !important;
+	box-shadow: none !important;
 }
 
-.dataloom-button--text:hover {
-    background-color: var(--background-modifier-hover) !important;
+.dataloom-button-old--text:hover {
+	background-color: var(--background-modifier-hover) !important;
 }
 
-.dataloom-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
+.dataloom-button-old:disabled {
+	cursor: not-allowed;
+	opacity: 0.5;
 }
-

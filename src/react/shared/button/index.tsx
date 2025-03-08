@@ -50,21 +50,21 @@ export default function Button({
 		}
 	}
 
-	let className = "dataloom-button";
+	let className = "dataloom-button-old";
 
 	if (isFocusable) {
 		className += " dataloom-focusable";
 		if (invertFocusColor) className += " dataloom-focusable--inverted";
 	}
 
-	if (variant == "link") className += " dataloom-button--link";
-	else if (variant == "text") className += " dataloom-button--text";
+	if (variant == "link") className += " dataloom-button-old--link";
+	else if (variant == "text") className += " dataloom-button-old--text";
 
-	if (size == "sm") className += " dataloom-button--sm";
-	else if (size == "md") className += " dataloom-button--md";
-	else if (size == "lg") className += " dataloom-button--lg";
+	if (size == "sm") className += " dataloom-button-old--sm";
+	else if (size == "md") className += " dataloom-button-old--md";
+	else if (size == "lg") className += " dataloom-button-old--lg";
 
-	if (isFullWidth) className += " dataloom-button--full-width";
+	if (isFullWidth) className += " dataloom-button-old--full-width";
 
 	return (
 		<button

@@ -15,7 +15,7 @@
 	<MenuTrigger class="row-menu-trigger" direction="bottom-right">
 		<Icon lucideId="grip-vertical" />
 	</MenuTrigger>
-	<MenuContent>
+	<MenuContent width="fit-content" height="fit-content">
 		<MenuItem
 			name="Delete"
 			lucideId="trash"
