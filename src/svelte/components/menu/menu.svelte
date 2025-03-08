@@ -46,6 +46,12 @@
 	setContext(MENU_STATE_KEY, menuState);
 </script>
 
-<div class="dataloom-menu-new">
+<div class="dataloom-menu-root">
 	{@render children()}
 </div>
+
+<style>
+	.dataloom-menu-root {
+		display: contents;
+	}
+</style>

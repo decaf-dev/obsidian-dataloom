@@ -1,11 +1,11 @@
 <script lang="ts">
 	import Button from "../button/button.svelte";
 
-	interface AddRowButtonProps {
+	interface AddColumnButtonProps {
 		onClick: () => void;
 	}
 
-	const { onClick }: AddRowButtonProps = $props();
+	const { onClick }: AddColumnButtonProps = $props();
 </script>
 
 <Button lucideId="plus" {onClick} />

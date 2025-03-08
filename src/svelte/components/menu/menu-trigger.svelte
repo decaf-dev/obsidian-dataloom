@@ -141,7 +141,6 @@
 
 <style>
 	.dataloom-menu-trigger {
-		cursor: default;
 		user-select: none;
 	}
 

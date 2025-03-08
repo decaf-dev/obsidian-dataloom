@@ -3,9 +3,12 @@
 	import { MenuContent, MenuRoot, MenuTrigger } from "../menu";
 	import MenuItem from "../menu-item/menu-item.svelte";
 
-	interface RowMenuProps {}
+	interface RowMenuProps {
+		rowId: string;
+		onDeleteClick: (rowId: string) => void;
+	}
 
-	const {}: RowMenuProps = $props();
+	const { rowId, onDeleteClick }: RowMenuProps = $props();
 </script>
 
 <MenuRoot>
@@ -13,7 +16,11 @@
 		<Icon lucideId="grip-vertical" />
 	</MenuTrigger>
 	<MenuContent>
-		<MenuItem name="Delete" lucideId="trash" />
+		<MenuItem
+			name="Delete"
+			lucideId="trash"
+			onClick={() => onDeleteClick(rowId)}
+		/>
 	</MenuContent>
 </MenuRoot>
 

@@ -16,7 +16,7 @@ import LastSavedManager from "./shared/last-saved-manager";
 import { formatMessageForLogger, stringToLogLevel } from "./shared/logger";
 import { LOG_LEVEL_OFF } from "./shared/logger/constants";
 import SvelteApp from "./svelte/App.svelte";
-import { parseTableToObject } from "./svelte/utils";
+import { parseTableToObject } from "./svelte/table-parser";
 
 export interface DataLoomSettings {
 	logLevel: string;

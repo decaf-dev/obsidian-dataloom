@@ -3,7 +3,7 @@
 	import type { Snippet } from "svelte";
 
 	interface TableThProps {
-		variant?: "default" | "add-row-button";
+		variant?: "default" | "add-column";
 		children?: Snippet;
 	}
 
@@ -12,7 +12,7 @@
 
 <div
 	class={clsx("dataloom-th", {
-		"dataloom-th--add-row-button": variant === "add-row-button",
+		"dataloom-th--add-column": variant === "add-column",
 	})}
 >
 	{@render children?.()}
@@ -23,6 +23,8 @@
 		display: table-cell;
 		position: sticky;
 		top: 0;
+		height: 40px;
+		vertical-align: middle;
 		z-index: 1;
 		background-color: var(--background-secondary);
 		border-bottom: 1px solid var(--table-border-color);
@@ -34,7 +36,7 @@
 		}
 	}
 
-	.dataloom-th--add-row-button {
+	.dataloom-th--add-column {
 		padding: 4px;
 	}
 </style>
