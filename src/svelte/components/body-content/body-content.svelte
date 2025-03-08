@@ -9,7 +9,7 @@
 	const { children }: BodyContentProps = $props();
 </script>
 
-<div class={clsx("dataloom-body-content", "dataloom-cell-padding")}>
+<div class={clsx("dataloom-body-content")}>
 	{@render children()}
 </div>
 
@@ -20,8 +20,6 @@
 		height: 100%;
 		min-height: var(--dataloom-cell-min-height);
 		cursor: pointer;
-		color: var(
-			--text-normal
-		); /* Stop dimming of text when mouse leaves embedded loom */
+		padding: var(--dataloom-cell-spacing-x) var(--dataloom-cell-spacing-y);
 	}
 </style>

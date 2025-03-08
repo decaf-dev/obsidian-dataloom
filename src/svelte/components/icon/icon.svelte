@@ -5,26 +5,24 @@
 	interface IconProps {
 		ariaLabel?: string;
 		lucideId: string;
-		size?: "sm" | "md" | "lg" | "xl";
+		size?: "sm" | "md" | "lg";
 		color?: string;
 	}
 
 	const { ariaLabel, lucideId, size = "sm", color }: IconProps = $props();
 
-	let ref: HTMLDivElement | null = $state(null);
+	let ref: HTMLDivElement | undefined = undefined;
 
 	const className = $derived.by(() => {
 		if (size === "sm") return "dataloom-svg--sm";
 		else if (size === "md") return "dataloom-svg--md";
 		else if (size === "lg") return "dataloom-svg--lg";
-		else if (size === "xl") return "dataloom-svg--xl";
 		return "";
 	});
 
 	$effect(() => {
 		if (!ref) return;
 
-		//Create an empty div
 		const div = document.createElement("div");
 
 		if (color) {
@@ -48,7 +46,8 @@
 
 <style global>
 	svg.dataloom-svg {
-		vertical-align: middle;
+		display: block;
+		line-height: 0;
 	}
 
 	svg.dataloom-svg--sm {
@@ -64,10 +63,5 @@
 	svg.dataloom-svg--lg {
 		width: var(--icon-l);
 		height: var(--icon-l);
-	}
-
-	svg.dataloom-svg--xl {
-		width: 20px;
-		height: 20px;
 	}
 </style>

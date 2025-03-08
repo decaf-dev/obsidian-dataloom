@@ -9,7 +9,7 @@
 	const { children }: HeaderContentProps = $props();
 </script>
 
-<div class={clsx("dataloom-header-content", "dataloom-cell-padding")}>
+<div class={clsx("dataloom-header-content")}>
 	{@render children()}
 </div>
 
@@ -23,8 +23,6 @@
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		user-select: none;
-		color: var(
-			--text-normal
-		); /* Stop dimming of text when mouse leaves embedded loom */
+		padding: var(--dataloom-cell-spacing-x) var(--dataloom-cell-spacing-y);
 	}
 </style>

@@ -1,14 +1,20 @@
 <script lang="ts">
+	import clsx from "clsx";
 	import type { Snippet } from "svelte";
 
 	interface TableThProps {
+		variant?: "default" | "add-row-button";
 		children?: Snippet;
 	}
 
-	const { children }: TableThProps = $props();
+	const { variant = "default", children }: TableThProps = $props();
 </script>
 
-<div class="dataloom-th">
+<div
+	class={clsx("dataloom-th", {
+		"dataloom-th--add-row-button": variant === "add-row-button",
+	})}
+>
 	{@render children?.()}
 </div>
 
@@ -26,5 +32,9 @@
 			border-right: 0;
 			background-color: var(--background-primary);
 		}
+	}
+
+	.dataloom-th--add-row-button {
+		padding: 4px;
 	}
 </style>

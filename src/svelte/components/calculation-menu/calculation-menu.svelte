@@ -8,13 +8,11 @@
 	import MenuItem from "../menu-item/menu-item.svelte";
 	import Text from "../text/text.svelte";
 
-	function handleClick(type: GeneralCalculation) {
-		console.log(type);
-	}
+	function handleClick(_type: GeneralCalculation) {}
 </script>
 
 <MenuRoot>
-	<MenuTrigger class="dataloom-cell-padding">
+	<MenuTrigger class="calculation-menu-trigger">
 		<Text value="Calculate" variant="faint" />
 	</MenuTrigger>
 	<MenuContent>
@@ -22,9 +20,15 @@
 			<MenuItem
 				name={getDisplayNameForCalculation(type)}
 				ariaLabel={getAriaLabelForCalculation(type)}
-				isSelected={true}
+				isSelected={false}
 				onClick={() => handleClick(type)}
 			/>
 		{/each}
 	</MenuContent>
 </MenuRoot>
+
+<style>
+	:global(.calculation-menu-trigger) {
+		padding: var(--dataloom-cell-spacing-x) var(--dataloom-cell-spacing-y);
+	}
+</style>

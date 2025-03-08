@@ -3,22 +3,31 @@
 	import type { Snippet } from "svelte";
 
 	interface TableTdProps {
+		class?: string;
+		variant?: "default" | "footer" | "row-menu";
 		isFooter?: boolean;
 		children?: Snippet;
 	}
 
-	const { isFooter = false, children }: TableTdProps = $props();
+	const {
+		class: className,
+		variant = "default",
+		children,
+	}: TableTdProps = $props();
 </script>
 
-<div class={clsx("dataloom-td", { "dataloom-td--footer": isFooter })}>
+<div
+	class={clsx(
+		"dataloom-td",
+		{ "dataloom-td--footer": variant === "footer" },
+		{ "dataloom-td--row-menu": variant === "row-menu" },
+		className,
+	)}
+>
 	{@render children?.()}
 </div>
 
 <!-- <style>
-	.dataloom-cell--left-corner {
-		width: 35px;
-	}
-
 	.dataloom-cell.dataloom-cell--freeze {
 		position: sticky;
 		left: 0;
@@ -37,10 +46,6 @@
 </style> -->
 
 <style>
-	:global(.dataloom-cell-padding) {
-		padding: var(--dataloom-cell-spacing-x) var(--dataloom-cell-spacing-y);
-	}
-
 	:global(.dataloom-body > .dataloom-row:last-child > .dataloom-td) {
 		border-bottom: 0;
 	}
@@ -66,5 +71,9 @@
 		background-color: var(--background-primary);
 		border-top: 1px solid var(--table-border-color);
 		border-right: 0;
+	}
+
+	.dataloom-td--row-menu {
+		padding: 4px;
 	}
 </style>

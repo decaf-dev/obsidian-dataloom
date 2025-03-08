@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Flex from "../flex/flex.svelte";
 	import Icon from "../icon/icon.svelte";
-	import Padding from "../padding/padding.svelte";
 	import Stack from "../stack/stack.svelte";
 	import Text from "../text/text.svelte";
 
@@ -28,7 +27,7 @@
 	}: MenuItemProps = $props();
 
 	let className = $derived.by(() => {
-		let className = "dataloom-menu-item";
+		let className = "dataloom-menu-item dataloom-selectable";
 		if (isSelected) {
 			className += " dataloom-selected";
 		} else if (isDisabled) {
@@ -73,9 +72,7 @@
 	<Flex justify="space-between" align="center">
 		<Stack isHorizontal>
 			{#if lucideId !== undefined}
-				<Padding width="unset" pb="sm">
-					<Icon {lucideId} />
-				</Padding>
+				<Icon {lucideId} />
 			{/if}
 			<Text value={name} />
 		</Stack>

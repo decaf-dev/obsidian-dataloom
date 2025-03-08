@@ -1,8 +1,10 @@
 <script lang="ts">
+	import AddRowButton from "./components/add-row-button/add-row-button.svelte";
 	import BodyContent from "./components/body-content/body-content.svelte";
-	import Calculation from "./components/calculation/calculation.svelte";
+	import CalculationMenu from "./components/calculation-menu/calculation-menu.svelte";
 	import HeaderContent from "./components/header-content/header-content.svelte";
 	import MenuStore from "./components/menu/menu-store";
+	import RowMenu from "./components/row-menu/row-menu.svelte";
 	import {
 		TableFooter,
 		TableRoot,
@@ -63,14 +65,18 @@
 						</HeaderContent>
 					</TableTh>
 				{/each}
-				<TableTh />
+				<TableTh variant="add-row-button">
+					<AddRowButton />
+				</TableTh>
 			</TableRow>
 		</TableHeader>
 	{/if}
 	<TableBody>
 		{#each data.body as row}
 			<TableRow>
-				<TableTd />
+				<TableTd variant="row-menu">
+					<RowMenu />
+				</TableTd>
 				{#each row as cell}
 					<TableTd>
 						<BodyContent>
@@ -84,13 +90,13 @@
 	</TableBody>
 	<TableFooter>
 		<TableRow>
-			<TableTd isFooter />
+			<TableTd variant="footer" />
 			{#each Array.from({ length: numColumns })}
-				<TableTd isFooter>
-					<Calculation />
+				<TableTd variant="footer">
+					<CalculationMenu />
 				</TableTd>
 			{/each}
-			<TableTd isFooter />
+			<TableTd variant="footer" />
 		</TableRow>
 	</TableFooter>
 </TableRoot>
