@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Snippet } from "svelte";
+	import { onMount, type Snippet } from "svelte";
 	import { MenuContent, MenuRoot, MenuTrigger } from "../menu";
 	import MenuItem from "../menu-item/menu-item.svelte";
 	import Padding from "../padding/padding.svelte";
@@ -12,6 +12,14 @@
 	}
 
 	const { columnId, children, onDeleteClick }: HeaderMenuProps = $props();
+
+	let inputRef: HTMLInputElement | undefined = undefined;
+
+	onMount(() => {
+		if (inputRef) {
+			inputRef.focus();
+		}
+	});
 </script>
 
 <MenuRoot>
@@ -21,7 +29,7 @@
 	<MenuContent>
 		<Stack spacing="sm" width="100%">
 			<Padding px="md" py="sm">
-				<input type="text" />
+				<input type="text" bind:this={inputRef} />
 			</Padding>
 			<MenuItem
 				name="Delete"

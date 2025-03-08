@@ -1,6 +1,7 @@
 <script lang="ts">
 	import clsx from "clsx";
 	import Logger from "js-logger";
+	import { getLoomStateContext } from "src/svelte/App.svelte";
 	import { onMount, type Snippet } from "svelte";
 	import MenuStore, { type MenuLevel } from "./menu-store.js";
 	import {
@@ -123,6 +124,68 @@
 		return () => {
 			resizeObserver.disconnect();
 		};
+	});
+
+	function findParentElement(
+		element: HTMLElement,
+		classList: string[],
+	): HTMLElement | null {
+		let currentElement: HTMLElement | null = element;
+
+		while (currentElement) {
+			for (const className of classList) {
+				if (currentElement.classList.contains(className)) {
+					return currentElement;
+				}
+			}
+
+			currentElement = currentElement.parentElement;
+		}
+
+		return null;
+	}
+
+	$effect(() => {
+		let element: HTMLElement | null = null;
+		if (ref) {
+			element = findParentElement(ref, ["el-table", "cm-table-widget"]);
+			if (element) {
+				element.addEventListener("scroll", updatePosition);
+			}
+		}
+		return () => {
+			if (element) {
+				element.removeEventListener("scroll", updatePosition);
+			}
+		};
+	});
+
+	$effect(() => {
+		let element: HTMLElement | null = null;
+		if (ref) {
+			element = findParentElement(ref, [
+				"markdown-preview-view",
+				"cm-scroller",
+			]);
+			if (element) {
+				element.addEventListener("scroll", updatePosition);
+			}
+		}
+		return () => {
+			if (element) {
+				element.removeEventListener("scroll", updatePosition);
+			}
+		};
+	});
+
+	const loomState = getLoomStateContext();
+	$effect(() => {
+		if (
+			loomState.loomState.model.columns.length ||
+			loomState.loomState.model.rows.length
+		) {
+			updatePosition();
+		}
 	});
 </script>
 

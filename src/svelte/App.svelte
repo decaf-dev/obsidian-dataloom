@@ -1,3 +1,12 @@
+<script lang="ts" module>
+	import { getContext, setContext } from "svelte";
+
+	const LOOM_STATE_KEY = "loom-state";
+
+	export const getLoomStateContext = () =>
+		getContext(LOOM_STATE_KEY) as { loomState: NewLoomState };
+</script>
+
 <script lang="ts">
 	import { cloneDeep } from "lodash";
 	import { createCellForType } from "./cell-factory";
@@ -18,11 +27,8 @@
 	import TableBody from "./components/table/table-body.svelte";
 	import TableHeader from "./components/table/table-header.svelte";
 	import TableRow from "./components/table/table-row.svelte";
-	import {
-		createColumn,
-		createNewLoomState,
-		createRow,
-	} from "./state-factory";
+	import { createLoomState } from "./loom-state.svelte";
+	import { createColumn, createRow } from "./state-factory";
 	import type { ParsedTableData } from "./table-parser";
 	import { CellType, type NewLoomState } from "./types";
 
@@ -33,11 +39,8 @@
 
 	const { data }: AppProps = $props();
 
-	let loomState = $state(createNewLoomState(data, "1.0.0"));
-
-	$effect(() => {
-		console.log(loomState);
-	});
+	const loomState = createLoomState(data);
+	setContext(LOOM_STATE_KEY, loomState);
 
 	const menuStore = MenuStore.getInstance();
 	const openMenus = menuStore.openMenus;
@@ -65,7 +68,7 @@
 	});
 
 	function handleAddRowClick() {
-		const prevState = cloneDeep(loomState);
+		const prevState = cloneDeep(loomState.loomState);
 		const columns = prevState.model.columns;
 		const cells = columns.map((column) => {
 			const { id, type } = column;
@@ -75,17 +78,17 @@
 		const newRow = createRow(prevState.model.rows.length, { cells });
 		const newRows = [...prevState.model.rows, newRow];
 		const newState: NewLoomState = {
-			...loomState,
+			...prevState,
 			model: {
-				...loomState.model,
+				...prevState.model,
 				rows: newRows,
 			},
 		};
-		loomState = newState;
+		loomState.loomState = newState;
 	}
 
 	function handleAddColumnClick() {
-		const prevState = cloneDeep(loomState);
+		const prevState = cloneDeep(loomState.loomState);
 		const { columns, rows } = prevState.model;
 
 		const newColumn = createColumn({
@@ -111,11 +114,11 @@
 			},
 		};
 
-		loomState = newState;
+		loomState.loomState = newState;
 	}
 
 	function handleDeleteRowClick(rowId: string) {
-		const prevState = cloneDeep(loomState);
+		const prevState = cloneDeep(loomState.loomState);
 		const newRows = prevState.model.rows.filter((row) => row.id !== rowId);
 		const newState: NewLoomState = {
 			...prevState,
@@ -124,11 +127,11 @@
 				rows: newRows,
 			},
 		};
-		loomState = newState;
+		loomState.loomState = newState;
 	}
 
 	function handleDeleteColumnClick(columnId: string) {
-		const prevState = cloneDeep(loomState);
+		const prevState = cloneDeep(loomState.loomState);
 		const newColumns = prevState.model.columns.filter(
 			(column) => column.id !== columnId,
 		);
@@ -147,7 +150,7 @@
 				rows: newRows,
 			},
 		};
-		loomState = newState;
+		loomState.loomState = newState;
 	}
 </script>
 
@@ -155,7 +158,7 @@
 	<TableHeader>
 		<TableRow>
 			<TableTh />
-			{#each loomState.model.columns as header (header.id)}
+			{#each loomState.loomState.model.columns as header (header.id)}
 				<TableTh>
 					<HeaderMenu
 						columnId={header.id}
@@ -171,7 +174,7 @@
 		</TableRow>
 	</TableHeader>
 	<TableBody>
-		{#each loomState.model.rows as row (row.id)}
+		{#each loomState.loomState.model.rows as row (row.id)}
 			<TableRow>
 				<TableTd variant="row-menu">
 					<RowMenu
@@ -193,7 +196,7 @@
 	<TableFooter>
 		<TableRow>
 			<TableTd variant="footer" />
-			{#each Array.from({ length: loomState.model.columns.length })}
+			{#each Array.from( { length: loomState.loomState.model.columns.length }, )}
 				<TableTd variant="footer">
 					<CalculationMenu />
 				</TableTd>

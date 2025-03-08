@@ -30,8 +30,9 @@
 <script lang="ts">
 	import { generateUuid } from "src/shared/uuid";
 
-	import { getContext, setContext, type Snippet } from "svelte";
+	import { getContext, onDestroy, setContext, type Snippet } from "svelte";
 	import { createMenuState } from "./menu-state.svelte";
+	import MenuStore from "./menu-store";
 
 	interface MenuProps {
 		children: Snippet;
@@ -39,11 +40,17 @@
 
 	const { children }: MenuProps = $props();
 
+	const menuStore = MenuStore.getInstance();
+
 	let menuId = generateUuid();
 	setContext(MENU_ID_KEY, menuId);
 
 	let menuState = createMenuState();
 	setContext(MENU_STATE_KEY, menuState);
+
+	onDestroy(() => {
+		menuStore.close(menuId);
+	});
 </script>
 
 <div class="dataloom-menu-root">
