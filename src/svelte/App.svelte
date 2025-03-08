@@ -30,7 +30,7 @@
 	import { createLoomState } from "./loom-state.svelte";
 	import { createColumn, createRow } from "./state-factory";
 	import type { ParsedTableData } from "./table-parser";
-	import { CellType, type NewLoomState } from "./types";
+	import { CellType, type CalculationType, type NewLoomState } from "./types";
 
 	interface AppProps {
 		data: ParsedTableData;
@@ -152,6 +152,29 @@
 		};
 		loomState.loomState = newState;
 	}
+
+	function handleCalculationClick(
+		columnId: string,
+		calculationType: CalculationType,
+	) {
+		const prevState = cloneDeep(loomState.loomState);
+		const newColumns = prevState.model.columns.map((column) => {
+			if (column.id === columnId) {
+				return { ...column, calculationType };
+			}
+			return column;
+		});
+
+		const newState: NewLoomState = {
+			...prevState,
+			model: {
+				...prevState.model,
+				columns: newColumns,
+			},
+		};
+		loomState.loomState = newState;
+		menuStore.closeTop();
+	}
 </script>
 
 <TableRoot>
@@ -196,9 +219,13 @@
 	<TableFooter>
 		<TableRow>
 			<TableTd variant="footer" />
-			{#each Array.from( { length: loomState.loomState.model.columns.length }, )}
+			{#each loomState.loomState.model.columns as column (column.id)}
 				<TableTd variant="footer">
-					<CalculationMenu />
+					<CalculationMenu
+						columnId={column.id}
+						calculationType={column.calculationType}
+						onClick={handleCalculationClick}
+					/>
 				</TableTd>
 			{/each}
 			<TableTd variant="footer" />

@@ -38,8 +38,8 @@ export default function CalculationMenu({
 						key={type}
 						name={getDisplayNameForCalculation(type)}
 						ariaLabel={getAriaLabelForCalculation(type)}
-						onClick={() => onClick(type)}
 						isSelected={type === value}
+						onClick={() => onClick(type)}
 					/>
 				))}
 				{cellType === CellType.NUMBER &&
