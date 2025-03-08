@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Logger from "js-logger";
 	import { onMount, type Snippet } from "svelte";
-	import MenuManager, { type MenuLevel } from "./menu-store.js";
+	import MenuStore, { type MenuLevel } from "./menu-store.js";
 	import { getMenuIdContext, getMenuStateContext } from "./menu.svelte";
 
 	interface MenuTriggerProps {
@@ -20,7 +20,7 @@
 
 	let ref: HTMLDivElement | undefined = $state(undefined);
 
-	const menuManager = MenuManager.getInstance();
+	const menuStore = MenuStore.getInstance();
 	const menuId = getMenuIdContext();
 	const menuState = getMenuStateContext();
 
@@ -77,21 +77,23 @@
 	// 	}
 	// }
 
-	function handleClick(_event: MouseEvent) {
+	function handleClick(event: MouseEvent) {
 		Logger.trace("MenuTrigger handleClick");
+
+		event.stopPropagation();
 
 		if (isDisabled) return;
 
-		if (menuManager.canOpen(level)) {
+		if (menuStore.canOpen(level)) {
 			// const tag = (e.target as HTMLElement).tagName;
 			// if (tag === "A") return;
 
-			menuManager.open({
+			menuStore.open({
 				id: menuId,
 				level,
 			});
 		} else {
-			menuManager.closeTop();
+			menuStore.closeTop();
 		}
 	}
 

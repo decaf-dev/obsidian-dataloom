@@ -50,5 +50,6 @@
 		z-index: var(--layer-menu);
 		background-color: var(--background-primary);
 		font-weight: 400;
+		box-shadow: 0px 0px 0px 2px var(--background-modifier-border);
 	}
 </style>
