@@ -196,8 +196,8 @@
 	role="button"
 	aria-disabled={isDisabled}
 	aria-label={ariaLabel}
-	onkeydown={() => {}}
 	onclick={isDisabled ? undefined : handleClick}
+	onkeydown={undefined}
 >
 	{@render children()}
 </div>

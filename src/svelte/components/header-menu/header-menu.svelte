@@ -1,24 +1,42 @@
 <script lang="ts">
-	import { onMount, type Snippet } from "svelte";
+	import { type Snippet } from "svelte";
+	import Input from "../input/input.svelte";
 	import { MenuContent, MenuRoot, MenuTrigger } from "../menu";
 	import MenuItem from "../menu-item/menu-item.svelte";
+	import MenuStore from "../menu/menu-store";
 	import Padding from "../padding/padding.svelte";
 	import Stack from "../stack/stack.svelte";
 
 	interface HeaderMenuProps {
 		columnId: string;
+		columnName: string;
 		children: Snippet;
 		onDeleteClick: (columnId: string) => void;
+		onColumnNameChange: (columnId: string, value: string) => void;
 	}
 
-	const { columnId, children, onDeleteClick }: HeaderMenuProps = $props();
+	const {
+		columnId,
+		columnName,
+		children,
+		onColumnNameChange,
+		onDeleteClick,
+	}: HeaderMenuProps = $props();
 
-	let inputRef: HTMLInputElement | undefined = undefined;
+	const menuStore = MenuStore.getInstance();
 
-	onMount(() => {
-		if (inputRef) {
-			inputRef.focus();
+	function handleEnterPress(event: KeyboardEvent) {
+		if (event.key === "Enter") {
+			menuStore.closeTop();
 		}
+	}
+
+	$effect(() => {
+		document.addEventListener("keydown", handleEnterPress);
+
+		return () => {
+			document.removeEventListener("keydown", handleEnterPress);
+		};
 	});
 </script>
 
@@ -29,7 +47,11 @@
 	<MenuContent>
 		<Stack spacing="sm" width="100%">
 			<Padding px="md" py="sm">
-				<input type="text" bind:this={inputRef} />
+				<Input
+					autoFocus
+					value={columnName}
+					onInput={(value) => onColumnNameChange(columnId, value)}
+				/>
 			</Padding>
 			<MenuItem
 				name="Delete"
@@ -45,9 +67,11 @@
 		display: flex;
 		align-items: center;
 		height: 100%;
+		width: 140px;
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		box-sizing: border-box;
+		padding: var(--dataloom-cell-spacing-x) var(--dataloom-cell-spacing-y);
 	}
 </style>

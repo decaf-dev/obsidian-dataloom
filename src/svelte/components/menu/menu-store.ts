@@ -38,6 +38,10 @@ export default class MenuStore {
 		}
 	}
 
+	closeAll() {
+		this.openMenus.set([]);
+	}
+
 	getTopMenu(): Menu | null {
 		const menus = get(this.openMenus);
 		return menus.length > 0 ? menus[menus.length - 1] : null;

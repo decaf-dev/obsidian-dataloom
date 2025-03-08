@@ -175,6 +175,22 @@
 		loomState.loomState = newState;
 		menuStore.closeTop();
 	}
+
+	function handleColumnNameChange(columnId: string, value: string) {
+		const prevState = cloneDeep(loomState.loomState);
+		const newColumns = prevState.model.columns.map((column) => {
+			if (column.id === columnId) {
+				return { ...column, content: value };
+			}
+			return column;
+		});
+
+		const newState: NewLoomState = {
+			...prevState,
+			model: { ...prevState.model, columns: newColumns },
+		};
+		loomState.loomState = newState;
+	}
 </script>
 
 <TableRoot>
@@ -185,6 +201,8 @@
 				<TableTh>
 					<HeaderMenu
 						columnId={header.id}
+						columnName={header.content}
+						onColumnNameChange={handleColumnNameChange}
 						onDeleteClick={handleDeleteColumnClick}
 					>
 						{header.content}
