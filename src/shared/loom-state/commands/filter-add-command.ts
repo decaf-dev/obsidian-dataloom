@@ -11,8 +11,8 @@ import {
 	createTagFilter,
 	createTextFilter,
 } from "../loom-state-factory";
-import { LoomState } from "../types";
-import { CellType, Column, Filter } from "../types/loom-state";
+import type { LoomState } from "../types";
+import { CellType, type Column, type Filter } from "../types/loom-state";
 import LoomStateCommand from "./loom-state-command";
 
 export default class FilterAddCommand extends LoomStateCommand {

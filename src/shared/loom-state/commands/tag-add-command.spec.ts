@@ -1,3 +1,4 @@
+import { advanceBy, clear } from "jest-date-mock";
 import {
 	createColumn,
 	createGenericLoomState,
@@ -5,15 +6,14 @@ import {
 	createRow,
 	createTag,
 } from "src/shared/loom-state/loom-state-factory";
-import TagAddCommand from "./tag-add-command";
 import {
 	CellType,
 	Color,
-	Column,
-	MultiTagCell,
-	Row,
+	type Column,
+	type MultiTagCell,
+	type Row,
 } from "../types/loom-state";
-import { advanceBy, clear } from "jest-date-mock";
+import TagAddCommand from "./tag-add-command";
 
 //TODO add tests for single tag
 describe("tag-add-command", () => {

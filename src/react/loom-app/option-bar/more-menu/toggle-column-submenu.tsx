@@ -4,7 +4,7 @@ import Submenu from "src/react/shared/submenu";
 import Switch from "src/react/shared/switch";
 import Text from "src/react/shared/text";
 import Wrap from "src/react/shared/wrap";
-import { Column } from "src/shared/loom-state/types/loom-state";
+import { type Column } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	columns: Column[];

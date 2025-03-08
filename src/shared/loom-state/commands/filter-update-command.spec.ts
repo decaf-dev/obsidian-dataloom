@@ -3,8 +3,8 @@ import {
 	createLoomState,
 	createTextFilter,
 } from "src/shared/loom-state/loom-state-factory";
+import { type TextFilter } from "../types/loom-state";
 import FilterUpdateCommand from "./filter-update-command";
-import { TextFilter } from "../types/loom-state";
 
 describe("filter-update-command", () => {
 	it("should partially update the filter", async () => {

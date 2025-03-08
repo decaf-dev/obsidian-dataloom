@@ -1,7 +1,13 @@
-import Logger, { ILogLevel } from "js-logger";
-import { LOG_LEVEL_OFF, LOG_LEVEL_ERROR, LOG_LEVEL_WARN, LOG_LEVEL_INFO, LOG_LEVEL_DEBUG, LOG_LEVEL_TRACE } from "./constants";
-import { FormattedLogMessage } from "./types";
-
+import Logger, { type ILogLevel } from "js-logger";
+import {
+	LOG_LEVEL_DEBUG,
+	LOG_LEVEL_ERROR,
+	LOG_LEVEL_INFO,
+	LOG_LEVEL_OFF,
+	LOG_LEVEL_TRACE,
+	LOG_LEVEL_WARN,
+} from "./constants";
+import { type FormattedLogMessage } from "./types";
 
 export const logLevelToString = (level: ILogLevel) => {
 	switch (level) {
@@ -20,7 +26,7 @@ export const logLevelToString = (level: ILogLevel) => {
 		default:
 			throw new Error("Unhandled log level");
 	}
-}
+};
 
 export const stringToLogLevel = (value: string) => {
 	switch (value) {
@@ -39,9 +45,11 @@ export const stringToLogLevel = (value: string) => {
 		default:
 			throw new Error(`Unhandled log level: ${value}`);
 	}
-}
+};
 
-export const formatMessageForLogger = (...args: string[]): FormattedLogMessage => {
+export const formatMessageForLogger = (
+	...args: string[]
+): FormattedLogMessage => {
 	if (args.length < 3) {
 		return { message: args[0], data: null };
 	}
@@ -53,9 +61,12 @@ export const formatMessageForLogger = (...args: string[]): FormattedLogMessage =
 	if (args.length === 4) {
 		const data = args[3];
 		if (Object.keys(data).length !== 0) {
-			return { message: `[${fileName}:${functionName}] ${message}`, data: data as unknown as Record<string, unknown> };
+			return {
+				message: `[${fileName}:${functionName}] ${message}`,
+				data: data as unknown as Record<string, unknown>,
+			};
 		}
 	}
 
 	return { message: `[${fileName}:${functionName}] ${message}`, data: null };
-}
+};

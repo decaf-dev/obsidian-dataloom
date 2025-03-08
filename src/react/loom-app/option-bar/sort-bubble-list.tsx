@@ -1,7 +1,7 @@
-import SortBubble from "./sort-bubble";
 import Stack from "src/react/shared/stack";
+import SortBubble from "./sort-bubble";
 
-import { Column } from "src/shared/loom-state/types/loom-state";
+import { type Column } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	sortedColumns: Column[];

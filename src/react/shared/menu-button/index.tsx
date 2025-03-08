@@ -1,9 +1,9 @@
 import React from "react";
 
-import MenuTrigger from "../menu-trigger";
 import Button from "../button";
+import MenuTrigger from "../menu-trigger";
 
-import { ButtonVariant } from "../button/types";
+import { type ButtonVariant } from "../button/types";
 import { LoomMenuLevel } from "../menu-provider/types";
 
 interface Props {

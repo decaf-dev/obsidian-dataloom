@@ -1,11 +1,11 @@
-import MenuItem from "src/react/shared/menu-item";
-import ModalMenu from "src/react/shared/model-menu";
-import { LoomMenuPosition } from "src/react/shared/menu/types";
-import { ColumnMatch } from "../types";
-import { getIconIdForCellType } from "src/react/shared/icon/utils";
 import Divider from "src/react/shared/divider";
+import { getIconIdForCellType } from "src/react/shared/icon/utils";
+import MenuItem from "src/react/shared/menu-item";
+import type { LoomMenuPosition } from "src/react/shared/menu/types";
+import ModalMenu from "src/react/shared/model-menu";
+import { CellType, type Column } from "src/shared/loom-state/types/loom-state";
 import { NEW_COLUMN_ID } from "../constants";
-import { CellType, Column } from "src/shared/loom-state/types/loom-state";
+import type { ColumnMatch } from "../types";
 
 interface Props {
 	id: string;

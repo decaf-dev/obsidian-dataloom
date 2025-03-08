@@ -1,12 +1,12 @@
 import React from "react";
 
-import MenuHeader from "./menu-header";
 import MenuBody from "./menu-body";
+import MenuHeader from "./menu-header";
 
-import { Tag as TagType } from "src/shared/loom-state/types/loom-state";
-import { Color } from "src/shared/loom-state/types/loom-state";
+import type { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
 import { randomColor } from "src/shared/color";
-import { LoomMenuCloseRequest } from "src/react/shared/menu-provider/types";
+import type { Tag as TagType } from "src/shared/loom-state/types/loom-state";
+import { Color } from "src/shared/loom-state/types/loom-state";
 
 interface Props {
 	isMulti?: boolean;

@@ -3,8 +3,8 @@ import React from "react";
 import Icon from "src/react/shared/icon";
 import Stack from "src/react/shared/stack";
 import Flex from "../flex";
-import Text from "../text";
 import Padding from "../padding";
+import Text from "../text";
 
 import "./styles.css";
 

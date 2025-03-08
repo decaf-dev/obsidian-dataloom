@@ -1,13 +1,13 @@
 import React from "react";
 
-import StepSpacer from "./step-spacer";
-import StepContent from "./step-content";
 import Stack from "../stack";
 import StepButtons from "./step-buttons";
+import StepContent from "./step-content";
 import StepHeader from "./step-header";
 import StepSeparator from "./step-separator";
+import StepSpacer from "./step-spacer";
 
-import { Step } from "./types";
+import { type Step } from "./types";
 
 import "./styles.css";
 

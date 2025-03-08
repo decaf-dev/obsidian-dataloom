@@ -2,74 +2,74 @@ import React from "react";
 
 import { Notice } from "obsidian";
 
-import TextCell from "../text-cell";
-import TagCell from "../tag-cell";
-import CheckboxCell from "../checkbox-cell";
-import DateCell from "../date-cell";
-import NumberCell from "../number-cell";
-import NumberCellEdit from "../number-cell-edit";
-import TextCellEdit from "../text-cell-edit";
-import TagCellEdit from "../tag-cell-edit";
-import DateCellEdit from "../date-cell-edit";
-import MultiTagCell from "../multi-tag-cell";
-import Menu from "../../shared/menu";
 import MenuTrigger from "src/react/shared/menu-trigger";
-import FileCell from "../file-cell";
-import FileCellEdit from "../file-cell-edit";
+import Menu from "../../shared/menu";
+import CheckboxCell from "../checkbox-cell";
+import CreationTimeCell from "../creation-time-cell";
+import DateCell from "../date-cell";
+import DateCellEdit from "../date-cell-edit";
 import EmbedCell from "../embed-cell";
 import EmbedCellEdit from "../embed-cell-edit";
+import FileCell from "../file-cell";
+import FileCellEdit from "../file-cell-edit";
 import LastEditedTimeCell from "../last-edited-time-cell";
-import CreationTimeCell from "../creation-time-cell";
-import SourceFileCell from "../source-file-cell";
+import MultiTagCell from "../multi-tag-cell";
+import NumberCell from "../number-cell";
+import NumberCellEdit from "../number-cell-edit";
 import SourceCell from "../source-cell";
+import SourceFileCell from "../source-file-cell";
+import TagCell from "../tag-cell";
+import TagCellEdit from "../tag-cell-edit";
+import TextCell from "../text-cell";
+import TextCellEdit from "../text-cell-edit";
 
 import {
-	TextCell as TextCellInterface,
-	NumberCell as NumberCellInterface,
-	TagCell as TagCellInterface,
-	MultiTagCell as MultiTagCellInterface,
-	DateCell as DateCellInterface,
-	CheckboxCell as CheckboxCellInterface,
-	CreationTimeCell as CreationTimeCellInterface,
-	LastEditedTimeCell as LastEditedTimeCellInterface,
-	SourceCell as SourceCellInterface,
-	SourceFileCell as SourceFileCellInterface,
-	FileCell as FileCellInterface,
-	EmbedCell as EmbedCellInterface,
+	type CheckboxCell as CheckboxCellInterface,
+	type CreationTimeCell as CreationTimeCellInterface,
+	type DateCell as DateCellInterface,
+	type EmbedCell as EmbedCellInterface,
+	type FileCell as FileCellInterface,
+	type LastEditedTimeCell as LastEditedTimeCellInterface,
+	type MultiTagCell as MultiTagCellInterface,
+	type NumberCell as NumberCellInterface,
+	type SourceCell as SourceCellInterface,
+	type SourceFileCell as SourceFileCellInterface,
 	SourceType,
+	type TagCell as TagCellInterface,
+	type TextCell as TextCellInterface,
 } from "src/shared/loom-state/types/loom-state";
 
+import { useMenu } from "src/react/shared/menu-provider/hooks";
+import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
 import {
 	AspectRatio,
 	CellType,
+	Color,
 	CurrencyType,
 	DateFormat,
 	DateFormatSeparator,
 	NumberFormat,
 	PaddingSize,
-	Source,
-	Tag,
+	type Source,
+	type Tag,
 } from "src/shared/loom-state/types/loom-state";
-import { Color } from "src/shared/loom-state/types/loom-state";
-import { ColumnChangeHandler } from "../app/hooks/use-column/types";
-import { CellChangeHandler } from "../app/hooks/use-cell/types";
+import { type CellChangeHandler } from "../app/hooks/use-cell/types";
+import { type ColumnChangeHandler } from "../app/hooks/use-column/types";
 import {
-	TagAddHandler,
-	TagCellAddHandler,
-	TagChangeHandler,
+	type TagAddHandler,
+	type TagCellAddHandler,
+	type TagChangeHandler,
 } from "../app/hooks/use-tag/types";
-import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
-import { useMenu } from "src/react/shared/menu-provider/hooks";
 
-import "./styles.css";
-import { useOverflow } from "src/shared/spacing/hooks";
+import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
+import { getFileCellContent } from "src/shared/cell-content/file-cell-content";
 import { getNumberCellContent } from "src/shared/cell-content/number-cell-content";
-import { getTimeCellContent } from "src/shared/cell-content/time-content";
 import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
 import { getSourceFileContent } from "src/shared/cell-content/source-file-content";
-import { getFileCellContent } from "src/shared/cell-content/file-cell-content";
-import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
+import { getTimeCellContent } from "src/shared/cell-content/time-content";
+import { useOverflow } from "src/shared/spacing/hooks";
 import DisabledCell from "../disabled-cell";
+import "./styles.css";
 
 import { sortByText } from "src/shared/sort-utils";
 
@@ -445,8 +445,10 @@ export default function BodyCellContainer(props: Props) {
 				const { tagIds, multiTagSortDir } = props as MultiTagCellProps;
 
 				cellTags = columnTags.filter((tag) => tagIds.includes(tag.id));
-				cellTags.sort((a, b) => sortByText(a.content, b.content, multiTagSortDir, false));
-				
+				cellTags.sort((a, b) =>
+					sortByText(a.content, b.content, multiTagSortDir, false)
+				);
+
 				handleMenuTriggerBackspaceDown = () => {
 					onTagCellMultipleRemove(id, tagIds);
 				};

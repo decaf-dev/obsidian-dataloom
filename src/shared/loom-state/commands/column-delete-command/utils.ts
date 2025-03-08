@@ -1,6 +1,6 @@
-import ColumnNotFoundError from "src/shared/error/column-not-found-error";
-import { Column, Filter, Row } from "../../types/loom-state";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
+import type { Column, Filter, Row } from "../../types/loom-state";
 
 export const columnDeleteExecute = (
 	prevColumns: Column[],

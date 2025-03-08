@@ -1,33 +1,33 @@
+import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
 import CellNotFoundError from "src/shared/error/cell-not-found-error";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
-import {
-	Cell,
-	Row,
-	CellType,
-	Column,
-	SortDir,
-	LoomState,
-	Tag,
-	Source,
-	DateCell,
-	CheckboxCell,
-	NumberCell,
-	TextCell,
-	FileCell,
-	EmbedCell,
-	SourceFileCell,
-	TagCell,
-	MultiTagCell,
-} from "./types/loom-state";
-import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
+import { isRelativePath } from "src/shared/link-and-path/link-predicates";
 import {
 	forceEmptyNumberCellsToBottom,
 	sortByBoolean,
 	sortByNumber,
 	sortByText,
 } from "src/shared/sort-utils";
-import { isRelativePath } from "src/shared/link-and-path/link-predicates";
 import { getFileName } from "../link-and-path/file-path-utils";
+import {
+	CellType,
+	SortDir,
+	type Cell,
+	type CheckboxCell,
+	type Column,
+	type DateCell,
+	type EmbedCell,
+	type FileCell,
+	type LoomState,
+	type MultiTagCell,
+	type NumberCell,
+	type Row,
+	type Source,
+	type SourceFileCell,
+	type Tag,
+	type TagCell,
+	type TextCell,
+} from "./types/loom-state";
 
 export const sortRows = (prevState: LoomState): LoomState => {
 	const { columns, rows, sources } = prevState.model;

@@ -1,7 +1,7 @@
-import CellBodyUpdateCommand from "./cell-body-update-command";
 import { advanceBy, clear } from "jest-date-mock";
 import { createLoomState } from "../loom-state-factory";
-import { TextCell } from "../types/loom-state";
+import { type TextCell } from "../types/loom-state";
+import CellBodyUpdateCommand from "./cell-body-update-command";
 
 describe("cell-update-command", () => {
 	it("should update a cell property when execute() is called", async () => {

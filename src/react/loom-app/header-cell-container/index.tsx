@@ -1,16 +1,16 @@
+import MenuTrigger from "src/react/shared/menu-trigger";
 import Icon from "../../shared/icon";
 import Stack from "../../shared/stack";
-import MenuTrigger from "src/react/shared/menu-trigger";
-import ResizeContainer from "./column-resize";
 import HeaderMenu from "../header-menu";
+import ResizeContainer from "./column-resize";
 
 import { getIconIdForCellType } from "src/react/shared/icon/utils";
-import { CellType, Column } from "src/shared/loom-state/types/loom-state";
+import { CellType, type Column } from "src/shared/loom-state/types/loom-state";
 
-import "./styles.css";
-import { ColumnChangeHandler } from "../app/hooks/use-column/types";
-import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
 import { useMenu } from "src/react/shared/menu-provider/hooks";
+import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
+import { type ColumnChangeHandler } from "../app/hooks/use-column/types";
+import "./styles.css";
 
 interface Props {
 	index: number;

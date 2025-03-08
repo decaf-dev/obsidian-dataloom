@@ -1,4 +1,4 @@
-import { Cell, Column, Filter } from "../../types/loom-state";
+import type { Cell, Column, Filter } from "../../types/loom-state";
 
 export interface DeletedColumn {
 	arrIndex: number;

@@ -1,18 +1,18 @@
 import React from "react";
 
+import Padding from "src/react/shared/padding";
 import Icon from "../../shared/icon";
 import MenuButton from "../../shared/menu-button";
 import RowMenu from "./row-menu";
-import Padding from "src/react/shared/padding";
 
+import { useLoomState } from "src/react/loom-app/loom-state-provider";
+import { useMenu } from "src/react/shared/menu-provider/hooks";
+import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
 import { useDragContext } from "src/shared/dragging/drag-context";
 import { getRowId } from "src/shared/dragging/utils";
-import { useLoomState } from "src/react/loom-app/loom-state-provider";
-import { Source } from "src/shared/loom-state/types/loom-state";
+import type { Source } from "src/shared/loom-state/types/loom-state";
 import { confirmSortOrderChange } from "src/shared/sort-utils";
-import { RowReorderHandler } from "../app/hooks/use-row/types";
-import { LoomMenuLevel } from "src/react/shared/menu-provider/types";
-import { useMenu } from "src/react/shared/menu-provider/hooks";
+import type { RowReorderHandler } from "../app/hooks/use-row/types";
 
 import "./styles.css";
 

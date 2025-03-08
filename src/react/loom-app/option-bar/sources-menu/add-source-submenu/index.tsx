@@ -1,23 +1,26 @@
 import React from "react";
 
+import { normalizePath } from "obsidian";
 import Button from "src/react/shared/button";
 import Padding from "src/react/shared/padding";
 import Select from "src/react/shared/select";
 import Stack from "src/react/shared/stack";
 import Submenu from "src/react/shared/submenu";
 import Text from "src/react/shared/text";
-import { getDisplayNameForSource } from "src/shared/loom-state/type-display-names";
-import { Source, SourceType } from "src/shared/loom-state/types/loom-state";
-import { SourceAddHandler } from "../../../app/hooks/use-source/types";
+import { ObsidianPropertyType } from "src/shared/frontmatter/types";
 import {
 	createFolderSource,
 	createFrontmatterSource,
 } from "src/shared/loom-state/loom-state-factory";
+import { getDisplayNameForSource } from "src/shared/loom-state/type-display-names";
+import {
+	type Source,
+	SourceType,
+} from "src/shared/loom-state/types/loom-state";
+import { type SourceAddHandler } from "../../../app/hooks/use-source/types";
 import FolderSourceOptions from "./folder-source-options";
-import { AddSourceError } from "./types";
-import { normalizePath } from "obsidian";
 import FrontmatterSourceOptions from "./frontmatter-source-options";
-import { ObsidianPropertyType } from "src/shared/frontmatter/types";
+import { type AddSourceError } from "./types";
 
 interface Props {
 	sources: Source[];

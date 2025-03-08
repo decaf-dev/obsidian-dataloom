@@ -3,12 +3,12 @@ import ReactDOM from "react-dom";
 
 import { numToPx } from "src/shared/conversion";
 
-import { LoomMenuPosition } from "../menu/types";
+import type { LoomMenuPosition } from "../menu/types";
 
 import { useMenuOperations } from "../menu-provider/hooks";
 
-import "./styles.css";
 import Logger from "js-logger";
+import "./styles.css";
 
 interface Props {
 	id: string;

@@ -1,20 +1,20 @@
-import Icon from "src/react/shared/icon";
 import Button from "src/react/shared/button";
+import Icon from "src/react/shared/icon";
+import Stack from "src/react/shared/stack";
 import Switch from "src/react/shared/switch";
 import Wrap from "src/react/shared/wrap";
-import Stack from "src/react/shared/stack";
 import FilterColumnSelect from "../filter-column-select";
 
 import {
-	Column,
-	FilterCondition,
-	FilterOperator as FilterOperatorType,
+	type Column,
+	type FilterCondition,
+	type FilterOperator as FilterOperatorType,
 	TextFilterCondition,
 } from "src/shared/loom-state/types/loom-state";
 import FilterConditionSelect from "../filter-condition-select";
 
-import "./styles.css";
 import FilterOperator from "../filter-operator";
+import "./styles.css";
 
 interface Props {
 	index: number;

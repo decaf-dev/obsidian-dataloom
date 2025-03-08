@@ -1,34 +1,34 @@
-import {
-	Cell,
-	Row,
-	CellType,
-	Column,
-	CurrencyType,
-	DateFormat,
-	NumberFormat,
-	Tag,
-	Source,
-	DateFormatSeparator,
-	TextCell,
-	EmbedCell,
-	FileCell,
-	CheckboxCell,
-	SourceFileCell,
-	DateCell,
-	NumberCell,
-	MultiTagCell,
-	TagCell,
-} from "src/shared/loom-state/types/loom-state";
-import { getTimeCellContent } from "src/shared/cell-content/time-content";
+import { getCheckboxCellContent } from "src/shared/cell-content/checkbox-cell-content";
 import { getDateCellContent } from "src/shared/cell-content/date-cell-content";
 import { getNumberCellContent } from "src/shared/cell-content/number-cell-content";
-import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import { getSourceCellContent } from "src/shared/cell-content/source-cell-content";
 import { getSourceFileContent } from "src/shared/cell-content/source-file-content";
-import { getCheckboxCellContent } from "src/shared/cell-content/checkbox-cell-content";
+import { getTimeCellContent } from "src/shared/cell-content/time-content";
+import ColumnNotFoundError from "src/shared/error/column-not-found-error";
 import TagNotFoundError from "src/shared/error/tag-not-found-error";
 import { getFileName } from "src/shared/link-and-path/file-path-utils";
 import { isRelativePath } from "src/shared/link-and-path/link-predicates";
+import {
+	type Cell,
+	CellType,
+	type CheckboxCell,
+	type Column,
+	CurrencyType,
+	type DateCell,
+	DateFormat,
+	DateFormatSeparator,
+	type EmbedCell,
+	type FileCell,
+	type MultiTagCell,
+	type NumberCell,
+	NumberFormat,
+	type Row,
+	type Source,
+	type SourceFileCell,
+	type Tag,
+	type TagCell,
+	type TextCell,
+} from "src/shared/loom-state/types/loom-state";
 
 export const filterRowsBySearch = (
 	sources: Source[],

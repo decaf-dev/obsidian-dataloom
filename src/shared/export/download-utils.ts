@@ -1,6 +1,6 @@
 import { moment } from "obsidian";
-import { ExportType } from "./types";
 import { LOOM_EXTENSION } from "src/data/constants";
+import { ExportType } from "./types";
 
 export const getBlobTypeForExportType = (type: ExportType) => {
 	switch (type) {
@@ -17,7 +17,7 @@ export const getExportFileName = (filePath: string) => {
 	const replaceExtension = filePath.replace(`.${LOOM_EXTENSION}`, "");
 	const replaceSlash = replaceExtension.replace(/\//g, "-");
 	const replaceSpaces = replaceSlash.replace(/ /g, "_");
-	const timestamp = moment().format("YYYY_MM_DD-HH_mm_ss");
+	const timestamp = moment.default().format("YYYY_MM_DD-HH_mm_ss");
 	return replaceSpaces + "-" + timestamp;
 };
 

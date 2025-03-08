@@ -1,4 +1,4 @@
-import { Color, Tag } from "src/shared/loom-state/types/loom-state";
+import { Color, type Tag } from "src/shared/loom-state/types/loom-state";
 
 export type TagAddHandler = (
 	cellId: string,

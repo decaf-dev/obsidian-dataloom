@@ -1,7 +1,7 @@
-import Tag from "../../shared/tag";
 import Wrap from "src/react/shared/wrap";
+import Tag from "../../shared/tag";
 
-import { Tag as TagType } from "../../../shared/loom-state/types/loom-state";
+import { type Tag as TagType } from "../../../shared/loom-state/types/loom-state";
 
 import "./styles.css";
 

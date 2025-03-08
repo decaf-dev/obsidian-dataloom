@@ -1,19 +1,19 @@
 import { isNumberCalcuation } from "../match";
 import {
-	GeneralCalculation,
-	CalculationType,
 	CellType,
 	CurrencyType,
-	DateFormat,
-	NumberCalculation,
-	FilterCondition,
-	TextFilterCondition,
-	NumberFilterCondition,
 	DateFilterCondition,
 	DateFilterOption,
-	SourceType,
+	DateFormat,
 	DateFormatSeparator,
+	GeneralCalculation,
+	NumberCalculation,
+	NumberFilterCondition,
 	SortDir,
+	SourceType,
+	TextFilterCondition,
+	type CalculationType,
+	type FilterCondition,
 } from "./types/loom-state";
 
 const getShortDisplayNameForCalculation = (value: GeneralCalculation) => {
@@ -179,7 +179,7 @@ export const getDisplayNameForSortDir = (dir: SortDir) => {
 		default:
 			return "Default";
 	}
-}
+};
 
 export const getDisplayNameForCurrencyType = (type: CurrencyType) => {
 	switch (type) {

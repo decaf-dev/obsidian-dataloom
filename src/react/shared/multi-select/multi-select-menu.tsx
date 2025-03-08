@@ -1,12 +1,12 @@
+import React from "react";
+import Input from "../input";
+import Menu from "../menu";
+import { type LoomMenuPosition } from "../menu/types";
+import Padding from "../padding";
 import Stack from "../stack";
 import Text from "../text";
-import Menu from "../menu";
-import { LoomMenuPosition } from "../menu/types";
 import MultiSelectOption from "./multi-select-option";
-import { MultiSelectOptionType } from "./types";
-import Input from "../input";
-import React from "react";
-import Padding from "../padding";
+import { type MultiSelectOptionType } from "./types";
 
 interface Props {
 	id: string;
