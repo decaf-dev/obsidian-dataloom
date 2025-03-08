@@ -1,10 +1,12 @@
 <script lang="ts">
+	import clsx from "clsx";
 	import Logger from "js-logger";
 	import { onMount, type Snippet } from "svelte";
 	import MenuStore, { type MenuLevel } from "./menu-store.js";
 	import { getMenuIdContext, getMenuStateContext } from "./menu.svelte";
 
 	interface MenuTriggerProps {
+		class?: string;
 		ariaLabel?: string;
 		isDisabled?: boolean;
 		level?: MenuLevel;
@@ -12,6 +14,7 @@
 	}
 
 	let {
+		class: className,
 		ariaLabel,
 		isDisabled,
 		level = 1,
@@ -118,7 +121,7 @@
 
 <div
 	bind:this={ref}
-	class="dataloom-menu-trigger"
+	class={clsx("dataloom-menu-trigger", className)}
 	tabindex={0}
 	role="button"
 	aria-disabled={isDisabled}

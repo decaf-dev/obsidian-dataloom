@@ -1,6 +1,17 @@
 <script lang="ts">
+	import BodyContent from "./components/body-content/body-content.svelte";
+	import Calculation from "./components/calculation/calculation.svelte";
+	import HeaderContent from "./components/header-content/header-content.svelte";
 	import MenuStore from "./components/menu/menu-store";
-	import Table from "./components/table/table.svelte";
+	import {
+		TableFooter,
+		TableRoot,
+		TableTd,
+		TableTh,
+	} from "./components/table";
+	import TableBody from "./components/table/table-body.svelte";
+	import TableHeader from "./components/table/table-header.svelte";
+	import TableRow from "./components/table/table-row.svelte";
 	import type { ParsedTableData } from "./utils";
 
 	interface AppProps {
@@ -8,7 +19,11 @@
 		mode: "reading" | "editing";
 	}
 
-	const { mode, data }: AppProps = $props();
+	const { data }: AppProps = $props();
+
+	let numColumns = $derived(
+		data.head.length > 0 ? data.head.length : data.body[0].length,
+	);
 
 	const menuStore = MenuStore.getInstance();
 	const openMenus = menuStore.openMenus;
@@ -36,4 +51,46 @@
 	});
 </script>
 
-<Table {mode} {data} />
+<TableRoot>
+	{#if data.head.length > 0}
+		<TableHeader>
+			<TableRow>
+				<TableTh />
+				{#each data.head as header}
+					<TableTh>
+						<HeaderContent>
+							{header}
+						</HeaderContent>
+					</TableTh>
+				{/each}
+				<TableTh />
+			</TableRow>
+		</TableHeader>
+	{/if}
+	<TableBody>
+		{#each data.body as row}
+			<TableRow>
+				<TableTd />
+				{#each row as cell}
+					<TableTd>
+						<BodyContent>
+							{cell}
+						</BodyContent>
+					</TableTd>
+				{/each}
+				<TableTd />
+			</TableRow>
+		{/each}
+	</TableBody>
+	<TableFooter>
+		<TableRow>
+			<TableTd isFooter />
+			{#each Array.from({ length: numColumns })}
+				<TableTd isFooter>
+					<Calculation />
+				</TableTd>
+			{/each}
+			<TableTd isFooter />
+		</TableRow>
+	</TableFooter>
+</TableRoot>

@@ -37,9 +37,6 @@
 	setContext(MENU_STATE_KEY, menuState);
 </script>
 
-<div class="dataloom-menu">
+<div class="dataloom-menu-new">
 	{@render children()}
 </div>
-
-<style>
-</style>
