@@ -16,7 +16,8 @@
 
 	$effect(() => {
 		if (!valueRef) return;
-		if (value) {
+
+		if (value.length !== -1) {
 			valueRef.replaceChildren();
 			MarkdownRenderer.render(
 				obsidianApp,
