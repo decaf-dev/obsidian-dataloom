@@ -1,4 +1,4 @@
-![](/docusaurus/static/img/cover.png)
+![](/readme/cover.png)
 
 ## Notice
 
